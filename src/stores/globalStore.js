@@ -53,5 +53,40 @@ export const globalStore = createStore(
       userStorage.reset();
       return { ...state, currentUser: null, loggedIn: false };
     },
+    addPost(state, content) {
+      return {
+        ...state,
+        posts: [
+          ...state.posts,
+          {
+            id: Date.now(),
+            author: state.currentUser.username,
+            time: Date.now(),
+            content,
+            likeUsers: [],
+          },
+        ],
+      };
+    },
+    toggleLike(state, postId) {
+      if (!state.loggedIn) {
+        throw new Error("로그인이 필요합니다.");
+      }
+
+      const userId = state.currentUser.username;
+
+      return {
+        ...state,
+        posts: state.posts.map((post) => {
+          if (post.id === postId) {
+            const likeUsers = post.likeUsers.includes(userId)
+              ? post.likeUsers.filter((id) => id !== userId)
+              : [...post.likeUsers, userId];
+            return { ...post, likeUsers };
+          }
+          return post;
+        }),
+      };
+    },
   },
 );
