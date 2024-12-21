@@ -25,39 +25,24 @@ export const Navigation = () => {
   const { loggedIn } = globalStore.getState();
   const { logout } = globalStore.actions;
 
-  const onClickHandler = (e) => {
-    router.get().push(e.target.href);
-  };
   return (
     <nav className="bg-white shadow-md p-2 sticky top-14">
       <ul className="flex justify-around">
         <li>
-          <Link
-            href="/"
-            className={getNavItemClass("/")}
-            onClick={onClickHandler}
-          >
+          <Link href="/" className={getNavItemClass("/")}>
             홈
           </Link>
         </li>
         {!loggedIn && (
           <li>
-            <Link
-              href="/login"
-              className={getNavItemClass("/login")}
-              onClick={onClickHandler}
-            >
+            <Link href="/login" className={getNavItemClass("/login")}>
               로그인
             </Link>
           </li>
         )}
         {loggedIn && (
           <li>
-            <Link
-              href="/profile"
-              className={getNavItemClass("/profile")}
-              onClick={onClickHandler}
-            >
+            <Link href="/profile" className={getNavItemClass("/profile")}>
               프로필
             </Link>
           </li>

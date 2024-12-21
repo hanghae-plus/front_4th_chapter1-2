@@ -1,14 +1,6 @@
 import { addEvent } from "./eventManager";
 
 export function createElement(vNode) {
-  if (typeof vNode === "undefined") {
-    return;
-  }
-
-  if (typeof vNode === "boolean") {
-    return "";
-  }
-
   if (typeof vNode === "string") {
     return document.createTextNode(vNode);
   }
