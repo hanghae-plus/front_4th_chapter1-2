@@ -1,15 +1,30 @@
 import { addEvent } from "./eventManager";
 
 export function createElement(vNode) {
+  if (typeof vNode === "undefined" || vNode === null) {
+    return document.createTextNode("");
+  }
+
+  if (typeof vNode === "boolean") {
+    return document.createTextNode("");
+  }
+
   if (typeof vNode === "string") {
     return document.createTextNode(vNode);
   }
 
+  if (typeof vNode === "number") {
+    return document.createTextNode(vNode);
+  }
+
+  if (Array.isArray(vNode)) {
+    const fragment = document.createDocumentFragment();
+    vNode.forEach((node) => fragment.append(createElement(node)));
+    return fragment;
+  }
+
   if (typeof vNode.type === "function") {
-    const Component = vNode.type;
-    const props = vNode.props;
-    const children = vNode.children;
-    return createElement(Component({ ...props, children }));
+    throw Error();
   }
 
   const element = document.createElement(vNode.type);
@@ -20,6 +35,10 @@ export function createElement(vNode) {
         const eventType = key.slice(2).toLowerCase();
         addEvent(element, eventType, vNode.props[key]);
         return;
+      }
+      if (key.startsWith("data-")) {
+        const dataset = key.replace("data-", "");
+        element.dataset[dataset] = vNode.props[key];
       }
       element[key] = vNode.props[key];
     });
