@@ -1,6 +1,6 @@
 /** @jsx createVNode */
-import { createVNode } from "../../lib";
-import { toTimeFormat } from "../../utils/index.js";
+import { createVNode } from "../../lib/index.ts";
+import { toTimeFormat } from "../../utils/index.ts";
 
 export const Post = ({
   author,

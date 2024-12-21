@@ -1,5 +1,5 @@
-import { addEvent, removeEvent } from "./eventManager";
-import { createElement } from "./createElement.js";
+import { addEvent, removeEvent } from "./eventManager.ts";
+import { createElement } from "./createElement.ts";
 
 function updateAttributes(target, originNewProps, originOldProps) {}
 
