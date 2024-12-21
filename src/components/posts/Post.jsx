@@ -22,7 +22,7 @@ export const Post = ({
         <span
           className={`like-button cursor-pointer${activationLike ? " text-blue-500" : ""}`}
         >
-          좋아요 {likeUsers.length}
+          좋아요 {likeUsers?.length}
         </span>
         <span>댓글</span>
         <span>공유</span>

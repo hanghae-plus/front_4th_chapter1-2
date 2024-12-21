@@ -24,24 +24,40 @@ function Link({ onClick, children, ...props }) {
 export const Navigation = () => {
   const { loggedIn } = globalStore.getState();
   const { logout } = globalStore.actions;
+
+  const onClickHandler = (e) => {
+    router.get().push(e.target.href);
+  };
   return (
     <nav className="bg-white shadow-md p-2 sticky top-14">
       <ul className="flex justify-around">
         <li>
-          <Link href="/" className={getNavItemClass("/")}>
+          <Link
+            href="/"
+            className={getNavItemClass("/")}
+            onClick={onClickHandler}
+          >
             홈
           </Link>
         </li>
         {!loggedIn && (
           <li>
-            <Link href="/login" className={getNavItemClass("/login")}>
+            <Link
+              href="/login"
+              className={getNavItemClass("/login")}
+              onClick={onClickHandler}
+            >
               로그인
             </Link>
           </li>
         )}
         {loggedIn && (
           <li>
-            <Link href="/profile" className={getNavItemClass("/profile")}>
+            <Link
+              href="/profile"
+              className={getNavItemClass("/profile")}
+              onClick={onClickHandler}
+            >
               프로필
             </Link>
           </li>
