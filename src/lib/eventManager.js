@@ -28,6 +28,16 @@ export function setupEventListeners(root) {
   root.addEventListener("click", eventHandler);
   root.addEventListener("input", eventHandler);
   root.addEventListener("change", eventHandler);
+  root.addEventListener("focus", eventHandler);
+  root.addEventListener("blur", eventHandler);
+  root.addEventListener("keydown", eventHandler);
+  root.addEventListener("keyup", eventHandler);
+  root.addEventListener("keypress", eventHandler);
+  root.addEventListener("mouseover", eventHandler);
+  root.addEventListener("mouseout", eventHandler);
+  root.addEventListener("mousemove", eventHandler);
+  root.addEventListener("mouseup", eventHandler);
+  root.addEventListener("mousedown", eventHandler);
 
   // 초기화된 요소로 표시
   initializedElements.add(root);
@@ -48,6 +58,11 @@ export function removeEvent(element, eventType) {
 
     if (Object.keys(handlers).length === 0) {
       eventMap.delete(element);
+      initializedElements.delete(element);
     }
   }
+}
+
+export function cleanupEventListeners(root) {
+  initializedElements.delete(root);
 }
