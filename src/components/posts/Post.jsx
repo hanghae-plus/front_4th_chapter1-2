@@ -9,6 +9,21 @@ export const Post = ({
   likeUsers,
   activationLike = false,
 }) => {
+  // const handleLike = (e) => {
+  //   // 클릭된 요소가 좋아요 버튼인지 확인
+  //   console.log("좋아요 이벤트 등록")
+  //   if (!e.target.classList.contains('like-button')) return;
+
+  //   const currentUser = userStorage.get();
+  //   if (!currentUser) return;
+
+  //   postStore.actions.toggleLike(index, currentUser.id);
+  // };
+
+  // const attachEvents = (element) => {
+  //   addEvent(element, "click", handleLike);
+  // };
+
   return (
     <div className="bg-white rounded-lg shadow p-4 mb-4">
       <div className="flex items-center mb-2">
