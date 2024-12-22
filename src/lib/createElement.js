@@ -1,6 +1,8 @@
 /*
  * DOM API를 이용하여 Virtual DOM을 실제 DOM으로 변환한다.
  */
+import { addEvent, SUPPORTED_EVENTS } from "./eventManager.js";
+
 export function createElement(vNode) {
   // 문자열이나 숫자 처리
   if (typeof vNode === "string" || typeof vNode === "number") {
@@ -34,6 +36,11 @@ export function createElement(vNode) {
     Object.entries(vNode.props).forEach(([key, value]) => {
       if (key === "className") {
         element.setAttribute("class", value);
+      } else if (key.startsWith("on") && typeof value === "function") {
+        const eventType = key.slice(2).toLowerCase();
+        if (SUPPORTED_EVENTS.has(eventType)) {
+          addEvent(element, eventType, value);
+        }
       } else if (key !== "key" && key !== "children") {
         element.setAttribute(key, value);
       }

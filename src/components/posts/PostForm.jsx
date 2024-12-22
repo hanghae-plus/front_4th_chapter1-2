@@ -12,6 +12,7 @@ export const PostForm = () => {
       <button
         id="post-submit"
         className="mt-2 bg-blue-600 text-white px-4 py-2 rounded"
+        onClick={() => alert("폼 클릭!")}
       >
         게시
       </button>
