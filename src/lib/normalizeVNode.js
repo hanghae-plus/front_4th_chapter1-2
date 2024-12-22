@@ -1,3 +1,4 @@
+//생성된 가상 DOM을 정규화하여 일관된 형태로 변환 하는 함수
 export function normalizeVNode(vNode) {
   if (
     typeof vNode === "undefined" ||
