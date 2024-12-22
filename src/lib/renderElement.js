@@ -1,6 +1,7 @@
 import { createElement } from "./createElement";
 import { normalizeVNode } from "./normalizeVNode";
 import { setupEventListeners } from "./eventManager.js";
+import { updateElement } from "./updateElement.js";
 
 /*
  * Virtual DOM 기반 파이프라인
@@ -27,9 +28,7 @@ export function renderElement(vNode, container) {
     container.appendChild(createElement(normalizedVNode));
   } else {
     // 기존 내용 제거 후 새로 렌더링
-    // TODO::diffing 알고리즘 구현
-    container.innerHTML = "";
-    container.appendChild(createElement(normalizedVNode));
+    updateElement(container, normalizedVNode, oldVNode, 0);
   }
 
   // 현재 가상 DOM 저장
