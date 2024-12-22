@@ -1,5 +1,15 @@
-import { addEvent } from "./eventManager";
+// import { addEvent } from "./eventManager";
 
-export function createElement(vNode) {}
+import { isString } from "../utils/isString";
+import { isValid } from "../utils/isValid";
 
-function updateAttributes($el, props) {}
+export function createElement(vNode) {
+  if (!isValid(vNode)) {
+    return document.createTextNode("");
+  }
+  if (isString(vNode)) {
+    return document.createTextNode(vNode);
+  }
+}
+
+// function updateAttributes($el, props) {}
