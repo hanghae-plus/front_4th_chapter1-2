@@ -6,7 +6,48 @@ export function normalizeVNode(vNode) {
     return vNode.toString();
   }
 
-  return vNode;
+  if (typeof vNode.type === "function") {
+    const renderedVNode = vNode.type(vNode.props || {});
+    const isChildrenTextArray =
+      Array.isArray(renderedVNode.children) &&
+      renderedVNode.children.every((child) => typeof child === "string");
+
+    return {
+      type: normalizeVNode(renderedVNode).type,
+      props: renderedVNode.props || {},
+      children: isChildrenTextArray
+        ? [...renderedVNode.children, ...normalizeChildren(vNode.children)]
+        : normalizeChildren(renderedVNode.children),
+    };
+  }
+
+  const children = normalizeChildren(vNode.children);
+
+  return {
+    type: vNode.type,
+    props: vNode.props || {},
+    children,
+  };
+}
+
+/**
+ * @description 자식 노드 정규화
+ */
+function normalizeChildren(children) {
+  if (!children) return [];
+
+  return children.reduce((acc, child) => {
+    const normalizedChild = isString(child) ? child : normalizeVNode(child);
+
+    const last = acc[acc.length - 1];
+    if (typeof last === "string" && typeof normalizedChild === "string") {
+      acc[acc.length - 1] = last + normalizedChild;
+    } else {
+      acc.push(normalizedChild);
+    }
+
+    return acc;
+  }, []);
 }
 
 /**
