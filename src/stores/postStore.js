@@ -7,21 +7,23 @@ const initialState = {
 
 const actions = {
   addPost: (state, newPost) => {
-    globalStore.setState({ posts: [newPost, ...state.posts] });
+    const currentPosts = globalStore.getState().posts;
+    globalStore.setState({ posts: [newPost, ...currentPosts] });
+    const newState = { posts: globalStore.getState().posts };
+    return newState;
   },
   toggleLike: (state, postIndex, userId) => {
+    console.log("???????????", postIndex, userId);
     const updatedPosts = [...state.posts];
     const post = updatedPosts[postIndex];
-
+    console.log(post);
     if (post.likeUsers.includes(userId)) {
-      post.likeUsers = post.likeUsers.filter((id) => id !== userId);
-      post.activationLike = false;
+      post.likeUsers = post.likeUsers.filter((username) => username !== userId);
     } else {
       post.likeUsers.push(userId);
-      post.activationLike = true;
     }
 
-    return { posts: updatedPosts };
+    globalStore.setState({ posts: updatedPosts });
   },
 };
 

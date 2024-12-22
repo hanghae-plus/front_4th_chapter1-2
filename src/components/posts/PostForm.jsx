@@ -1,6 +1,6 @@
 /** @jsx createVNode */
 import { createVNode } from "../../lib";
-import { addEvent } from "../../lib/";
+import { addEvent, removeEvent } from "../../lib/";
 import { postStore } from "../../stores";
 import { userStorage } from "../../storages";
 
@@ -18,19 +18,10 @@ export const PostForm = () => {
       time: new Date(),
       content: content,
       likeUsers: [],
-      activationLike: false,
     });
 
     // 입력창 초기화
     document.getElementById("post-content").value = "";
-  };
-
-  // 버튼에 직접 이벤트 등록
-  const attachEvents = (element) => {
-    const submitButton = element.querySelector("#post-submit");
-    if (submitButton) {
-      addEvent(submitButton, "click", handleSubmit);
-    }
   };
 
   return (
@@ -43,7 +34,7 @@ export const PostForm = () => {
       <button
         id="post-submit"
         className="mt-2 bg-blue-600 text-white px-4 py-2 rounded"
-        ref={attachEvents}
+        onClick={handleSubmit}
       >
         게시
       </button>
