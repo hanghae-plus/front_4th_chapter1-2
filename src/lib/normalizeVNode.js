@@ -1,3 +1,6 @@
+import { isString } from "../utils/isString";
+import { isValid } from "../utils/isValid";
+
 /**
  * 가상 노드(vNode)를 표준 형식으로 정규화하는 함수
  * @param {Object} vNode - 정규화할 가상 노드
@@ -69,18 +72,4 @@ function normalizeChildren(children) {
 
     return acc;
   }, []);
-}
-
-/**
- * @description null, undefined, boolean 일 경우 false 반환
- */
-function isValid(value) {
-  return !(value == null || typeof value === "boolean");
-}
-
-/**
- * @description 문자열, 숫자일 경우 true 반환
- */
-function isString(value) {
-  return typeof value === "string" || typeof value === "number";
 }
