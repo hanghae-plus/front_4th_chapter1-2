@@ -2,10 +2,10 @@
 
 export function createElement(vNode) {
   if (vNode === null || vNode === undefined || typeof vNode === "boolean") {
-    return "";
+    return document.createTextNode("");
   }
   if (typeof vNode === "string" || typeof vNode === "number") {
-    return String(vNode);
+    return document.createTextNode(String(vNode));
   }
   if (Array.isArray(vNode)) {
     const fragment = document.createDocumentFragment();
