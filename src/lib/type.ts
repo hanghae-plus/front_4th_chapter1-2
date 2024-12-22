@@ -10,7 +10,4 @@ export type VNode = {
   children: unknown[];
 };
 
-export const isVNode = (target: any): target is VNode =>
-  target && typeof target === "object" && Object.keys(target).includes("type");
-
 export type AttributeName = keyof HTMLElement;

@@ -1,5 +1,4 @@
-import { normalizeVNode } from "./normalizeVNode";
-import { isVNode, VNode, VNodeProps } from "./type";
+import { VNode, VNodeProps } from "./type";
 import { isBooleanTrue, isNumberZero } from "./typeChecker";
 
 export function createVNode(

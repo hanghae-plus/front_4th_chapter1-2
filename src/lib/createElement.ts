@@ -1,3 +1,4 @@
+import { ATTR_NAME_MAP } from "./const";
 import { addEvent } from "./eventManager";
 import { VNode, VNodeProps } from "./type";
 import { isBooleanTrue, isNumberZero, isStringOrNum } from "./typeChecker";
@@ -38,7 +39,7 @@ export function createElement(vNode: VNode | VNode[]) {
 function updateAttributes($el: HTMLElement, props: VNodeProps): HTMLElement {
   if (!props) return $el;
   Object.keys(props).forEach((key: string) => {
-    $el.setAttribute(key, props[key]);
+    $el.setAttribute(ATTR_NAME_MAP[key] ?? key, props[key]);
   });
 
   return $el;
