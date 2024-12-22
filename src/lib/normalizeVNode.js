@@ -25,7 +25,7 @@ export function normalizeVNode(vNode) {
 
   return {
     type: vNode.type,
-    props: vNode.props || {},
+    props: vNode.props || null,
     children,
   };
 }
