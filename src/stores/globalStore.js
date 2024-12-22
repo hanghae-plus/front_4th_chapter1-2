@@ -75,5 +75,22 @@ export const globalStore = createStore(
         }),
       };
     },
+    addPost(state, content) {
+      const currentUser = state.currentUser;
+      if (!currentUser) return state;
+
+      const newPost = {
+        id: Date.now(),
+        author: currentUser.username,
+        time: Date.now(),
+        content,
+        likeUsers: [],
+      };
+
+      return {
+        ...state,
+        posts: [newPost, ...state.posts],
+      };
+    },
   },
 );

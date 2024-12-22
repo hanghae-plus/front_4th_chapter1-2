@@ -9,13 +9,13 @@ export const Post = ({ id, author, time, content, likeUsers, loggedIn }) => {
   const activationLike =
     currentUser && likeUsers.includes(currentUser.username);
 
-  function onClickLike() {
+  const handleToggleLike = () => {
     if (!loggedIn) {
       alert("로그인 후 이용해주세요");
       return;
     }
     toggleLike(id);
-  }
+  };
 
   return (
     <div className="bg-white rounded-lg shadow p-4 mb-4">
@@ -28,7 +28,7 @@ export const Post = ({ id, author, time, content, likeUsers, loggedIn }) => {
       <p>{content}</p>
       <div className="mt-2 flex justify-between text-gray-500">
         <span
-          onClick={onClickLike}
+          onClick={handleToggleLike}
           className={`like-button cursor-pointer${activationLike ? " text-blue-500" : ""}`}
         >
           좋아요 {likeUsers.length}
