@@ -4,6 +4,10 @@ import { VNode, VNodeProps } from "./type";
 import { isBooleanTrue, isNumberZero, isStringOrNum } from "./typeChecker";
 
 export function createElement(vNode: VNode | VNode[]) {
+  if (typeof vNode?.type === "function") {
+    throw Error();
+  }
+
   if ((!vNode || isBooleanTrue(vNode)) && !isNumberZero(vNode))
     return document.createTextNode("");
 
@@ -12,11 +16,11 @@ export function createElement(vNode: VNode | VNode[]) {
   }
 
   if (Array.isArray(vNode)) {
-    let $arrayNode = document.createDocumentFragment();
+    let $elArray = document.createDocumentFragment();
     vNode.forEach((el) => {
-      $arrayNode.appendChild(createElement(el));
+      $elArray.appendChild(createElement(el));
     });
-    return $arrayNode;
+    return $elArray;
   }
 
   let $el = document.createElement(vNode.type);
@@ -26,10 +30,10 @@ export function createElement(vNode: VNode | VNode[]) {
   }
 
   if ("children" in vNode) {
-    (vNode as typeof vNode).children.flat().forEach((child) => {
-      const childNode = createElement(child);
+    (vNode as typeof vNode).children.forEach((child) => {
+      const childEl = createElement(child);
 
-      $el.appendChild(childNode);
+      $el.appendChild(childEl);
     });
   }
 
