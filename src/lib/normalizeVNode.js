@@ -13,15 +13,11 @@ export function normalizeVNode(vNode) {
 
   if (typeof vNode.type === "function") {
     const { type, props, children } = vNode;
-    const result = type({ ...props, children });
-    vNode = normalizeVNode(result);
+    vNode = normalizeVNode(type({ ...props, children }));
   }
 
   vNode.children = vNode.children
-    .map((child) => {
-      const childNode = normalizeVNode(child);
-      return childNode;
-    })
+    .map((child) => normalizeVNode(child))
     .filter((child) => !!child);
 
   return vNode;

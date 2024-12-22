@@ -31,16 +31,16 @@ export function createElement(vNode) {
 
   if (vNode.props) {
     Object.keys(vNode.props).forEach((key) => {
+      if (key === "className") {
+        element.classList = vNode.props[key];
+        return;
+      }
       if (key.startsWith("on")) {
         const eventType = key.slice(2).toLowerCase();
         addEvent(element, eventType, vNode.props[key]);
         return;
       }
-      if (key.startsWith("data-")) {
-        const dataset = key.replace("data-", "");
-        element.dataset[dataset] = vNode.props[key];
-      }
-      element[key] = vNode.props[key];
+      element.setAttribute(key, vNode.props[key]);
     });
   }
 

@@ -15,7 +15,7 @@ function Link({ onClick, children, ...props }) {
     router.get().push(e.target.href.replace(window.location.origin, ""));
   };
   return (
-    <a onClick={handleClick} {...props}>
+    <a onClick={handleClick} {...props} data-link>
       {children}
     </a>
   );
