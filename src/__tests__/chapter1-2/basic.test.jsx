@@ -8,7 +8,7 @@ import {
   removeEvent,
   renderElement,
   setupEventListeners,
-} from "../../lib";
+} from "../../libs";
 
 describe("Chapter1-2 > 기본과제 > 가상돔 만들기 > ", () => {
   describe("createVNode > ", () => {
