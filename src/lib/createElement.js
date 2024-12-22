@@ -12,10 +12,7 @@ export function createElement(vNode) {
   }
 
   if (Array.isArray(vNode) && vNode.length > 1) {
-    const fragment = document.createDocumentFragment();
-    vNode.map(createElement).forEach((el) => fragment.appendChild(el));
-
-    return fragment;
+    return createFragmentWithArray(vNode);
   }
 
   const $el = document.createElement(vNode.type);
@@ -24,3 +21,17 @@ export function createElement(vNode) {
 }
 
 // function updateAttributes($el, props) {}
+
+/**
+ * 배열 형태의 vNode를 받을 경우 fragment로 감싸서 반환
+ * @param {*} vNode
+ * @returns {DocumentFragment} fragment
+ */
+function createFragmentWithArray(vNode) {
+  const fragment = document.createDocumentFragment();
+  vNode.forEach((node) => {
+    const $el = createElement(node);
+    fragment.appendChild($el);
+  });
+  return fragment;
+}
