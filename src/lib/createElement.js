@@ -10,6 +10,17 @@ export function createElement(vNode) {
   if (isString(vNode)) {
     return document.createTextNode(vNode);
   }
+
+  if (Array.isArray(vNode) && vNode.length > 1) {
+    const fragment = document.createDocumentFragment();
+    vNode.map(createElement).forEach((el) => fragment.appendChild(el));
+
+    return fragment;
+  }
+
+  const $el = document.createElement(vNode.type);
+
+  return $el;
 }
 
 // function updateAttributes($el, props) {}
