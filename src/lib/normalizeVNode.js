@@ -6,7 +6,12 @@ export function normalizeVNode(vNode) {
     return String(vNode);
   }
   if (typeof vNode.type === "function") {
-    return normalizeVNode(vNode.type(vNode.props));
+    return normalizeVNode(
+      vNode.type({ ...vNode.props, children: vNode.children }),
+    );
   }
-  return vNode;
+  return {
+    ...vNode,
+    children: vNode.children.map(normalizeVNode).filter(Boolean),
+  };
 }
