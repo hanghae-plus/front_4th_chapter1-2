@@ -7,3 +7,5 @@ export * from "./createElement";
 export * from "./normalizeVNode";
 export * from "./renderElement";
 export * from "./eventManager";
+export * from "./type";
+export * from "./typeChecker";

@@ -1,6 +1,7 @@
 import { createObserver } from "./createObserver";
+import { Component } from "./type";
 
-export const createRouter = (routes) => {
+export const createRouter = (routes: { [key: string]: Component }) => {
   const { subscribe, notify } = createObserver();
 
   const getPath = () => window.location.pathname;
@@ -8,7 +9,7 @@ export const createRouter = (routes) => {
   const getTarget = () => routes[getPath()];
 
   const push = (path) => {
-    window.history.pushState(null, null, path);
+    window.history.pushState(null, "", path);
     notify();
   };
 
