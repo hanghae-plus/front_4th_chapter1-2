@@ -15,6 +15,7 @@ export function renderElement(vNode, container) {
     const element = createElement(normalizedVNode);
     container.append(element);
     virtualDOM = normalizedVNode;
+    setupEventListeners(container);
     return;
   }
 
