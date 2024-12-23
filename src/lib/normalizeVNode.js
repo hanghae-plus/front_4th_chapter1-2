@@ -15,5 +15,15 @@ export function normalizeVNode(vNode) {
     return normalizeVNode(renderedElement);
   }
 
+  if (Array.isArray(vNode)) {
+    return vNode.map((child) => normalizeVNode(child));
+  }
+
+  if (vNode.children) {
+    vNode.children = vNode.children
+      .map((child) => normalizeVNode(child))
+      .filter((child) => child !== "" && child !== null && child !== undefined);
+  }
+
   return vNode;
 }
