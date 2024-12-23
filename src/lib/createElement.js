@@ -1,5 +1,6 @@
-// import { addEvent } from "./eventManager";
+import { addEvent } from "./eventManager";
 
+//virtualDOM -> real DOM
 export function createElement(vNode) {
   //null, undefined, boolean
   if (vNode === null || vNode === undefined || typeof vNode === "boolean") {
@@ -51,10 +52,10 @@ function updateAttributes($el, props) {
     if (key.startsWith("on")) {
       // 이벤트 리스너 처리 (ex: onClick ...)
       const eventType = key.slice(2).toLowerCase();
-      $el.addEventListener(eventType, props[key]);
+      addEvent(eventType, $el, props[key]);
     } else if (key === "className") {
       // className 처리
-      $el.className = props[key];
+      $el.setAttribute("class", props[key]);
     } else {
       // 일반 속성 처리
       $el.setAttribute(key, props[key]);
