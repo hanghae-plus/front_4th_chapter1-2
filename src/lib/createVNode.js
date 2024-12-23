@@ -8,11 +8,11 @@
  *              filter로 유효하지 않은 값(null, undefined, boolean)을 제거하여 최종 렌더링 데이터를 클린하게 유지.
  *
  */
-import { isValidVnode } from "./validCheck";
+import { isValidVNode } from "./validCheck";
 export function createVNode(type, props, ...children) {
   return {
     type,
     props,
-    children: children.flat(Infinity).filter(isValidVnode),
+    children: children.flat(Infinity).filter(isValidVNode),
   };
 }

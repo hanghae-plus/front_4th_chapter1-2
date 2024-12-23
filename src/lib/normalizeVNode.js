@@ -1,8 +1,8 @@
-import { isValidVnode } from "./validCheck";
+import { isValidVNode } from "./validCheck";
 
 export function normalizeVNode(vNode) {
   //  null, undefined, falsy 의 경우 빈 텍스트 return
-  if (!isValidVnode(vNode)) {
+  if (!isValidVNode(vNode)) {
     return "";
   }
 

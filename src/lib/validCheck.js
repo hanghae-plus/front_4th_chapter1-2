@@ -1,2 +1,2 @@
-export const isValidVnode = (vNode) =>
+export const isValidVNode = (vNode) =>
   vNode !== null && typeof vNode !== "undefined" && typeof vNode !== "boolean";
