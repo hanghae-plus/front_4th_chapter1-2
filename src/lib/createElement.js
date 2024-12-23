@@ -30,17 +30,17 @@ export function createElement(vNode) {
   const element = document.createElement(vNode.type);
 
   if (vNode.props) {
-    Object.keys(vNode.props).forEach((key) => {
+    Object.entries(vNode.props).forEach(([key, value]) => {
       if (key === "className") {
-        element.classList = vNode.props[key];
+        element.classList = value;
         return;
       }
       if (key.startsWith("on")) {
         const eventType = key.slice(2).toLowerCase();
-        addEvent(element, eventType, vNode.props[key]);
+        addEvent(element, eventType, value);
         return;
       }
-      element.setAttribute(key, vNode.props[key]);
+      element.setAttribute(key, value);
     });
   }
 
