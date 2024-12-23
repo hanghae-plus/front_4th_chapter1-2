@@ -3,23 +3,37 @@ import { addEvent } from "./eventManager";
 
 /**
  * Virtual DOM Node를 실제 DOM Element로 변환하는 함수
- * @param vNode - Virtual DOM Node 또는 문자열
- * @returns HTMLElement 또는 Text Node
+ * @param vNode - Virtual DOM Node, 문자열 또는 기타 타입
+ * @returns HTMLElement, Text Node 또는 DocumentFragment
  */
+export function createElement(vNode: VNode | any) {
+  if (vNode === null || vNode === undefined || typeof vNode === "boolean") {
+    return document.createTextNode("");
+  }
 
-export function createElement(vNode: VNode) {
-  if (typeof vNode === "string") {
-    return document.createTextNode(vNode);
+  if (typeof vNode === "number" || typeof vNode === "string") {
+    return document.createTextNode(String(vNode));
+  }
+
+  if (Array.isArray(vNode)) {
+    const fragment = document.createDocumentFragment();
+    vNode.forEach((child) => {
+      fragment.appendChild(createElement(child));
+    });
+    return fragment;
   }
 
   const element = document.createElement(vNode.type);
 
   updateAttributes(element, vNode.props);
 
-  vNode.props.children?.forEach((child) => {
-    if (typeof child === "string") {
-      element.appendChild(document.createTextNode(child));
-    } else {
+  const children = [
+    ...(vNode.props?.children || []),
+    ...(vNode.children || []),
+  ];
+
+  children.forEach((child) => {
+    if (child != null) {
       element.appendChild(createElement(child));
     }
   });
@@ -32,17 +46,16 @@ export function createElement(vNode: VNode) {
  * @param element - 실제 DOM Element
  * @param props - 설정할 속성들
  */
-
-function updateAttributes(
-  element: HTMLElement,
-  props: VNodeProps | null,
-): void {
-  if (!props) {
-    return;
-  }
+function updateAttributes(element: HTMLElement, props: VNodeProps | null) {
+  if (!props) return;
 
   Object.entries(props).forEach(([key, value]) => {
     if (key === "children") return;
+
+    if (key === "className") {
+      if (value) element.setAttribute("class", value);
+      return;
+    }
 
     if (key.startsWith("on")) {
       const eventType = key.substring(2).toLowerCase();
@@ -50,8 +63,8 @@ function updateAttributes(
       return;
     }
 
-    if (value) {
-      element.setAttribute(key, value);
+    if (value != null) {
+      element.setAttribute(key, String(value));
     }
   });
 }
