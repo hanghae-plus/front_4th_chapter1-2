@@ -1,5 +1,4 @@
 export function normalizeVNode(vNode) {
-  console.log(vNode);
   if (
     vNode === null ||
     typeof vNode === "undefined" ||
@@ -10,17 +9,38 @@ export function normalizeVNode(vNode) {
     return vNode;
   } else if (typeof vNode === "number") {
     return vNode.toString();
-  } else if (typeof vNode === "function") {
-    const result = vNode();
-    return normalizeVNode(result);
+  } else if (typeof vNode.type === "function") {
+    const renderedVNode = vNode.type({
+      ...vNode.props,
+      children: vNode.props?.children,
+    });
+    return normalizeVNode(renderedVNode);
   } else {
-    return vNode
-      .map((child) => normalizeVNode(child))
-      .filter(
-        (child) =>
-          child === null ||
-          typeof child === "undefined" ||
-          typeof child === "boolean",
-      );
+    const { type, props = {} } = vNode;
+    const childArray = Array.isArray(props.children)
+      ? props.children
+      : [props.children];
+
+    const normalizedChildren = childArray.map((child) => normalizeVNode(child)); // ['']
+
+    // normalizedChildren[renderedVNode];
+
+    return {
+      type,
+      props,
+      children: normalizedChildren,
+    };
   }
 }
+
+// props: {
+//   ...props,
+//   children: [normalizedChildren],
+//   className: props.className,
+// }
+// .filter(
+//   (normalizedChild) =>
+//     normalizedChild !== null &&
+//     normalizedChild !== "undefined" &&
+//     normalizedChild,
+// )
