@@ -19,10 +19,11 @@ export const SUPPORTED_EVENTS = new Set([
 
 /*
  * 합성 이벤트를 생성한다.
+ *
  */
 function createSyntheticEvent(navigateEvent) {
-  const synthetic = {
-    navigateEvent: navigateEvent, // 원본 브라우저 이벤트 객체
+  const syntheticEvent = {
+    navigateEvent, // 원본 브라우저 이벤트 객체
     target: navigateEvent.target, // 이벤트가 발생한 실제 DOM 요소
     currentTarget: navigateEvent.currentTarget, // 현재 이벤트가 처리되고 있는 DOM 요소
     type: navigateEvent.type, // 이벤트 타입
@@ -44,7 +45,7 @@ function createSyntheticEvent(navigateEvent) {
       Object.freeze(this);
     },
   };
-  return synthetic;
+  return syntheticEvent;
 }
 
 /*

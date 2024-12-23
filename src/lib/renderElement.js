@@ -15,8 +15,6 @@ export function renderElement(vNode, container) {
   // 이후에는 updateElement로 기존 DOM을 업데이트한다.
   // 렌더링이 완료되면 container에 이벤트를 등록한다.
 
-  setupEventListeners(container);
-
   // 이전 가상 DOM 가져오기
   const oldVNode = container._vnode;
 
@@ -26,6 +24,7 @@ export function renderElement(vNode, container) {
   // 최초 렌더링
   if (!oldVNode) {
     container.appendChild(createElement(normalizedVNode));
+    setupEventListeners(container);
   } else {
     // 기존 내용 제거 후 새로 렌더링
     updateElement(container, normalizedVNode, oldVNode, 0);
