@@ -16,7 +16,7 @@ export function normalizeVNode(vNode) {
     vNode = normalizeVNode(type({ ...props, children }));
   }
 
-  vNode.children = vNode.children
+  vNode.children = [...vNode.children]
     .map(normalizeVNode)
     .filter((child) => !!child);
 

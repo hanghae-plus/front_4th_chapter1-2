@@ -4,17 +4,18 @@ import { userStorage } from "../../storages";
 import { globalStore } from "../../stores";
 
 export const PostForm = () => {
-  const user = userStorage.get();
-  const postSubmitHandler = (e) => {
-    const author = user.username;
-    const content = document.getElementById("post-content").value;
-    const likeUsers = [];
-    const time = Date.now();
-
+  const postSubmitHandler = () => {
     const state = globalStore.getState();
-    const id = Math.max(...state.posts.map((post) => post.id)) + 1;
 
-    state.posts = [...state.posts, { id, author, time, content, likeUsers }];
+    const newPost = {
+      id: Math.max(...state.posts.map((post) => post.id)) + 1 || 1,
+      author: userStorage.get().username,
+      time: Date.now(),
+      content: document.getElementById("post-content").value,
+      likeUsers: [],
+    };
+
+    state.posts = [...state.posts, newPost];
     globalStore.setState(state);
   };
   return (
@@ -27,8 +28,8 @@ export const PostForm = () => {
       <button
         id="post-submit"
         type="button"
-        className="mt-2 bg-blue-600 text-white px-4 py-2 rounded"
         onClick={postSubmitHandler}
+        className="mt-2 bg-blue-600 text-white px-4 py-2 rounded"
       >
         게시
       </button>

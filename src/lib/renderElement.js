@@ -3,13 +3,13 @@ import { createElement } from "./createElement";
 import { normalizeVNode } from "./normalizeVNode";
 import { updateElement } from "./updateElement";
 
-let oldNode = {};
+let oldNode = null;
 
 export function renderElement(vNode, container) {
   vNode = normalizeVNode(vNode);
 
   if (!container.childNodes[0]) {
-    oldNode = {};
+    oldNode = null;
   }
   // 최초 렌더링시에는 createElement로 DOM을 생성하고
   if (!oldNode) {

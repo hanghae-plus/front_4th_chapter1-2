@@ -17,6 +17,7 @@ export const Post = ({
   const clickLikeHandler = () => {
     if (!state.loggedIn) {
       alert("로그인 후 이용해주세요");
+      return;
     }
 
     const username = state.currentUser?.username;
