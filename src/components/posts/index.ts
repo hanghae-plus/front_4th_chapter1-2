@@ -1,2 +1,2 @@
-export * from "./Post.ts";
-export * from "./PostForm.ts";
+export * from "./Post.tsx";
+export * from "./PostForm.tsx";

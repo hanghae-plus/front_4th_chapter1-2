@@ -17,7 +17,7 @@ export default mergeConfig(
     test: {
       globals: true,
       environment: "jsdom",
-      setupFiles: "./src/setupTests.js",
+      setupFiles: "./src/setupTests.ts",
       exclude: ["**/e2e/**", "**/*.e2e.spec.js", "**/node_modules/**"],
     },
   }),

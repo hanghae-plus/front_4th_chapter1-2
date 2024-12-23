@@ -6,50 +6,34 @@
 // 4. 그 외의 경우, vNode의 자식 요소들을 재귀적으로 표준화하고, null 또는 undefined 값을 필터링하여 반환합니다.
 
 export function normalizeVNode(vNode) {
+  console.log(vNode);
+
+  // null, undefined, boolean 처리
   if (vNode === null || vNode === undefined || typeof vNode === "boolean") {
     return "";
   }
 
+  // 문자열이나 숫자 처리
   if (typeof vNode === "string" || typeof vNode === "number") {
     return String(vNode);
   }
 
   // 배열인 경우 (여러 자식 요소)
   if (Array.isArray(vNode)) {
-    const { type, props, children } = vNode;
-
-    return {
-      type,
-      children: children
-        .map((child) => normalizeVNode(child))
-        .filter((child) => child !== null && child !== undefined),
-      props: { ...props },
-    };
+    return vNode.map(normalizeVNode);
   }
 
   // 컴포넌트인 경우
   if (typeof vNode.type === "function") {
     const { type: Component, props } = vNode;
-    return normalizeVNode(Component(props));
+    return normalizeVNode(Component({ ...props, children: vNode.children }));
   }
 
-  // // 일반 DOM 엘리먼트인 경우
-  // if (typeof vNode === "object" && vNode.type) {
-  //   const { type, props = {}, children = [] } = vNode;
-
-  //   // children을 배열로 정규화
-  //   const normalizedChildren = Array.isArray(children)
-  //     ? children
-  //     : children ? [children] : [];
-
-  //   return {
-  //   type,
-  //    props,
-  //     children: normalizedChildren
-  //       .map((child) => normalizeVNode(child))
-  //       .filter((child) => child !== null && child !== undefined)
-  //   };
-  // }
-
-  return vNode;
+  // 그 외의 경우 (일반 DOM 요소의 경우)
+  return {
+    ...vNode,
+    children: vNode.children
+      .map(normalizeVNode)
+      .filter((child) => child !== ""),
+  };
 }
