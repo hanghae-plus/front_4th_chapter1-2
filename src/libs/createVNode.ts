@@ -15,9 +15,7 @@ export function createVNode(
 ): VNode {
   return {
     type,
-    props: {
-      ...props,
-      children: children.flat(),
-    },
+    props: props || {},
+    children: children.flat(Infinity),
   };
 }
