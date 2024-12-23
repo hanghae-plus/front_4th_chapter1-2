@@ -9,13 +9,22 @@ import { VNode, VNodeProps } from "../types";
  */
 
 export function createVNode(
-  type: string,
+  type: string | Function,
   props: VNodeProps | null,
   ...children: any[]
 ): VNode {
+  const processChildren = (items: any[]): any[] => {
+    return items.flat(Infinity).filter((child) => {
+      if (child === null || child === undefined || child === false)
+        return false;
+      if (child === true) return false;
+      return true;
+    });
+  };
+
   return {
     type,
-    props: props || {},
-    children: children.flat(Infinity),
+    props,
+    children: processChildren(children),
   };
 }

@@ -3,7 +3,7 @@ export type VNodeProps = {
 };
 
 export type VNode = {
-  type: string;
-  props: VNodeProps;
+  type: string | Function;
+  props: VNodeProps | null;
   children: any[];
 };
