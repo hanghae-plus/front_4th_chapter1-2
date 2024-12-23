@@ -1,4 +1,4 @@
-// import { addEvent } from "./eventManager";
+import { addEvent } from "./eventManager";
 
 import { isString } from "../utils/isString";
 import { isValid } from "../utils/isValid";
@@ -18,16 +18,7 @@ export function createElement(vNode) {
   const $el = document.createElement(vNode.type);
 
   if (vNode.props && Object.keys(vNode.props).length > 0) {
-    Object.entries(vNode.props).forEach(([key, value]) => {
-      if (key === "className") {
-        $el.setAttribute("class", value);
-      } else if (key.startsWith("on")) {
-        const event = key.slice(2).toLowerCase();
-        $el.addEventListener(event, value);
-      } else {
-        $el.setAttribute(key, value);
-      }
-    });
+    updateAttributes($el, vNode.props);
   }
 
   if (vNode.children) {
@@ -40,7 +31,20 @@ export function createElement(vNode) {
   return $el;
 }
 
-// function updateAttributes($el, props) {}
+function updateAttributes($el, props) {
+  Object.entries(props).forEach(([key, value]) => {
+    if (key === "className") {
+      $el.setAttribute("class", value);
+      return;
+    }
+    if (key.startsWith("on")) {
+      const event = key.slice(2).toLowerCase();
+      addEvent($el, event, value);
+      return;
+    }
+    $el.setAttribute(key, value);
+  });
+}
 
 /**
  * 배열 형태의 vNode를 받을 경우 fragment로 감싸서 반환
