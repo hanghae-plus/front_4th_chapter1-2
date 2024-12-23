@@ -1,18 +1,25 @@
 import { createElement } from "./createElement";
 import { setupEventListeners } from "./eventManager";
 import { normalizeVNode } from "./normalizeVNode";
-// import { updateElement } from "./updateElement";
+import { updateElement } from "./updateElement";
+
+let globalVNode;
 
 export function renderElement(vNode, container) {
-  const el = createElement(normalizeVNode(vNode));
-  container.appendChild(el);
-
-  // 이후에는 updateElement로 기존 DOM을 업데이트한다.
-  // updateElement(container, normalizeVNode(vNode));
-  if (container.childNodes.length) {
-    container.replaceChild(el, container.childNodes[0]);
+  if (!container.hasChildNodes()) {
+    globalVNode = null;
   }
 
-  // 렌더링이 완료되면 container에 이벤트를 등록한다.
+  if (!globalVNode) {
+    const normalizedVNode = normalizeVNode(vNode);
+    const el = createElement(normalizedVNode);
+    container.appendChild(el);
+    globalVNode = normalizedVNode;
+  } else {
+    const newNodes = normalizeVNode(vNode);
+    updateElement(container, newNodes, globalVNode);
+    globalVNode = newNodes;
+  }
+
   setupEventListeners(container);
 }
