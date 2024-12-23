@@ -24,58 +24,6 @@ export function normalizeVNode(vNode) {
     return normalizeVNode(result);
   }
 
-  // 그 외의 경우, vNode의 자식 요소들을 재귀적으로 표준화하고, null, undefined 값을 필터링해 반환
-  // if (typeof vNode === "object" && vNode.type) {
-  //   const { type, props = {}, children = [] } = vNode;
-
-  //   // 자식 요소 표준화
-  //   const normalizedChildren = children.length
-  //     ? Array.isArray(children)
-  //       ? children.map(normalizeVNode)
-  //       : [normalizeVNode(children)]
-  //     : [];
-
-  //     console.log("Normalized Children:", normalizedChildren);
-
-  //     if (type === "ul") {
-  //       return {
-  //         type,
-  //         props: {
-  //           ...props,
-  //           className,
-  //           id,
-  //         },
-  //         children: normalizedChildren.length
-  //           ? normalizedChildren
-  //           : [
-  //               {
-  //                 type: "li",
-  //                 props: { className: "", id: "" },
-  //                 children: ["- ", props.children || ""],
-  //               },
-  //             ],
-  //       };
-  //     }
-  //     if (type === "li") {
-  //       return {
-  //         type,
-  //         props: {
-  //           className,
-  //           id,
-  //         },
-  //         children: ["- ", props.children || ""],
-  //       };
-  //     }
-
-  //   return {
-  //     type,
-  //     props,
-  //     children: normalizedChildren.filter(
-  //       (child) => child != null && child !== undefined && child !== ""
-  //     ),
-  //   };
-  // }
-
   if (vNode && typeof vNode === "object") {
     const { children, type, props } = vNode;
     const normalizedProps = { ...props };
