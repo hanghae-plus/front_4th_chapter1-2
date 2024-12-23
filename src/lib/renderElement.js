@@ -7,12 +7,19 @@ import { updateElement } from "./updateElement";
 // createElement로 노드를 만들고
 // container에 삽입하고
 // 이벤트를 등록합니다.
-// renderElement는 앞에서 작성된 함수들을 조합하여 vNode를 container에 렌더링하는 작업을 수행합니다.
+let prevVNode = null;
+
 export function renderElement(vNode, container) {
+  vNode = normalizeVNode(vNode);
+
   // 최초 렌더링시에는 createElement로 DOM을 생성하고
-  // 이후에는 updateElement로 기존 DOM을 업데이트한다.
+  if (prevVNode === null) {
+    container.append(createElement(vNode));
+  } else {
+    // 이후에는 updateElement로 기존 DOM을 업데이트한다.
+    updateElement(container, vNode, prevVNode);
+  }
   // 렌더링이 완료되면 container에 이벤트를 등록한다.
-  container.appendChild(createElement(normalizeVNode(vNode)));
   setupEventListeners(container);
-  updateElement();
+  prevVNode = vNode;
 }
