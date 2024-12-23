@@ -1,3 +1,6 @@
 export function createVNode(type, props, ...children) {
-  return {};
+  // TODO: 0을 제외한 Falsy 값은 필터링
+  const filteredChildren = children.filter(Boolean);
+
+  return { type, props, children: filteredChildren.flat() };
 }
