@@ -2,35 +2,43 @@ const eventsMap = new Map();
 let rootElement = null;
 
 export function addEvent(element, eventType, handler) {
-  if (!eventsMap.has(handler)) {
-    eventsMap.set(handler, { eventType, element });
+  if (!eventsMap.has(eventType)) {
+    eventsMap.set(eventType, new Map());
   }
+
+  const handlers = eventsMap.get(eventType);
+  handlers.set(element, handler);
 }
 
 export function removeEvent(element, eventType, handler) {
-  if (eventsMap.has(handler)) {
-    const { eventType: storedEventType, element: storedElement } =
-      eventsMap.get(handler);
+  if (eventsMap.has(eventType)) {
+    const handlers = eventsMap.get(eventType);
 
-    if (storedEventType === eventType && storedElement === element) {
-      if (rootElement) {
-        rootElement.removeEventListener(eventType, handler);
+    if (handlers.has(element)) {
+      const storedHandler = handlers.get(element);
+      if (handler === storedHandler) {
+        rootElement.removeEventListener(eventType, storedHandler);
+        handlers.delete(element);
       }
-      eventsMap.delete(handler);
     }
   }
 }
 
 export function setupEventListeners(root) {
-  if (rootElement) {
-    eventsMap.forEach(({ eventType }, handler) => {
-      rootElement.removeEventListener(eventType, handler);
-    });
-  }
-
   rootElement = root;
 
-  eventsMap.forEach(({ eventType }, handler) => {
-    rootElement.addEventListener(eventType, handler);
+  eventsMap.forEach((_, eventType) => {
+    rootElement.removeEventListener(eventType, eventHandler);
+    rootElement.addEventListener(eventType, eventHandler);
   });
+}
+
+function eventHandler(event) {
+  const type = event.type;
+  const handlers = eventsMap.get(type);
+
+  if (handlers.has(event.target)) {
+    const handler = handlers.get(event.target);
+    handler(event);
+  }
 }
