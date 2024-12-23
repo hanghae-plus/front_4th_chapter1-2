@@ -22,17 +22,18 @@ export function normalizeVNode(vNode) {
       // console.log("2. res는", res);
       return normalizeVNode(res);
     }
-    // console.log("3. createVnode 실행");
-    return createVNode(
-      vNode.type,
-      vNode.props,
-      ...vNode.children.map((child) => {
-        console.log("child는?", child);
-        if (child != "") {
-          return normalizeVNode(child);
-        }
-      }),
-    );
+    if (!Array.isArray(vNode)) {
+      return createVNode(
+        vNode.type,
+        vNode.props,
+        ...vNode.children.map((child) => {
+          // console.log("child는?", child);
+          if (child != "") {
+            return normalizeVNode(child);
+          }
+        }),
+      );
+    }
   }
   return vNode;
 }
