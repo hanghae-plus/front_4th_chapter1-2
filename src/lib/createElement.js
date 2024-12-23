@@ -1,8 +1,5 @@
 import { addEvent } from "./eventManager";
-import { isRenderedVNode, isTextVNode } from "./util";
-
-const isEvent = (key) => key.startsWith("on");
-const isClassName = (key) => key === "className";
+import { isClassName, isEvent, isRenderedVNode, isTextVNode } from "./util";
 
 export function createElement(vNode) {
   if (!isRenderedVNode(vNode)) {

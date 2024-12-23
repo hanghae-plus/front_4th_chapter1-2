@@ -3,3 +3,7 @@ export const isRenderedVNode = (vNode) =>
 
 export const isTextVNode = (vNode) =>
   typeof vNode === "string" || typeof vNode === "number";
+
+export const isEvent = (key) => key.startsWith("on");
+
+export const isClassName = (key) => key === "className";
