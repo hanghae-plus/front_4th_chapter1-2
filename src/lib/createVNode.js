@@ -1,5 +1,4 @@
-const isRenderedVNode = (vNode) =>
-  vNode !== null && vNode !== undefined && typeof vNode !== "boolean";
+import { isRenderedVNode } from "./util";
 
 export function createVNode(type, props, ...children) {
   return {
