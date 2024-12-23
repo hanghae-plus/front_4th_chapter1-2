@@ -1,5 +1,42 @@
-export function setupEventListeners(root) {}
+const eventManager = new Map();
 
-export function addEvent(element, eventType, handler) {}
+function eventHandler(event) {
+  const eventType = event.type;
+  const handlers = eventManager.get(eventType);
 
-export function removeEvent(element, eventType, handler) {}
+  if (handlers.has(event.target)) {
+    const handler = handlers.get(event.target);
+    handler(event);
+  }
+}
+
+export function cleanupEventManager(root) {
+  eventManager.forEach((_, eventType) => {
+    root?.removeEventListener(eventType, eventHandler);
+  });
+  eventManager.clear();
+}
+
+export function setupEventListeners(root) {
+  eventManager.forEach((_, eventType) => {
+    root?.addEventListener(eventType, eventHandler);
+  });
+}
+
+export function addEvent(element, eventType, handler) {
+  if (!eventManager.has(eventType)) {
+    eventManager.set(eventType, new WeakMap());
+  }
+
+  const handlerCache = eventManager.get(eventType);
+  handlerCache.set(element, handler);
+}
+
+export function removeEvent(element, eventType) {
+  if (!eventManager.has(eventType)) {
+    return;
+  }
+
+  const handlerCache = eventManager.get(eventType);
+  handlerCache.delete(element);
+}
