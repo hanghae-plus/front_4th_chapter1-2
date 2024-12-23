@@ -6,9 +6,8 @@ import { updateElement } from "./updateElement";
 let oldNode = {};
 
 export function renderElement(vNode, container) {
-  if (typeof vNode.type === "function") {
-    vNode = normalizeVNode(vNode);
-  }
+  vNode = normalizeVNode(vNode);
+
   if (!container.childNodes[0]) {
     oldNode = {};
   }

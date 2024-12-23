@@ -2,28 +2,32 @@ import { addEvent, removeEvent } from "./eventManager";
 import { createElement } from "./createElement.js";
 
 function updateAttributes(target, originNewProps, originOldProps) {
-  if (originNewProps === null) {
-    return;
-  }
-
-  Object.entries(originNewProps).forEach(([key, value]) => {
-    const oldPropsValue = originOldProps[key];
-    if (key === "className") {
-      if (value !== oldPropsValue) {
-        target.classList = value;
-      }
-      return;
-    }
-    if (key.startsWith("on")) {
-      const eventType = key.slice(2).toLowerCase();
-      if (oldPropsValue) {
+  if (originOldProps) {
+    Object.keys(originOldProps).forEach((key) => {
+      if (key.startsWith("on")) {
+        const eventType = key.slice(2).toLowerCase();
         removeEvent(target, eventType);
       }
-      addEvent(target, eventType, value);
-      return;
-    }
-    target.setAttribute(key, value);
-  });
+    });
+  }
+
+  if (originNewProps) {
+    Object.entries(originNewProps).forEach(([key, value]) => {
+      const oldPropsValue = originOldProps[key];
+      if (key === "className") {
+        if (value !== oldPropsValue) {
+          target.classList = value;
+        }
+        return;
+      }
+      if (key.startsWith("on")) {
+        const eventType = key.slice(2).toLowerCase();
+        addEvent(target, eventType, value);
+        return;
+      }
+      target.setAttribute(key, value);
+    });
+  }
 }
 
 export function updateElement(parentElement, newNode, oldNode, index = 0) {
