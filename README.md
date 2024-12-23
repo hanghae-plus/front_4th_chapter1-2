@@ -7,7 +7,7 @@
 - [x] createVNode 함수를 이용하여 vNode를 만든다.
 - [x] normalizeVNode 함수를 이용하여 vNode를 정규화한다.
 - [x] createElement 함수를 이용하여 vNode를 실제 DOM으로 만든다.
-- [ ] 결과적으로, JSX를 실제 DOM으로 변환할 수 있도록 만들었다.
+- [x] 결과적으로, JSX를 실제 DOM으로 변환할 수 있도록 만들었다.
 
 #### 이벤트 위임
 
