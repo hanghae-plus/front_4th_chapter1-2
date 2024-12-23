@@ -10,6 +10,7 @@ import { updateElement } from "./updateElement.js";
  * 3. 실제 DOM 요소 생성 (createElement)
  * 4. DOM 렌더링 (renderElement)
  */
+
 export function renderElement(vNode, container) {
   // 최초 렌더링시에는 createElement로 DOM을 생성하고
   // 이후에는 updateElement로 기존 DOM을 업데이트한다.
@@ -21,12 +22,12 @@ export function renderElement(vNode, container) {
   // 새로운 가상 DOM 정규화
   const normalizedVNode = normalizeVNode(vNode);
 
-  // 최초 렌더링
   if (!oldVNode) {
+    // 최초 렌더링
     container.appendChild(createElement(normalizedVNode));
     setupEventListeners(container);
   } else {
-    // 기존 내용 제거 후 새로 렌더링
+    // diff 기반 리렌더링
     updateElement(container, normalizedVNode, oldVNode, 0);
   }
 

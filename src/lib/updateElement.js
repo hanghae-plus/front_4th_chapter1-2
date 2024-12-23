@@ -86,6 +86,7 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
 
   const newChildren = newNode.children || [];
   const oldChildren = oldNode.children || [];
+
   const maxLength = Math.max(newChildren.length, oldChildren.length);
 
   for (let i = 0; i < maxLength; i++) {
