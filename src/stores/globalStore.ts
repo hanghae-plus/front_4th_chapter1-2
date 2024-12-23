@@ -1,11 +1,12 @@
 import { createStore } from "../lib";
 import { userStorage } from "../storages";
+import { GlobalStoreState } from "./type";
 
 const 초 = 1000;
 const 분 = 초 * 60;
 const 시간 = 분 * 60;
 
-export const globalStore = createStore(
+export const globalStore = createStore<GlobalStoreState>(
   {
     currentUser: userStorage.get(),
     loggedIn: Boolean(userStorage.get()),

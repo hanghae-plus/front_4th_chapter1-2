@@ -29,22 +29,31 @@ export function createElement(vNode: VNode | VNode[]) {
     $el = updateAttributes($el, vNode.props);
   }
 
-  if ("children" in vNode) {
-    (vNode as typeof vNode).children.forEach((child) => {
-      const childEl = createElement(child);
+  vNode.children?.forEach((child) => {
+    const childEl = createElement(child);
 
-      $el.appendChild(childEl);
-    });
-  }
+    $el.appendChild(childEl);
+  });
 
   return $el;
 }
 
 function updateAttributes($el: HTMLElement, props: VNodeProps): HTMLElement {
   if (!props) return $el;
+
   Object.keys(props).forEach((key: string) => {
-    $el.setAttribute(ATTR_NAME_MAP[key] ?? key, props[key]);
+    if (key.startsWith("on") && typeof props[key] === "function") {
+      const eventHandler = props[key];
+      const eventType = key.replace("on", "").toLowerCase();
+      addEvent($el, eventType, eventHandler);
+      // $el._vNode = eventHandler;
+      return;
+    }
+
+    $el.setAttribute(getAttributeKey(key), props[key]);
   });
 
   return $el;
 }
+
+const getAttributeKey = (key: string) => ATTR_NAME_MAP[key] ?? key;

@@ -2,6 +2,7 @@
 import { createVNode } from "../lib";
 import { globalStore } from "../stores";
 import { userStorage } from "../storages";
+import { router } from "../router";
 
 function login(username) {
   const user = { username, email: "", bio: "" };
@@ -15,7 +16,7 @@ function login(username) {
 export const LoginPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
-    const username = document.getElementById("username").value;
+    const username = document.getElementById("username")?.value;
     login(username);
   };
 
@@ -30,6 +31,9 @@ export const LoginPage = () => {
             type="text"
             id="username"
             placeholder="사용자 이름"
+            onClick={(e: MouseEvent) => {
+              e.preventDefault(e);
+            }}
             className="w-full p-2 mb-4 border rounded"
             required
           />
@@ -42,6 +46,10 @@ export const LoginPage = () => {
           <button
             type="submit"
             className="w-full bg-blue-600 text-white p-2 rounded"
+            onClick={(e: MouseEvent) => {
+              e.preventDefault();
+              router.get().push("/");
+            }}
           >
             로그인
           </button>

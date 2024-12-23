@@ -1,11 +1,16 @@
 import { createObserver } from "./createObserver.ts";
 
-export const createStore = (initialState, initialActions) => {
+type State = { [key: string]: any };
+
+export const createStore = <T extends State>(
+  initialState: T,
+  initialActions: { [key: string]: (prev: T) => T },
+) => {
   const { subscribe, notify } = createObserver();
 
-  let state = { ...initialState };
+  let state: T = { ...initialState };
 
-  const setState = (newState) => {
+  const setState = (newState: Partial<T>) => {
     state = { ...state, ...newState };
     notify();
   };
