@@ -5,7 +5,7 @@ import { checkNullishExceptZero } from "../utils/commonUtils";
 // 함수 => 함수 실행 결과로 변환
 
 // vNode : {type , props, children}
-export function normalizeVNode(vNode, depth = 0) {
+export function normalizeVNode(vNode) {
   if (typeof vNode === "boolean" || !checkNullishExceptZero(vNode)) {
     return "";
   }
@@ -17,18 +17,17 @@ export function normalizeVNode(vNode, depth = 0) {
   if (typeof vNode === "object") {
     if (typeof vNode.type === "function") {
       return normalizeVNode(
-        vNode.type({ props: vNode.props, children: vNode.children }),
-        depth + 1,
+        vNode.type({ ...vNode.props, children: vNode.children }),
       );
     }
 
     return {
       type: vNode.type,
-      props: vNode.props ? combineProps(vNode.props) : null,
+      props: vNode.props,
       children: vNode.children
         .map((child) => {
           // 자식 노드 정규화
-          return normalizeVNode(child, depth + 1);
+          return normalizeVNode(child);
         })
         .filter((child) => {
           // 0을 제외한 falsy 값 제거
@@ -37,19 +36,3 @@ export function normalizeVNode(vNode, depth = 0) {
     };
   }
 }
-
-// 최하단까지(type이 string) 내려가서 props를 합치는 함수
-// 이런식으로 하는게 아닌 것 같은데,, 뭔가 잘못된 것 같은데,,,
-const combineProps = (props) => {
-  const nestedProps = props?.props;
-  delete props.props;
-  let res = { ...props };
-  if (!nestedProps) {
-    return res;
-  }
-  Object.entries(nestedProps).forEach(([key, value]) => {
-    res[key] = `${res[key] ?? ""}${value ?? ""}`;
-    res[key] = res[key].trim();
-  });
-  return res;
-};
