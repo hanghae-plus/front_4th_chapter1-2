@@ -1,4 +1,4 @@
-import { VNode, VNodeProps } from "../types";
+import { DOMEventType, VNode, VNodeProps } from "../types";
 import { addEvent } from "./eventManager";
 
 /**
@@ -58,7 +58,7 @@ function updateAttributes(element: HTMLElement, props: VNodeProps | null) {
     }
 
     if (key.startsWith("on")) {
-      const eventType = key.substring(2).toLowerCase();
+      const eventType = key.substring(2).toLowerCase() as DOMEventType;
       addEvent(element, eventType, value);
       return;
     }

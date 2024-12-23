@@ -1,6 +1,7 @@
-export type VNodeProps = {
+export interface VNodeProps {
+  children?: (VNode | string)[];
   [key: string]: any;
-};
+}
 
 export type VNode = {
   type: string | Function;

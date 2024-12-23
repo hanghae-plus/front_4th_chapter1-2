@@ -1,6 +1,6 @@
 import { addEvent, removeEvent } from "./eventManager";
 import { createElement } from "./createElement.js";
-import { VNode, VNodeProps } from "../types";
+import { DOMEventType, VNode, VNodeProps } from "../types";
 
 /**
  * DOM Element의 속성을 비교하여 업데이트하는 함수
@@ -17,7 +17,7 @@ function updateAttributes(
     if (prop === "children") return;
 
     if (prop.startsWith("on")) {
-      const eventType = prop.substring(2).toLowerCase();
+      const eventType = prop.substring(2).toLowerCase() as DOMEventType;
       removeEvent(target, eventType, oldProps[prop]);
     } else if (!(prop in newProps)) {
       target.removeAttribute(prop);
@@ -28,7 +28,7 @@ function updateAttributes(
     if (prop === "children") return;
 
     if (prop.startsWith("on")) {
-      const eventType = prop.substring(2).toLowerCase();
+      const eventType = prop.substring(2).toLowerCase() as DOMEventType;
       addEvent(target, eventType, newProps[prop]);
     } else if (oldProps[prop] !== newProps[prop]) {
       if (newProps[prop]) {
@@ -100,20 +100,20 @@ export function updateElement(
     if (newNode.type === oldNode.type) {
       updateAttributes(
         parentElement.childNodes[index] as HTMLElement,
-        newNode.props,
-        oldNode.props,
+        newNode.props || {},
+        oldNode.props || {},
       );
 
-      const newLength = newNode.props.children?.length || 0;
-      const oldLength = oldNode.props.children?.length || 0;
+      const newLength = newNode.props?.children?.length || 0;
+      const oldLength = oldNode.props?.children?.length || 0;
       const maxLength = Math.max(newLength, oldLength);
 
       for (let i = 0; i < maxLength; i++) {
         // 재귀적으로 업데이트
         updateElement(
           parentElement.childNodes[index] as HTMLElement,
-          newNode.props.children?.[i] || null,
-          oldNode.props.children?.[i] || null,
+          newNode.props?.children?.[i] || null,
+          oldNode.props?.children?.[i] || null,
           i,
         );
       }
