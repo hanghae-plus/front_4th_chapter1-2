@@ -37,9 +37,10 @@ export function normalizeVNode(vNode) {
       if (typeof child === "string" && child.trim() === "") return false;
       return true;
     });
+
   return {
     type: vNode.type,
-    props: vNode.props || {},
+    props: vNode.props,
     children: normalizedChildren,
   };
 }

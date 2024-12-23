@@ -507,6 +507,7 @@ describe("Chapter1-2 > 기본과제 > 가상돔 만들기 > ", () => {
         </li>
       );
 
+      // Q. mock 함수 A. 이벤트 핸들러를 모킹, 모킹: 함수를 가짜로 만들어 테스트 환경에서 사용하는 것
       const clickHandler = vi.fn();
       const mouseOverHandler = vi.fn();
       const focusHandler = vi.fn();
@@ -568,7 +569,7 @@ describe("Chapter1-2 > 기본과제 > 가상돔 만들기 > ", () => {
       const button = $container.querySelector("button");
       button.click();
 
-      expect(clickHandler).toHaveBeenCalledTimes(1);
+      expect(clickHandler).toHaveBeenCalledTimes(1); // toHaveBeenCalledTimes:
     });
 
     it("동적으로 추가된 요소에도 이벤트가 정상적으로 작동해야 한다", () => {
@@ -589,6 +590,7 @@ describe("Chapter1-2 > 기본과제 > 가상돔 만들기 > ", () => {
       renderElement(updatedVNode, $container);
 
       const newButton = $container.querySelectorAll("button")[1];
+
       newButton.click();
 
       expect(clickHandler).toHaveBeenCalledTimes(1);
