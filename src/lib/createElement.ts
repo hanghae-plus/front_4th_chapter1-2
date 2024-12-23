@@ -1,6 +1,8 @@
 import { ValidVNode } from "@/types/VNode";
 import { isValidVNodeType } from "@/utils/jsxUtils";
 import { isTypeIn } from "@/utils/typeCheckUtils";
+import { addEvent } from "@/lib/eventManager";
+import { HTMLEventName } from "@/types/event";
 
 export function createElement(vNode: ValidVNode) {
   if (!isValidVNodeType(vNode)) return document.createTextNode("");
@@ -24,12 +26,24 @@ export function createElement(vNode: ValidVNode) {
   Object.entries(vNode.props ?? {}).map(([key, value]) => {
     if (key === "children") return;
 
-    if (key === "className") key = "class";
+    if (key === "className") {
+      $root.className = value;
+      return;
+    }
 
-    // TODO: react 의 이벤트 핸들러 key 값을 html 키 값으로 변경한다.
-    if (key.startsWith("on")) key = key.toLowerCase();
+    if (key.startsWith("data-")) {
+      const dataKey = key.slice(5);
+      $root.dataset[dataKey] = value;
+      return;
+    }
 
-    $root.setAttribute(key, value);
+    if (key.startsWith("on")) {
+      const eventName = key.slice(2).toLowerCase();
+      addEvent($root, eventName as HTMLEventName, value as () => void);
+      return;
+    }
+
+    $root[key] = value;
   });
 
   vNode.children.forEach((child) => {
