@@ -1,7 +1,7 @@
 /** @jsx createVNode */
 import { createVNode } from "../lib";
-import { globalStore } from "../stores";
 import { userStorage } from "../storages";
+import { globalStore } from "../stores";
 
 function login(username) {
   const user = { username, email: "", bio: "" };
