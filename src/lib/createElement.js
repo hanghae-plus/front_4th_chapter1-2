@@ -17,6 +17,23 @@ export function createElement(vNode) {
 
   const $el = document.createElement(vNode.type);
 
+  if (vNode.props && Object.keys(vNode.props).length > 0) {
+    Object.entries(vNode.props).forEach(([key, value]) => {
+      if (key === "className") {
+        $el.setAttribute("class", value);
+      } else {
+        $el.setAttribute(key, value);
+      }
+    });
+  }
+
+  if (vNode.children) {
+    vNode.children.forEach((child) => {
+      const $child = createElement(child);
+      $el.appendChild($child);
+    });
+  }
+
   return $el;
 }
 
