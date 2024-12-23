@@ -10,15 +10,9 @@ function eventHandler(event) {
   }
 }
 
-export function cleanupEventManager(root) {
-  eventManager.forEach((_, eventType) => {
-    root?.removeEventListener(eventType, eventHandler);
-  });
-  eventManager.clear();
-}
-
 export function setupEventListeners(root) {
   eventManager.forEach((_, eventType) => {
+    root?.removeEventListener(eventType, eventHandler);
     root?.addEventListener(eventType, eventHandler);
   });
 }
