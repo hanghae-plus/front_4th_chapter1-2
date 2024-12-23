@@ -6,8 +6,6 @@
 // 4. 그 외의 경우, vNode의 자식 요소들을 재귀적으로 표준화하고, null 또는 undefined 값을 필터링하여 반환합니다.
 
 export function normalizeVNode(vNode) {
-  console.log(vNode);
-
   // null, undefined, boolean 처리
   if (vNode === null || vNode === undefined || typeof vNode === "boolean") {
     return "";
