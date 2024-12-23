@@ -1,4 +1,4 @@
-// import { addEvent } from "./eventManager";
+import { addEvent } from "./eventManager";
 
 export function createElement(vNode) {
   if (vNode === null || vNode === undefined || typeof vNode === "boolean") {
@@ -16,16 +16,7 @@ export function createElement(vNode) {
   const $el = document.createElement(vNode.type);
 
   if (vNode.props) {
-    for (const [key, value] of Object.entries(vNode.props)) {
-      console.log(key, value);
-      if (key.startsWith("on")) {
-        $el.addEventListener(key.slice(2).toLowerCase(), value);
-      } else if (key === "className") {
-        $el.className = value;
-      } else {
-        $el.setAttribute(key, value);
-      }
-    }
+    updateAttributes($el, vNode.props);
   }
 
   if (vNode.children) {
@@ -35,4 +26,14 @@ export function createElement(vNode) {
   return $el;
 }
 
-// function updateAttributes($el, props) {}
+function updateAttributes($el, props) {
+  for (const [key, value] of Object.entries(props)) {
+    if (key.startsWith("on")) {
+      addEvent($el, key.slice(2).toLowerCase(), value);
+    } else if (key === "className") {
+      $el.className = value;
+    } else {
+      $el.setAttribute(key, value);
+    }
+  }
+}
