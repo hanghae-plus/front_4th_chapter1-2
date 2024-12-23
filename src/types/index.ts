@@ -1,6 +1,6 @@
 export type VNodeProps = {
   [key: string]: any;
-  children?: VNode[];
+  children?: (VNode | string)[];
 };
 
 export type VNode = {

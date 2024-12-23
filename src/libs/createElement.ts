@@ -17,7 +17,11 @@ export function createElement(vNode: VNode) {
   updateAttributes(element, vNode.props);
 
   vNode.props.children?.forEach((child) => {
-    element.appendChild(createElement(child));
+    if (typeof child === "string") {
+      element.appendChild(document.createTextNode(child));
+    } else {
+      element.appendChild(createElement(child));
+    }
   });
 
   return element;
