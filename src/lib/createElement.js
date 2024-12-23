@@ -52,7 +52,7 @@ function updateAttributes($el, props) {
     if (key.startsWith("on")) {
       // 이벤트 리스너 처리 (ex: onClick ...)
       const eventType = key.slice(2).toLowerCase();
-      addEvent(eventType, $el, props[key]);
+      addEvent($el, eventType, props[key]);
     } else if (key === "className") {
       // className 처리
       $el.setAttribute("class", props[key]);
