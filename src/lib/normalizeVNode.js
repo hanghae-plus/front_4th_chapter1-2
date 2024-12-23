@@ -1,7 +1,4 @@
-import { isRenderedVNode } from "./util";
-
-const isTextVNode = (vNode) =>
-  typeof vNode === "string" || typeof vNode === "number";
+import { isRenderedVNode, isTextVNode } from "./util";
 
 export function normalizeVNode(vNode) {
   if (!isRenderedVNode(vNode)) {
