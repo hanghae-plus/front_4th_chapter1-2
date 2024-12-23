@@ -7,3 +7,5 @@ export type VNode = {
   props: VNodeProps | null;
   children: any[];
 };
+
+export type VNodeChild = string | number | boolean | null | undefined | VNode;
