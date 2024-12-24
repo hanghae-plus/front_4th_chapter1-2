@@ -1,8 +1,8 @@
 /** @jsx createVNode */
-import { createVNode } from "../../lib";
-import { toTimeFormat } from "../../utils/index.js";
-import { globalStore } from "../../stores/index.js";
-import { userStorage } from "../../storages/index.js";
+import { createVNode } from "@lib";
+import { toTimeFormat } from "@utils";
+import { globalStore } from "@stores";
+import { userStorage } from "@storages";
 
 export const Post = ({
   id,

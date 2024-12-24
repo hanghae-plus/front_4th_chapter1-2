@@ -1,9 +1,9 @@
 /** @jsx createVNode */
-import { createVNode } from "../lib";
+import { createVNode } from "@lib";
 
-import { Footer, Header, Navigation, Post, PostForm } from "../components";
-import { globalStore } from "../stores";
-import { userStorage } from "../storages/index.js";
+import { Footer, Header, Navigation, Post, PostForm } from "@components";
+import { globalStore } from "@stores";
+import { userStorage } from "@storages";
 
 /**
  * 심화과제
