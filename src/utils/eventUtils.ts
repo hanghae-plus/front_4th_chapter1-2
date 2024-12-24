@@ -1,4 +1,15 @@
-const eventHandlers = {};
+const eventHandlers = {
+  click: {},
+  keydown: {},
+  keyup: {},
+  keypress: {},
+  input: {},
+  change: {},
+  focus: {},
+  blur: {},
+  submit: {},
+  mouseenter: {},
+};
 
 const handleGlobalEvents = (e) => {
   const handlers = eventHandlers[e.type];
