@@ -1,5 +1,5 @@
 export function setupEventListeners(root) {
-  console.log(`start event / my root: ${root}`);
+  console.log(`start event / my root: `, root);
 }
 
 export function addEvent(element, eventType, handler) {

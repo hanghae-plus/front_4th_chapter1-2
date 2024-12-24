@@ -17,8 +17,7 @@ export function normalizeVNode(vNode) {
         child !== undefined &&
         child !== null &&
         child !== false &&
-        child !== true &&
-        child !== "",
+        child !== true,
     )
     .map(normalizeVNode);
 

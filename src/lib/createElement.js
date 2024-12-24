@@ -1,4 +1,5 @@
-import { addEvent } from "./eventManager";
+// import { addEvent } from "./eventManager";
+import { addEventUtil } from "../utils/eventUtils";
 
 export function createElement(vNode) {
   // 예외처리 로직
@@ -23,14 +24,14 @@ export function createElement(vNode) {
 
   Object.entries(props || {}).forEach(([k, v]) => {
     k.startsWith("on")
-      ? addEvent($el, k, v)
+      ? addEventUtil($el, k, v)
       : k === "className" // setAttribute : 속성을 설정하는 메서드, k : 속성 이름, v : 속성 값
         ? $el.setAttribute("class", v)
         : $el.setAttribute(k, v); // 일반 속성 처리
   });
 
   // children 처리
-  if (Array.isArray(children) && children.length > 0) {
+  if (Array.isArray(children)) {
     children
       .filter(
         (child) =>
