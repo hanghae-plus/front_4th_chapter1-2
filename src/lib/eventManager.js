@@ -26,13 +26,13 @@ function handleEvent(e) {
   // 이벤트 타겟 식별:
   //   - `event.target`을 사용하여 실제 이벤트가 발생한 요소를 식별
   //   - 조건문을 통해 특정 요소나 클래스에 대해서만 이벤트 처리 가능
-  let target = e.target;
+  let target = e.target; // element
 
   while (target && target !== rootElement) {
     const handlers = eventMap.get(e.type).get(target);
 
     if (handlers) {
-      handlers.forEach((handler) => handler());
+      handlers.forEach((handler) => handler(e));
     }
 
     target = target.parentNode; // 버블링?
@@ -63,8 +63,7 @@ export function removeEvent(element, eventType, handler) {
 
   if (handlerSet) {
     handlerSet.delete(handler);
-  } else {
-    eventTypeMap.delete(element);
+    if (handlerSet.size === 0) eventTypeMap.delete(element);
   }
 
   // 해당 이벤트 타입의 모든 핸들러가 제거되면 루트 요소의 리스너도 제거
