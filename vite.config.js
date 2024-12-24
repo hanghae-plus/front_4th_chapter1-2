@@ -3,6 +3,9 @@ import { defineConfig } from "vite";
 
 export default mergeConfig(
   defineConfig({
+    server: {
+      port: 3000,
+    },
     esbuild: {
       jsxFactory: "createVNode",
     },
