@@ -1,24 +1,36 @@
 import { DOMEventType, eventTypes } from "../types";
 
-const eventMap = new WeakMap<HTMLElement, Map<string, Set<Function>>>();
+type EventHandlerMap = Map<string, Set<Function>>;
+const eventMap = new WeakMap<HTMLElement, EventHandlerMap>();
 
 export function setupEventListeners(container: HTMLElement) {
+  if (container.getAttribute("data-event-listeners") === "true") {
+    return;
+  }
+
   eventTypes.forEach((eventType) => {
     container.addEventListener(eventType, (e: Event) => {
       let target = e.target as HTMLElement;
-
       while (target && target !== container) {
         const elementEvents = eventMap.get(target);
         if (elementEvents) {
           const handlers = elementEvents.get(eventType);
           if (handlers) {
-            handlers.forEach((handler) => handler(e));
+            const handlerArray = Array.from(handlers);
+            for (const handler of handlerArray) {
+              if (typeof handler === "function") {
+                handler(e);
+                return;
+              }
+            }
           }
         }
         target = target.parentElement!;
       }
     });
   });
+
+  container.setAttribute("data-event-listeners", "true");
 }
 
 export function addEvent(
