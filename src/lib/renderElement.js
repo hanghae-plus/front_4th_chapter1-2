@@ -5,10 +5,14 @@ import { updateElement } from "./updateElement";
 
 let globalVNode;
 
-export function renderElement(vNode, container) {
+function initGlobalVNode(container) {
   if (!container.hasChildNodes()) {
     globalVNode = null;
   }
+}
+
+export function renderElement(vNode, container) {
+  initGlobalVNode(container);
 
   if (!globalVNode) {
     const normalizedVNode = normalizeVNode(vNode);
