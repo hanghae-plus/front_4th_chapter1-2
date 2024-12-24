@@ -47,36 +47,38 @@ function updateAttributes(
  */
 export function updateElement(
   parentElement: HTMLElement,
-  newNode: VNode | string | null,
-  oldNode: VNode | string | null,
+  newNode: VNodeChild,
+  oldNode: VNodeChild,
   index: number = 0,
 ) {
-  if (!newNode && !oldNode) {
-    return;
-  }
-
-  if (!newNode) {
-    parentElement.removeChild(parentElement.childNodes[index]);
-    return;
-  }
-
-  if (!oldNode) {
-    if (typeof newNode === "string") {
-      parentElement.appendChild(document.createTextNode(newNode));
-    } else if (newNode) {
-      parentElement.appendChild(createElement(newNode));
+  if (!newNode || typeof newNode === "boolean") {
+    if (oldNode != null) {
+      parentElement.removeChild(parentElement.childNodes[index]);
     }
     return;
   }
 
-  // 둘 다 문자열인 경우
-  if (typeof newNode === "string" && typeof oldNode === "string") {
-    if (newNode !== oldNode) {
-      parentElement.replaceChild(
-        document.createTextNode(newNode),
-        parentElement.childNodes[index],
-      );
+  if (!oldNode || typeof oldNode === "boolean") {
+    const newElement =
+      typeof newNode === "object"
+        ? createElement(newNode)
+        : document.createTextNode(String(newNode));
+    parentElement.appendChild(newElement);
+    return;
+  }
+
+  // 원시 타입(string, number) 노드 처리
+  if (typeof newNode !== "object") {
+    const newValue = String(newNode);
+    // 실질적으로 값이 바뀌지 않은 경우
+    if (typeof oldNode !== "object" && String(oldNode) === newValue) {
+      return;
     }
+    parentElement.replaceChild(
+      document.createTextNode(newValue),
+      parentElement.childNodes[index],
+    );
+    return;
   }
 
   // 둘 중 하나는 VNode, 하나는 문자열인 경우
@@ -95,34 +97,34 @@ export function updateElement(
     return;
   }
 
+  // 기존 노드가 원시 타입이면 교체
+  if (typeof oldNode !== "object") {
+    parentElement.replaceChild(
+      createElement(newNode),
+      parentElement.childNodes[index],
+    );
+    return;
+  }
+
   // VNode인 경우 - 타입이 같은 경우
-  if (typeof newNode !== "string" && typeof oldNode !== "string") {
-    if (newNode.type === oldNode.type) {
-      updateAttributes(
-        parentElement.childNodes[index] as HTMLElement,
-        newNode.props || {},
-        oldNode.props || {},
-      );
+  if (newNode.type !== oldNode.type) {
+    parentElement.replaceChild(
+      createElement(newNode),
+      parentElement.childNodes[index],
+    );
+    return;
+  }
 
-      const newLength = newNode.props?.children?.length || 0;
-      const oldLength = oldNode.props?.children?.length || 0;
-      const maxLength = Math.max(newLength, oldLength);
+  // 속성과 자식 노드 업데이트
+  const element = parentElement.childNodes[index] as HTMLElement;
+  updateAttributes(element, newNode.props || {}, oldNode.props || {});
 
-      for (let i = 0; i < maxLength; i++) {
-        // 재귀적으로 업데이트
-        updateElement(
-          parentElement.childNodes[index] as HTMLElement,
-          newNode.props?.children?.[i] || null,
-          oldNode.props?.children?.[i] || null,
-          i,
-        );
-      }
-    } else {
-      // VNode인 경우 - 타입이 다른 경우
-      parentElement.replaceChild(
-        createElement(newNode),
-        parentElement.childNodes[index],
-      );
-    }
+  // 자식 노드 재귀 업데이트
+  const newChildren = [...(newNode.props?.children || []), ...newNode.children];
+  const oldChildren = [...(oldNode.props?.children || []), ...oldNode.children];
+
+  const maxLength = Math.max(newChildren.length, oldChildren.length);
+  for (let i = 0; i < maxLength; i++) {
+    updateElement(element, newChildren[i], oldChildren[i], i);
   }
 }
