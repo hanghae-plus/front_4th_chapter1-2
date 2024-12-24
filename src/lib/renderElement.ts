@@ -3,12 +3,26 @@ import { createElement } from "./createElement";
 import { normalizeVNode } from "./normalizeVNode";
 import { updateElement } from "./updateElement";
 
-export function renderElement(vNode, container) {
-  // 최초 렌더링시에는 createElement로 DOM을 생성하고
-  // 이후에는 updateElement로 기존 DOM을 업데이트한다.
-  // 렌더링이 완료되면 container에 이벤트를 등록한다.
+interface VNode {
+  type: string | Function;
+  props: Record<string, any>;
+  children?: Array<VNode | string | number>;
+}
 
-  container.appendChild(createElement(normalizeVNode(vNode)));
+export function renderElement(vNode: VNode, container: HTMLElement): void {
+  const normalizedNode = normalizeVNode(vNode);
+
+  // container의 첫 번째 자식이 있다면 업데이트, 없다면 새로 생성
+  const oldNode = container.firstChild;
+
+  if (oldNode) {
+    // 기존 DOM이 있으면 업데이트
+    const updatedElement = updateElement(container, normalizedNode, oldNode);
+    container.replaceChild(updatedElement, oldNode);
+  } else {
+    // 기존 DOM이 없으면 새로 생성
+    container.appendChild(createElement(normalizedNode));
+  }
 
   setupEventListeners(container);
 }
