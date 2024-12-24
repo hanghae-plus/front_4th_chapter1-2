@@ -10,38 +10,42 @@ export function normalizeVNode(vNode) {
   }
 
   // vNode의 타입이 함수일 경우 해당 함수를 호출하여 반환된 결과를 재귀적으로 표준화
-  if (typeof vNode === "object" && typeof vNode.type === "function") {
-    const result = vNode.type(vNode.props || {});
+  // if (typeof vNode === "object" && typeof vNode.type === "function") {
+  //   const result = vNode.type(vNode.props || {});
 
-    if (result && result.children) {
-      const normalizedChild = result.children.map(normalizeVNode)
-        ? result.children.map(normalizeVNode)
-        : [normalizeVNode(result.children)];
+  //   if (result && result.children) {
+  //     const normalizedChild = result.children.map(normalizeVNode)
+  //       ? result.children.map(normalizeVNode)
+  //       : [normalizeVNode(result.children)];
 
-      result.children = normalizedChild;
-    }
+  //     result.children = normalizedChild;
+  //   }
 
-    return normalizeVNode(result);
+  //   return normalizeVNode(result);
+  // }
+  if (typeof vNode.type === "function") {
+    const { type, props, children } = vNode;
+    vNode = normalizeVNode(type({ ...props, children }));
   }
 
-  if (vNode && typeof vNode === "object") {
-    const { children, type, props } = vNode;
-    const normalizedProps = { ...props };
+  // if (vNode && typeof vNode === "object") {
+  //   const { children, type, props } = vNode;
 
-    let normalizedchildren = [];
-    if (Array.isArray(children)) {
-      normalizedchildren = children
-        .map((child) => normalizeVNode(child))
-        .filter(
-          (child) => child !== "" && child !== null && child !== undefined,
-        );
-    } else {
-      normalizedchildren = [normalizedchildren[children]];
-    }
+  //   const normalizedChildren = Array.isArray(children)
+  //   ? children.filter(
+  //       (child) =>
+  //         child !== null && child !== undefined && child !== false && child !== true
+  //     )
+  //   : children;
 
-    console.log("Returning normalized vNode:", vNode);
-    return { type, props: normalizedProps, children: normalizedchildren };
-  }
+  //   // props = null -> return
+  //   const normalizedProps = props === null ? null : { ...props };
+  //   return { type, props: normalizedProps, children: normalizedChildren };
+  // }
+
+  vNode.children = [...vNode.children]
+    .map(normalizeVNode)
+    .filter((child) => !!child);
 
   return vNode;
 }
