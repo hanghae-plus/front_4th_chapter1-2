@@ -4,28 +4,33 @@ export function addEvent(element, eventType, handler) {
   if (!eventRegistry.has(element)) {
     eventRegistry.set(element, new Map());
   }
+
   const events = eventRegistry.get(element);
   if (!events.has(eventType)) {
     events.set(eventType, new Set());
   }
+
   events.get(eventType).add(handler);
 }
 
 export function removeEvent(element, eventType, handler) {
   if (eventRegistry.has(element)) {
     const events = eventRegistry.get(element);
+
     if (events.has(eventType)) {
       events.get(eventType).delete(handler);
       if (events.get(eventType).size === 0) {
         events.delete(eventType);
       }
     }
+
     if (events.size === 0) {
       eventRegistry.delete(element);
     }
   }
 }
 
+// setupEventListeners를 이용해서 이벤트 함수를 가져와서 한 번에 root에 이벤트를 등록
 export function setupEventListeners(root) {
   // 이벤트 위임을 위한 핸들러 맵
   const delegatedEvents = new Map();
@@ -50,7 +55,6 @@ export function setupEventListeners(root) {
           }
         };
 
-        // 루트 요소에 이벤트 위임 핸들러 등록
         root.addEventListener(eventType, delegatedHandler);
         delegatedEvents.set(eventType, delegatedHandler);
       }

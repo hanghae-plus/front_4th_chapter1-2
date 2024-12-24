@@ -1,27 +1,26 @@
-export function createVNode(type, props, ...children) {
-  const flatChildren = children.flat(Infinity);
+import { isFalsyTypeWithoutZero } from "../utils/validateType";
 
-  const processedChildren = flatChildren
+export function createVNode(type, props, ...children) {
+  // children은 평탄화(flat)되어야 하며, 0을 제외한 falsy 값은 필터링
+  const flatChildren = children
+    .flat(Infinity)
     .map((child) => {
-      if (child === null || child === undefined || child === false) {
+      if (isFalsyTypeWithoutZero(child)) {
         return null;
       }
 
-      if (typeof child === "object" && child.type) {
-        const childChildren = Array.isArray(child.children)
-          ? child.children
-          : [];
-
-        return createVNode(child.type, child.props || null, ...childChildren);
+      if (typeof child === "object") {
+        const { type, props, children } = child;
+        return createVNode(type, props, ...children);
       }
 
       return child;
     })
-    .filter((child) => child != null);
+    .filter((child) => child !== null);
 
   return {
     type,
-    props: props || null,
-    children: processedChildren,
+    props,
+    children: flatChildren,
   };
 }
