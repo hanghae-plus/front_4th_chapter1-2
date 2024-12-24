@@ -1,9 +1,8 @@
+import { addEvent } from "./eventManager";
 import { normalizeVNode } from "./normalizeVNode";
 
 export function createElement(vNode) {
   const normalVNode = normalizeVNode(vNode);
-  //   console.log("vNode", vNode);
-  //   console.log("normalVNode", normalVNode);
 
   if (typeof normalVNode == "object") {
     if (typeof vNode.type == "function") {
@@ -36,7 +35,10 @@ export function createElement(vNode) {
 
 function updateAttributes($el, props) {
   Object.keys(props).forEach((key) => {
-    if (key == "className") {
+    if (key.startsWith("on") && typeof props[key]) {
+      const eventType = key.toLowerCase().substring(2);
+      addEvent($el, eventType, props[key]);
+    } else if (key == "className") {
       $el.setAttribute("class", props["className"]);
     } else {
       $el.setAttribute(key, props[key]);
