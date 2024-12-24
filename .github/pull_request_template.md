@@ -5,8 +5,8 @@
 #### 가상돔을 기반으로 렌더링하기
 
 - [x] createVNode 함수를 이용하여 vNode를 만든다.
-- [ ] normalizeVNode 함수를 이용하여 vNode를 정규화한다.
-- [ ] createElement 함수를 이용하여 vNode를 실제 DOM으로 만든다.
+- [x] normalizeVNode 함수를 이용하여 vNode를 정규화한다.
+- [x] createElement 함수를 이용하여 vNode를 실제 DOM으로 만든다.
 - [ ] 결과적으로, JSX를 실제 DOM으로 변환할 수 있도록 만들었다.
 
 #### 이벤트 위임
@@ -38,6 +38,9 @@
 <!-- 과제에 대한 회고를 작성해주세요 -->
 
 ### 기술적 성장
+
+- 새로 학습한 개념
+  1. 재귀함수의 사용방법을 알게되었다.
 
 <!-- 예시
 - 새로 학습한 개념
