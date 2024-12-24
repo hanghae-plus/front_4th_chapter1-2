@@ -1,7 +1,9 @@
 import { HTMLEventName } from "@/types/event";
 import { htmlEventNames } from "@/constants/htmlEventsName";
 
-let listeners = {};
+let listeners: Partial<
+  Record<HTMLEventName, WeakMap<HTMLElement, (e: Event) => void>>
+> = {};
 
 export function setupEventListeners($root: HTMLElement) {
   htmlEventNames.forEach((eventType) => {
@@ -22,7 +24,7 @@ export function addEvent(
 }
 
 export function removeEvent(element: HTMLElement, eventType: HTMLEventName) {
-  listeners[eventType].delete(element);
+  listeners[eventType]?.delete(element);
 }
 
 function registerGlobalEvent($root: HTMLElement) {

@@ -1,8 +1,8 @@
 import { isValidVNodeType } from "@/utils/jsxUtils";
 import { isTypeIn } from "@/utils/typeCheckUtils";
-import { ValidVNode } from "@/types/VNode";
+import { NormalizedVNode, VNode } from "@/types/VNode";
 
-export function normalizeVNode(vNode: ValidVNode) {
+export function normalizeVNode(vNode: VNode): NormalizedVNode | string {
   if (!isValidVNodeType(vNode)) return "";
 
   if (isTypeIn(vNode, ["string", "number"])) {
@@ -20,5 +20,5 @@ export function normalizeVNode(vNode: ValidVNode) {
     children: Array.isArray(vNode.children)
       ? vNode.children.map(normalizeVNode)
       : [],
-  };
+  } as NormalizedVNode;
 }

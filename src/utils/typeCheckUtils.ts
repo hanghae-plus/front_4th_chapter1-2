@@ -8,6 +8,9 @@ type Types =
   | "object"
   | "function";
 
-export function isTypeIn(target: unknown, types: Types[]) {
+export function isTypeIn(
+  target: unknown,
+  types: Types[],
+): target is Types[number] {
   return types.includes(typeof target);
 }

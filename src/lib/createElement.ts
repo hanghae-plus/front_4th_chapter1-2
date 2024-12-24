@@ -1,10 +1,9 @@
-import { ValidVNode } from "@/types/VNode";
+import { NormalizedVNode } from "@/types/VNode";
 import { isValidVNodeType } from "@/utils/jsxUtils";
 import { isTypeIn } from "@/utils/typeCheckUtils";
-import { addEvent } from "@/lib/eventManager";
-import { HTMLEventName } from "@/types/event";
+import { updateAttributes } from "@/utils/domUtils";
 
-export function createElement(vNode: ValidVNode) {
+export function createElement(vNode: NormalizedVNode | string) {
   if (!isValidVNodeType(vNode)) return document.createTextNode("");
 
   if (isTypeIn(vNode, ["string", "number"]))
@@ -23,28 +22,7 @@ export function createElement(vNode: ValidVNode) {
 
   const $root = document.createElement(vNode.type);
 
-  Object.entries(vNode.props ?? {}).map(([key, value]) => {
-    if (key === "children") return;
-
-    if (key === "className") {
-      $root.className = value;
-      return;
-    }
-
-    if (key.startsWith("data-")) {
-      const dataKey = key.slice(5);
-      $root.dataset[dataKey] = value;
-      return;
-    }
-
-    if (key.startsWith("on")) {
-      const eventName = key.slice(2).toLowerCase();
-      addEvent($root, eventName as HTMLEventName, value as () => void);
-      return;
-    }
-
-    $root.setAttribute(key, value);
-  });
+  updateAttributes($root, vNode.props);
 
   vNode.children.forEach((child) => {
     const $child = createElement(child);
@@ -53,5 +31,3 @@ export function createElement(vNode: ValidVNode) {
 
   return $root;
 }
-
-function updateAttributes($el, props) {}
