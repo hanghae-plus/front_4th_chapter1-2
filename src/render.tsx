@@ -10,7 +10,7 @@ export function render() {
   const $root = document.querySelector("#root");
 
   try {
-    renderElement(<Page />, $root);
+    renderElement(<Page />, $root as HTMLElement);
   } catch (error) {
     if (error instanceof ForbiddenError) {
       router.get().push("/");

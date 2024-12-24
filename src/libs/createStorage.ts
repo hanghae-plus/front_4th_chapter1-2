@@ -6,11 +6,14 @@ type Storage<T> = {
 
 export const createStorage = <T>(
   key: string,
+  defaultValue: T,
   storage = window.localStorage,
 ): Storage<T> => {
   const get = (): T => {
-    return JSON.parse(storage.getItem(key) ?? "");
+    const value = storage.getItem(key);
+    return value ? JSON.parse(value) : defaultValue;
   };
+
   const set = (value: T) => storage.setItem(key, JSON.stringify(value));
   const reset = () => storage.removeItem(key);
 

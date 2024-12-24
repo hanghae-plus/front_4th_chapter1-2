@@ -1,7 +1,8 @@
 declare namespace JSX {
   interface Element {
-    tag: string | Function;
+    type: string | Function;
     props: Record<string, any>;
+    children?: any[];
   }
 
   interface IntrinsicElements {
