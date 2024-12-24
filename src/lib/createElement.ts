@@ -43,7 +43,7 @@ export function createElement(vNode: ValidVNode) {
       return;
     }
 
-    $root[key] = value;
+    $root.setAttribute(key, value);
   });
 
   vNode.children.forEach((child) => {

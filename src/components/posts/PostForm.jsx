@@ -20,7 +20,7 @@ export const PostForm = () => {
           postContent = e.target.value;
         }}
       />
-      <span
+      <button
         id="post-submit"
         className="mt-2 bg-blue-600 text-white px-4 py-2 rounded"
         onClick={() => {
@@ -42,7 +42,7 @@ export const PostForm = () => {
         }}
       >
         게시
-      </span>
+      </button>
     </div>
   );
 };
