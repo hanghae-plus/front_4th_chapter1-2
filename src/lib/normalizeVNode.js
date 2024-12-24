@@ -7,7 +7,11 @@ export function normalizeVNode(vNode) {
     return "";
   }
 
-  if (typeof vNode === "string" || typeof vNode === "number") {
+  if (typeof vNode === "string") {
+    return vNode;
+  }
+
+  if (typeof vNode === "number") {
     return vNode.toString();
   }
 
