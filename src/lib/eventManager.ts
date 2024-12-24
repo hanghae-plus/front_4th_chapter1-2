@@ -4,6 +4,9 @@ import { htmlEventNames } from "@/constants/htmlEventsName";
 let listeners = {};
 
 export function setupEventListeners($root: HTMLElement) {
+  htmlEventNames.forEach((eventType) => {
+    $root.removeEventListener(eventType, handleGlobalEvent, false);
+  });
   registerGlobalEvent($root);
 }
 
@@ -18,12 +21,8 @@ export function addEvent(
   listeners[eventType].set(element, handler);
 }
 
-export function removeEvent(element, eventType, handler) {
+export function removeEvent(element: HTMLElement, eventType: HTMLEventName) {
   listeners[eventType].delete(element);
-}
-
-export function removeAllEvent() {
-  listeners = {};
 }
 
 function registerGlobalEvent($root: HTMLElement) {

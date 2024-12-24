@@ -1,6 +1,6 @@
 import { ValidVNode } from "@/types/VNode";
 import { createElement } from "@/lib/createElement";
-import { addEvent } from "@/lib/eventManager";
+import { addEvent, removeEvent } from "@/lib/eventManager";
 import { HTMLEventName } from "@/types/event";
 
 export function updateElement(
@@ -10,7 +10,7 @@ export function updateElement(
   index = 0,
 ) {
   if (!newNode && oldNode) {
-    return parentElement.children[index].remove();
+    return parentElement.children[index]?.remove();
   }
 
   if (newNode && !oldNode) {
@@ -19,13 +19,13 @@ export function updateElement(
 
   if (typeof newNode === "string" && typeof oldNode === "string") {
     if (newNode !== oldNode) {
-      parentElement.textContent = newNode;
+      parentElement.childNodes[index].textContent = newNode;
     }
     return;
   }
 
   if (newNode.type !== oldNode.type) {
-    return parentElement.replaceWith(createElement(newNode));
+    return parentElement.children[index]?.replaceWith(createElement(newNode));
   }
 
   updateAttributes(
@@ -43,10 +43,6 @@ export function updateElement(
       oldNode.children[i],
       i,
     );
-
-    if (!newNode.children[i] && oldNode.children[i]) {
-      parentElement.children[i].remove();
-    }
   }
 }
 
@@ -62,7 +58,12 @@ function updateAttributes(
       continue;
     }
     // 둘 다 있는 경우 -> 값 변경
-    if (originOldProps[key] && originOldProps[key] !== value) {
+    if (
+      originOldProps[key] !== undefined &&
+      originOldProps[key] !== undefined
+    ) {
+      if (originOldProps[key] === value) continue;
+
       if (key.startsWith("on")) {
         const eventName = key.slice(2).toLowerCase();
         addEvent(target, eventName as HTMLEventName, value as () => void);
@@ -85,7 +86,23 @@ function updateAttributes(
   }
   // 새 프롬에는 없고 이전 프롭에는 있는 경우에 대한 일괄 제거 처리
   for (const [key, value] of Object.entries(originOldProps)) {
-    if (!originNewProps[key] && key !== "children") {
+    if (originNewProps[key] === undefined && key !== "children") {
+      if (key.startsWith("on")) {
+        const eventName = key.slice(2).toLowerCase();
+        removeEvent(target, eventName as HTMLEventName);
+        continue;
+      }
+
+      if (key === "className") {
+        target.className = "";
+        continue;
+      }
+
+      if (key.startsWith("data-")) {
+        const dataKey = key.slice(5);
+        target.dataset[dataKey] = undefined;
+      }
+
       target.removeAttribute(key);
     }
   }
