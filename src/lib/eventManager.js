@@ -7,7 +7,7 @@
  * }
  */
 
-const globalEvents = {};
+let globalEvents = {};
 
 export function setupEventListeners(root) {
   Object.entries(globalEvents).forEach(([eventType, eventsMap]) => {
@@ -32,6 +32,10 @@ export function removeEvent(element, eventType, handler) {
   if (globalEvents[eventType].get(element) === handler) {
     globalEvents[eventType].delete(element);
   }
+}
+
+export function clearEvents() {
+  globalEvents = {};
 }
 
 window.__myEventListeners = globalEvents;
