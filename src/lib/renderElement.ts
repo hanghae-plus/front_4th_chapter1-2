@@ -1,3 +1,8 @@
+// TODO: renderElement 함수 구현 [심화]
+// 기존의 renderElement에서 코드를 수정해야 합니다.
+// - 최초 렌더링일 때는 createElement 사용
+// - 리렌더링일 때는 updateElement 사용
+
 import { setupEventListeners } from "./eventManager";
 import { createElement } from "./createElement";
 import { normalizeVNode } from "./normalizeVNode";
@@ -9,20 +14,24 @@ interface VNode {
   children?: Array<VNode | string | number>;
 }
 
+// 이전 가상 DOM 상태를 저장하기 위한 WeakMap
+const oldVNodeMap = new WeakMap<HTMLElement, VNode>();
+
 export function renderElement(vNode: VNode, container: HTMLElement): void {
   const normalizedNode = normalizeVNode(vNode);
+  const oldVNode = oldVNodeMap.get(container);
 
-  // container의 첫 번째 자식이 있다면 업데이트, 없다면 새로 생성
-  const oldNode = container.firstChild;
+  if (oldVNode && container.firstChild) {
+    // 이전 가상 DOM이 있으면 비교 후 업데이트
 
-  if (oldNode) {
-    // 기존 DOM이 있으면 업데이트
-    const updatedElement = updateElement(container, normalizedNode, oldNode);
-    container.replaceChild(updatedElement, oldNode);
+    updateElement(container, normalizedNode, oldVNode);
   } else {
-    // 기존 DOM이 없으면 새로 생성
+    // 최초 렌더링
     container.appendChild(createElement(normalizedNode));
   }
+
+  // 현재 가상 DOM을 저장
+  oldVNodeMap.set(container, normalizedNode);
 
   setupEventListeners(container);
 }
