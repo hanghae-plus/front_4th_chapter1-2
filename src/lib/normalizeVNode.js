@@ -20,16 +20,14 @@ export function normalizeVNode(vNode) {
   }
 
   if (typeof vNode.type === "function") {
-    return normalizeFunctionType(vNode);
+    vNode = normalizeFunctionType(vNode);
   }
 
-  const children = normalizeChildren(vNode.children);
+  if (vNode.children && vNode.children.length) {
+    vNode.children = normalizeChildren(vNode.children) || [];
+  }
 
-  return {
-    type: vNode.type,
-    props: vNode.props || null,
-    children,
-  };
+  return vNode;
 }
 
 /**
@@ -44,16 +42,20 @@ export function normalizeVNode(vNode) {
  */
 function normalizeFunctionType(vNode) {
   const renderedVNode = vNode.type(vNode.props || {});
-  const isChildrenTextArray =
-    Array.isArray(renderedVNode.children) &&
-    renderedVNode.children.every((child) => typeof child === "string");
+
+  if (typeof renderedVNode.type === "function") {
+    renderedVNode.type = normalizeFunctionType(renderedVNode).type;
+  }
+
+  const mergedChildren = [
+    ...(renderedVNode.children || []),
+    ...(vNode.children || []),
+  ];
 
   return {
-    type: normalizeVNode(renderedVNode).type,
+    type: renderedVNode.type,
     props: renderedVNode.props || {},
-    children: isChildrenTextArray
-      ? [...renderedVNode.children, ...normalizeChildren(vNode.children)]
-      : normalizeChildren(renderedVNode.children),
+    children: normalizeChildren(mergedChildren),
   };
 }
 
@@ -64,28 +66,9 @@ function normalizeFunctionType(vNode) {
  * @returns {Array} 정규화된 자식 노드
  */
 function normalizeChildren(children) {
-  if (!children) return [];
+  if (!children || !children.length) return [];
 
-  return children.reduce((acc, child) => {
-    const normalizedChild = isString(child) ? child : normalizeVNode(child);
-
-    return mergeStrings(acc, normalizedChild);
-  }, []);
-}
-
-/**
- * 문자열 병합 함수
- * @description acc 배열의 마지막 요소와 child가 모두 문자열인 경우 마지막 요소와 child를 합쳐서 반환하고, 그 외의 경우는 child를 반환
- * @param {Array} acc
- * @param {*} child
- * @returns {Array} acc
- */
-function mergeStrings(acc, child) {
-  const last = acc[acc.length - 1];
-  if (typeof last === "string" && typeof child === "string") {
-    acc[acc.length - 1] = last + child;
-  } else {
-    acc.push(child);
-  }
-  return acc;
+  return children
+    .filter(isValid)
+    .map((child) => (isString(child) ? child : normalizeVNode(child)));
 }
