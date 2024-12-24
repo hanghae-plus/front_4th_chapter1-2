@@ -1,6 +1,7 @@
 import { NormalizedVNode } from "@/types/VNode";
 import { createElement } from "@/lib/createElement";
 import { addAttributeByCase, removeAttributeByCase } from "@/utils/domUtils";
+import { hasOwn } from "@/utils/objectUtils";
 
 export function updateElement(
   $parentElement: HTMLElement,
@@ -54,12 +55,12 @@ function updateAttributes(
 ) {
   for (const [key, value] of Object.entries(originNewProps)) {
     // 새 프롭에는 있고 이전 프롭에는 없는 경우 -> 추가
-    if (key in originOldProps) {
+    if (!hasOwn(originOldProps, key)) {
       target.removeAttribute(key);
       continue;
     }
     // 둘 다 있는 경우 -> 값 변경
-    if (key in originNewProps && key in originOldProps) {
+    if (hasOwn(originNewProps, key) && hasOwn(originOldProps, key)) {
       if (originOldProps[key] === value) continue;
 
       addAttributeByCase(target, key, value);
@@ -67,7 +68,7 @@ function updateAttributes(
   }
   // 새 프롬에는 없고 이전 프롭에는 있는 경우에 대한 일괄 제거 처리
   for (const key of Object.keys(originOldProps)) {
-    if (!(key in originNewProps) && key !== "children") {
+    if (!hasOwn(originNewProps, key) && key !== "children") {
       removeAttributeByCase(target, key);
     }
   }
@@ -91,7 +92,7 @@ function isDifferentType(
   if (isNormalizedVNode(newNode) !== isNormalizedVNode(oldNode)) return true;
 
   return (
-    (newNode as NormalizedVNode).type === (oldNode as NormalizedVNode).type
+    (newNode as NormalizedVNode).type !== (oldNode as NormalizedVNode).type
   );
 }
 
