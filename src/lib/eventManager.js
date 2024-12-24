@@ -8,7 +8,7 @@ export function setupEventListeners(root) {
 
 export function addEvent(element, eventType, handler) {
   if (!eventHandlers[eventType]) {
-    eventHandlers[eventType] = new Map();
+    eventHandlers[eventType] = new WeakMap();
   }
 
   const elementHandlerMap = eventHandlers[eventType];
