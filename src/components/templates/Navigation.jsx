@@ -5,7 +5,9 @@ import { globalStore } from "../../stores";
 
 const getNavItemClass = (path) => {
   const currentPath = window.location.pathname;
-  return currentPath === path ? "text-blue-600 font-bold" : "text-gray-600";
+  return currentPath === path
+    ? "text-blue-600 font-bold hover:cursor-pointer"
+    : "text-gray-600 hover:cursor-pointer";
 };
 
 function Link({ onClick, children, ...props }) {

@@ -3,6 +3,7 @@ import { createVNode } from "../lib";
 
 import { Footer, Header, Navigation, Post, PostForm } from "../components";
 import { globalStore } from "../stores";
+import { userStorage } from "../storages/index.js";
 
 /**
  * 심화과제
@@ -12,6 +13,8 @@ import { globalStore } from "../stores";
  */
 export const HomePage = () => {
   const { posts } = globalStore.getState();
+  const { loggedIn } = globalStore.getState();
+  const isLogin = !!loggedIn;
 
   return (
     <div className="bg-gray-100 min-h-screen flex justify-center">
@@ -20,12 +23,21 @@ export const HomePage = () => {
         <Navigation />
 
         <main className="p-4">
-          <PostForm />
+          {isLogin && <PostForm />}
           <div id="posts-container" className="space-y-4">
             {[...posts]
               .sort((a, b) => b.time - a.time)
               .map((props) => {
-                return <Post {...props} activationLike={false} />;
+                const { likeUsers } = props;
+
+                return (
+                  <Post
+                    {...props}
+                    activationLike={likeUsers.includes(
+                      userStorage.get()?.username,
+                    )}
+                  />
+                );
               })}
           </div>
         </main>
