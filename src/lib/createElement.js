@@ -1,4 +1,5 @@
 import { checkNullishExceptZero } from "../utils/commonUtils";
+import { addEvent } from "./eventManager";
 // import { addEvent } from "./eventManager";
 
 export function createElement(vNode) {
@@ -48,6 +49,10 @@ function makeElement(vNode) {
  */
 function updateAttributes($el, props) {
   for (const prop in props) {
+    if (prop?.startsWith("on")) {
+      addEvent($el, prop.slice(2).toLowerCase(), props[prop]);
+      continue;
+    }
     $el.setAttribute(replaceIfPropIsClass(prop), props[prop]);
   }
 }

@@ -1,5 +1,37 @@
-export function setupEventListeners(root) {}
+/**
+ * globalEvents
+ * {
+ *  click: {
+ *    element: handler
+ *  }
+ * }
+ */
 
-export function addEvent(element, eventType, handler) {}
+const globalEvents = {};
 
-export function removeEvent(element, eventType, handler) {}
+export function setupEventListeners(root) {
+  Object.entries(globalEvents).forEach(([eventType, eventsMap]) => {
+    root.addEventListener(eventType, (e) => handleGlobalEvents(e, eventsMap));
+  });
+}
+
+export function handleGlobalEvents(e, eventsMap) {
+  if (eventsMap.has(e.target)) {
+    eventsMap.get(e.target)(e);
+  }
+}
+
+export function addEvent(element, eventType, handler) {
+  if (!element || typeof handler !== "function") return;
+
+  globalEvents[eventType] = globalEvents[eventType] || new WeakMap();
+  globalEvents[eventType].set(element, handler);
+}
+
+export function removeEvent(element, eventType, handler) {
+  if (globalEvents[eventType].get(element) === handler) {
+    globalEvents[eventType].delete(element);
+  }
+}
+
+window.__myEventListeners = globalEvents;
