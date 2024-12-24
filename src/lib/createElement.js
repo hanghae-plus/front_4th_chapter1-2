@@ -18,25 +18,30 @@ export function createElement(vNode) {
     return fragment;
   }
 
-  // - vNode.type에 해당하는 요소를 생성
+  // vNode.type에 해당하는 HTML 요소를 생성
   const $el = document.createElement(vNode.type);
 
   if (vNode.props) {
+    // props를 순회하며 이벤트 리스너 추가 및 속성 설정
     Object.entries(vNode.props).forEach(([key, value]) => {
+      // 클래스 이름 설정
       if (key === "className") {
         $el.classList = value;
         return;
       }
       if (key.startsWith("on")) {
         const eventType = key.toLowerCase().slice(2);
+        // 이벤트 추가
         addEvent($el, eventType, value);
         return;
       }
+      // 속성 설정
       $el.setAttribute(key, value);
     });
   }
 
   if (vNode.children) {
+    // children 배열 순회하여 각 자식을 createElement로 처리 후 부모 노드에 추가
     vNode.children.forEach((child) => {
       const childElement = createElement(child);
       $el.append(childElement);
@@ -44,12 +49,3 @@ export function createElement(vNode) {
   }
   return $el;
 }
-
-// function updateAttributes($el, props) {
-//   Object.entries(props).forEach(([attr, value]) => {
-//     if (attr.startsWith("on") && typeof value === "function") {
-//       const eventType = attr.toLowerCase().slice(2);
-//       addEvent($el, eventType, value);
-//     }
-//   });
-// }
