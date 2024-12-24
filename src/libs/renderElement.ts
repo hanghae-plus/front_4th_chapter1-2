@@ -13,12 +13,11 @@ import { VNode, VNodeChild } from "../types";
 const prevVNodeMap = new WeakMap<HTMLElement, VNode | string>();
 
 export function renderElement(vNode: VNodeChild, container: HTMLElement) {
-  setupEventListeners(container);
-
   const normalizedNode = normalizeVNode(vNode);
   const prevVNode = prevVNodeMap.get(container);
 
   if (!prevVNode) {
+    setupEventListeners(container);
     const element = createElement(normalizedNode);
     container.appendChild(element);
   } else {
