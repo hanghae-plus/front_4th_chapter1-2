@@ -1,4 +1,4 @@
-import { VNode, VNodeProps } from "../types";
+import { VNodeChild, VNodeProps } from "../types";
 import { updateAttributes } from "./updateAttributes";
 
 /**
@@ -6,7 +6,7 @@ import { updateAttributes } from "./updateAttributes";
  * @param vNode - Virtual DOM Node, 문자열 또는 기타 타입
  * @returns HTMLElement, Text Node 또는 DocumentFragment
  */
-export function createElement(vNode: VNode | any) {
+export function createElement(vNode: VNodeChild | any) {
   if (vNode === null || vNode === undefined || typeof vNode === "boolean") {
     return document.createTextNode("");
   }

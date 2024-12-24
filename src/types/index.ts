@@ -9,14 +9,7 @@ export type VNode = {
   children: VNodeChild[];
 };
 
-export type VNodeChild =
-  | string
-  | number
-  | boolean
-  | null
-  | undefined
-  | VNode
-  | JSX.Element;
+export type VNodeChild = string | number | boolean | null | undefined | VNode;
 
 type MouseEvent =
   | "click"

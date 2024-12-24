@@ -84,8 +84,14 @@ export function updateElement(
   updateAttributes(element, newNode.props || {}, oldNode.props || {});
 
   // 자식 노드 재귀 업데이트
-  const newChildren = [...(newNode.props?.children || []), ...newNode.children];
-  const oldChildren = [...(oldNode.props?.children || []), ...oldNode.children];
+  const newChildren = [
+    ...(newNode.props?.children || []),
+    ...(newNode.children || []),
+  ];
+  const oldChildren = [
+    ...(oldNode.props?.children || []),
+    ...(oldNode.children || []),
+  ];
 
   const maxLength = Math.max(newChildren.length, oldChildren.length);
   for (let i = 0; i < maxLength; i++) {

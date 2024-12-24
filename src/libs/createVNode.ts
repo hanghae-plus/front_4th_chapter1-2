@@ -1,4 +1,4 @@
-import { VNode, VNodeProps } from "../types";
+import { VNode, VNodeChild, VNodeProps } from "../types";
 
 /**
  * Virtual DOM Node를 생성하는 함수
@@ -11,7 +11,7 @@ import { VNode, VNodeProps } from "../types";
 export function createVNode(
   type: string | Function,
   props: VNodeProps | null,
-  ...children: any[]
+  ...children: VNodeChild[]
 ): VNode {
   const processChildren = (items: any[]): any[] => {
     return items.flat(Infinity).filter((child) => {
