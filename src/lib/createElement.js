@@ -18,10 +18,6 @@ export function createElement(vNode) {
     return $fragment;
   }
 
-  if (typeof vNode.type === "function") {
-    throw new Error("Function Components are not supported.");
-  }
-
   const $element = document.createElement(vNode.type);
 
   updateAttributes($element, vNode.props ?? {});
