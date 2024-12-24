@@ -1,6 +1,3 @@
-/** @jsx createVNode */
-import { createVNode } from "../../lib";
-
 export const PostForm = () => {
   return (
     <div className="mb-4 bg-white rounded-lg shadow p-4">
