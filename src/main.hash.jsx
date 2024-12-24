@@ -1,8 +1,8 @@
 /** @jsx createVNode */
-import { createHashRouter, createVNode } from "./lib";
-import { HomePage, LoginPage, ProfilePage } from "./pages";
-import { globalStore } from "./stores";
-import { ForbiddenError, UnauthorizedError } from "./errors";
+import { createHashRouter, createVNode } from "@lib";
+import { HomePage, LoginPage, ProfilePage } from "@pages";
+import { globalStore } from "@stores";
+import { ForbiddenError, UnauthorizedError } from "@errors";
 import { router } from "./router";
 import { render } from "./render";
 

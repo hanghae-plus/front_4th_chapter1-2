@@ -1,3 +1,3 @@
-import { createStorage } from "../lib";
+import { createStorage } from "@lib";
 
 export const userStorage = createStorage("user");
