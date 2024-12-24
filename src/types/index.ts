@@ -1,12 +1,12 @@
 export interface VNodeProps {
-  children?: (VNode | string)[];
   [key: string]: any;
+  children?: VNodeChild[];
 }
 
 export type VNode = {
   type: string | Function;
   props: VNodeProps | null;
-  children: any[];
+  children: VNodeChild[];
 };
 
 export type VNodeChild = string | number | boolean | null | undefined | VNode;

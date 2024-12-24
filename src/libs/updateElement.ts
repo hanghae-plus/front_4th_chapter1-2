@@ -1,42 +1,6 @@
-import { addEvent, removeEvent } from "./eventManager";
 import { createElement } from "./createElement.js";
-import { DOMEventType, VNode, VNodeProps } from "../types";
-
-/**
- * DOM Element의 속성을 비교하여 업데이트하는 함수
- * @param target - 업데이트할 DOM Element
- * @param newProps - 새로운 속성들
- * @param oldProps - 이전 속성들
- */
-function updateAttributes(
-  target: HTMLElement,
-  newProps: VNodeProps = {},
-  oldProps: VNodeProps = {},
-) {
-  Object.keys(oldProps).forEach((prop) => {
-    if (prop === "children") return;
-
-    if (prop.startsWith("on")) {
-      const eventType = prop.substring(2).toLowerCase() as DOMEventType;
-      removeEvent(target, eventType, oldProps[prop]);
-    } else if (!(prop in newProps)) {
-      target.removeAttribute(prop);
-    }
-  });
-
-  Object.keys(newProps).forEach((prop) => {
-    if (prop === "children") return;
-
-    if (prop.startsWith("on")) {
-      const eventType = prop.substring(2).toLowerCase() as DOMEventType;
-      addEvent(target, eventType, newProps[prop]);
-    } else if (oldProps[prop] !== newProps[prop]) {
-      if (newProps[prop]) {
-        target.setAttribute(prop, newProps[prop]);
-      }
-    }
-  });
-}
+import { VNode, VNodeChild, VNodeProps } from "../types";
+import { updateAttributes } from "./updateAttributes";
 
 /**
  * Virtual DOM의 변경사항을 실제 DOM에 반영하는 함수

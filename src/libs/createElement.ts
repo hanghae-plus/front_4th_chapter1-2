@@ -1,5 +1,5 @@
-import { DOMEventType, VNode, VNodeProps } from "../types";
-import { addEvent } from "./eventManager";
+import { VNode, VNodeProps } from "../types";
+import { updateAttributes } from "./updateAttributes";
 
 /**
  * Virtual DOM Node를 실제 DOM Element로 변환하는 함수
@@ -39,32 +39,4 @@ export function createElement(vNode: VNode | any) {
   });
 
   return element;
-}
-
-/**
- * DOM Element의 속성을 설정하는 함수
- * @param element - 실제 DOM Element
- * @param props - 설정할 속성들
- */
-function updateAttributes(element: HTMLElement, props: VNodeProps | null) {
-  if (!props) return;
-
-  Object.entries(props).forEach(([key, value]) => {
-    if (key === "children") return;
-
-    if (key === "className") {
-      if (value) element.setAttribute("class", value);
-      return;
-    }
-
-    if (key.startsWith("on")) {
-      const eventType = key.substring(2).toLowerCase() as DOMEventType;
-      addEvent(element, eventType, value);
-      return;
-    }
-
-    if (value != null) {
-      element.setAttribute(key, String(value));
-    }
-  });
 }
