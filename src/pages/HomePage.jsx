@@ -1,6 +1,3 @@
-/** @jsx createVNode */
-import { createVNode } from "../lib";
-
 import { Footer, Header, Navigation, Post, PostForm } from "../components";
 import { globalStore } from "../stores";
 

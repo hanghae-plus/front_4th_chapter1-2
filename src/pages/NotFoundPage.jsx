@@ -1,6 +1,3 @@
-/** @jsx createVNode */
-import { createVNode } from "../lib";
-
 export const NotFoundPage = () => (
   <main className="bg-gray-100 flex items-center justify-center min-h-screen">
     <div

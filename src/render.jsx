@@ -1,8 +1,7 @@
-/** @jsx createVNode */
 // 초기화 함수
 import { router } from "./router";
 import { ForbiddenError, UnauthorizedError } from "./errors";
-import { renderElement, createVNode } from "./lib";
+import { renderElement } from "./lib";
 import { NotFoundPage } from "./pages";
 
 export function render() {
