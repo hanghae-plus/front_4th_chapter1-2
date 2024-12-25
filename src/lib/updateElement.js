@@ -37,14 +37,14 @@ function updateNewAttributes(target, newProps, oldProps) {
 
     if (isEventPropCheck) {
       const eventType = prop.slice(2).toLowerCase();
-      if (newAttributeValue?.toString() !== oldAttributeValue?.toString()) {
-        if (oldAttributeValue) {
-          removeEvent(target, eventType, oldAttributeValue);
-        }
-        if (newAttributeValue) {
-          addEvent(target, eventType, newAttributeValue);
-        }
+      //   if (newAttributeValue?.toString() !== oldAttributeValue?.toString()) {
+      if (oldAttributeValue) {
+        removeEvent(target, eventType, oldAttributeValue);
       }
+      if (newAttributeValue) {
+        addEvent(target, eventType, newAttributeValue);
+      }
+      //   }
 
       return;
     }
@@ -71,6 +71,7 @@ function updateAttributes(target, originNewProps, originOldProps) {
 }
 
 export function updateElement(parentElement, newNode, oldNode, index = 0) {
+  //   console.log(parentElement, newNode, oldNode, index);
   // 전체 순회를 위한 길이 계산
   const maxChildrenLength = Math.max(
     newNode?.children?.length || 0,
@@ -85,6 +86,7 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
 
   // 요소를 추가해야하는 경우
   if (newNode && !oldNode) {
+    // console.log("123123123123123123123)", oldNode, newNode);
     parentElement.appendChild(createElement(newNode));
     return;
   }
