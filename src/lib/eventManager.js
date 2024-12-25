@@ -1,27 +1,16 @@
-const eventListeners = [];
+const eventListeners = new Map();
 
 /**
  * root 요소에 이벤트 리스너를 등록하는 함수
  * @description
  * - 이벤트 위임을 통해 이벤트 핸들러를 등록
- * - 이벤트 해제를 위한 remove 함수를 이벤트 리스너 배열에 업데이트
+ * - 메모리 누수 방지를 위해 이벤트 리스너를 해제하고 다시 등록
  * @param {HTMLElement} root
  */
 export function setupEventListeners(root) {
-  eventListeners.forEach(({ element, eventType, handler }, i) => {
-    const boundHandler = (e) => {
-      if (element === e.target) {
-        handler(e);
-      }
-    };
-
-    root.addEventListener(eventType, boundHandler);
-    eventListeners[i] = {
-      element,
-      eventType,
-      handler,
-      remove: () => root.removeEventListener(eventType, boundHandler),
-    };
+  eventListeners.forEach((_, eventType) => {
+    root.removeEventListener(eventType, handleEvent);
+    root.addEventListener(eventType, handleEvent);
   });
 }
 
@@ -32,23 +21,48 @@ export function setupEventListeners(root) {
  * @param {*} handler
  */
 export function addEvent(element, eventType, handler) {
-  eventListeners.push({ element, eventType, handler });
+  if (typeof handler !== "function") {
+    throw new TypeError("Handler must be a function");
+  }
+
+  if (!eventListeners.has(eventType)) {
+    eventListeners.set(eventType, new WeakMap());
+  }
+
+  const listeners = eventListeners.get(eventType);
+  listeners.set(element, handler);
 }
 
 /**
  * 이벤트 리스너를 해제하는 함수
- * @description 이벤트 리스너 배열에서 element, eventType, handler가 일치하는 요소를 찾아 remove 함수를 호출하여 리스너 해제
+ * - WeakMap을 사용했기 때문에 eventListeners에 대한 삭제는 별도로 처리하지 않아도 된다.
+ * @description
  * @param {*} element
  * @param {*} eventType
  * @param {*} handler
  */
-export function removeEvent(element, eventType, handler) {
-  const deleteIndex = eventListeners.findIndex(
-    (event) =>
-      event.element === element &&
-      event.eventType === eventType &&
-      event.handler === handler,
-  );
-  eventListeners[deleteIndex].remove();
-  eventListeners.splice(deleteIndex, 1);
+export function removeEvent(element, eventType) {
+  if (!eventListeners.has(eventType)) {
+    return;
+  }
+
+  const elementEventListeners = eventListeners.get(eventType);
+  elementEventListeners.delete(element);
 }
+
+/**
+ * 이벤트 핸들러 처리 함수
+ */
+const handleEvent = (e) => {
+  const { target, type } = e;
+  const listeners = eventListeners.get(type);
+
+  if (!listeners) {
+    return;
+  }
+
+  const handler = listeners.get(target);
+  if (typeof handler === "function") {
+    handler(e);
+  }
+};
