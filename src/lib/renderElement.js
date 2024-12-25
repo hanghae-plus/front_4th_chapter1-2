@@ -1,6 +1,10 @@
 import { createElement } from "./createElement";
+import { createElementChildRemoveObserver } from "./elementObserver";
 import { clearEvents, setupEventListeners } from "./eventManager";
 import { normalizeVNode } from "./normalizeVNode";
+import { updateElement } from "./updateElement";
+
+let oldVNode = null;
 
 /**
  * @description VNode를 실제 DOM 엘리먼트로 렌더링하는 함수
@@ -18,12 +22,27 @@ export function renderElement(vNode, container) {
   const normalizedVNode = normalizeVNode(vNode);
 
   // step2. 정규화된 vNode를 기반으로 DOM 생성 또는 업데이트
-  const element = createElement(normalizedVNode);
+  if (!oldVNode) {
+    // step3. DOM 추가
+    const element = createElement(normalizedVNode);
+    container.append(element); // 첫 렌더링 때만 container에 DOM 추가
+    // 예외처리 :  DOM 삭제 감지
+    createElementChildRemoveObserver([container, document.body], () => {
+      initOldVNode();
+      clearEvents();
+    });
+  }
 
-  // step3. DOM 초기화 및 업데이트
-  container.innerHTML = ""; // container 초기화
-  container.append(element); // container에 DOM 추가
+  // step3. DOM 업데이트
+  oldVNode && updateElement(container, normalizedVNode, oldVNode);
 
   // step4. 이벤트 핸들러 등록
   setupEventListeners(container);
+
+  // step5. oldVNode 업데이트
+  oldVNode = normalizedVNode;
+}
+
+function initOldVNode() {
+  oldVNode = null;
 }
