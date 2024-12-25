@@ -1,3 +1,5 @@
+/** @jsx createVNode */
+import { createVNode } from "../lib";
 import { globalStore } from "../stores";
 import { userStorage } from "../storages";
 
