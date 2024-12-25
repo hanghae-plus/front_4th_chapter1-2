@@ -18,7 +18,7 @@ function updateAttributes(target, originNewProps, originOldProps) {
         const eventType = key.toLowerCase().slice(2);
         addEvent(target, eventType, originNewProps[key]);
       } else if (key === "className") {
-        target.classList = originNewProps[key];
+        target.classList = originNewProps[key]; // className = classList로 설정
       } else {
         target.setAttribute(key, originNewProps[key]);
       }
@@ -30,16 +30,14 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
   // 현재 인덱스에 해당하는 자식 노드 참조
   const currentChild = parentElement.childNodes[index];
 
-  // 노드 제거 (newNode가 없고 oldNode가 있는 경우)
-  if (!newNode && oldNode) {
-    parentElement.removeChild(currentChild);
-    return;
-  }
-
-  // 새 노드 추가 (newNode가 있고 oldNode가 없는 경우)
-  if (newNode && !oldNode) {
-    const newChild = createElement(newNode);
-    parentElement.appendChild(newChild);
+  // 노드 제거 or 추가
+  if (!newNode || !oldNode) {
+    if (!newNode && oldNode) {
+      parentElement.removeChild(currentChild);
+    } else if (newNode && !oldNode) {
+      const newChild = createElement(newNode);
+      parentElement.appendChild(newChild);
+    }
     return;
   }
 
