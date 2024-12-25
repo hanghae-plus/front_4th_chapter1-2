@@ -36,7 +36,8 @@ function updateAttributes(element, props) {
       if (attr === "className") {
         element.setAttribute("class", value);
       } else if (attr.startsWith("on")) {
-        addEvent(element, attr, value);
+        const eventType = attr == "onClick" ? "click" : attr;
+        addEvent(element, eventType, value);
       } else {
         element.setAttribute(attr, value);
       }
