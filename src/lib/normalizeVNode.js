@@ -25,14 +25,8 @@ export function normalizeVNode(vNode) {
       type: vNode.type,
       props: vNode.props,
       children: vNode.children
-        .map((child) => {
-          // 자식 노드 정규화
-          return normalizeVNode(child);
-        })
-        .filter((child) => {
-          // 0을 제외한 falsy 값 제거
-          return checkNullishExceptZero(child);
-        }),
+        .map(normalizeVNode)
+        .filter(checkNullishExceptZero),
     };
   }
 }

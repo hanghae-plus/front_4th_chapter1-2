@@ -15,10 +15,10 @@ let globalEvents = {};
  * @param {HTMLElement} root
  */
 export function setupEventListeners(root) {
-  Object.entries(globalEvents).forEach(([eventType]) => {
+  for (const eventType in globalEvents) {
     root.removeEventListener(eventType, handleGlobalEvents);
     root.addEventListener(eventType, handleGlobalEvents);
-  });
+  }
 }
 
 export function handleGlobalEvents(e) {
@@ -28,7 +28,6 @@ export function handleGlobalEvents(e) {
 }
 
 export function addEvent(element, eventType, handler) {
-  console.log("in?");
   if (!element || typeof handler !== "function") return;
 
   globalEvents[eventType] = globalEvents[eventType] || new WeakMap();
