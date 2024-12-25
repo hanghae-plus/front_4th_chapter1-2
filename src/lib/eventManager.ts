@@ -12,6 +12,7 @@ interface SyntheticEvent extends Event {
   nativeEvent: Event; // 원본 DOM 이벤트 참조 보관
   isPropagationStopped(): boolean; // 이벤트 전파 중단 여부 확인
   stopPropagation(): void; // 이벤트 전파 중단 메서드
+  preventDefault(): void; // 기본 동작 방지 메서드 추가
 }
 
 // WeakMap 을 사용해 메모리 누수를 방지하며 이벤트 리스너 저장
@@ -92,12 +93,17 @@ function createSyntheticEvent(nativeEvent: Event): SyntheticEvent {
   return {
     ...nativeEvent,
     nativeEvent, // 원본 이벤트 참조 보관
+    target: nativeEvent.target as HTMLElement,
     // 이벤트 전파 중단 여부 확인
     isPropagationStopped: () => isPropagationStopped,
     // 이벤트 전파를 중단시키는 메서드
     stopPropagation: () => {
       isPropagationStopped = true;
       nativeEvent.stopPropagation();
+    },
+    // 기본 동작 방지 메서드 추가
+    preventDefault: () => {
+      nativeEvent.preventDefault();
     },
   } as SyntheticEvent;
 }
