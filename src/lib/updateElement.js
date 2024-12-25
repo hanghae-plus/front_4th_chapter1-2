@@ -61,7 +61,6 @@ function updateAttributes(target, originNewProps, originOldProps) {
 // 가상 DOM의 diffling 알고리즘의 핵심, DOM 트리 변경사항을 효율적으로 처리한다
 export function updateElement(parentElement, newNode, oldNode, index = 0) {
   if (!parentElement) {
-    console.error("parentElement가 없습니다");
     return;
   }
 
@@ -71,12 +70,21 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
       return;
     }
 
-    return parentElement.removeChild(parentElement.childNodes[index]);
+    parentElement.removeChild(parentElement.childNodes[index]);
+    return;
   }
 
   // 2. newNode만 있는 경우: 추가
   if (!oldNode && newNode) {
     return parentElement.appendChild(createElement(newNode)); // createElement를 이용해 새로운 DOM 노드를 생성하고 추가
+  }
+
+  // 4. 노드 타입이 다른 경우: 노드를 교체
+  if (oldNode.type !== newNode.type) {
+    return parentElement.replaceChild(
+      createElement(newNode), // newNode를 이용해 DOM 생성
+      parentElement.childNodes[index], // 교체할 노드
+    );
   }
 
   // 3. oldNode, newNode 모두 텍스트 타입일 경우, 텍스트가 다를 때만 업데이트 한다
@@ -87,15 +95,7 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
 
     // 텍스트 노드를 교체
     return parentElement.replaceChild(
-      document.createTextNode(newNode), // 새로운 텍스트 노드 생성, cf. 텍스트는 일반노드와 다르고, 텍스트 내용을 효율적으로 관리하기 위한 DOM의 기본 메커니즘이다
-      parentElement.childNodes[index], // 교체할 노드
-    );
-  }
-
-  // 4. 노드 타입이 다른 경우: 노드를 교체
-  if (oldNode.type !== newNode.type) {
-    return parentElement.replaceChild(
-      createElement(newNode), // newNode를 이용해 DOM 생성
+      createElement(newNode), // 새로운 텍스트 노드 생성, cf. 텍스트는 일반노드와 다르고, 텍스트 내용을 효율적으로 관리하기 위한 DOM의 기본 메커니즘이다
       parentElement.childNodes[index], // 교체할 노드
     );
   }
@@ -111,7 +111,6 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
   const oldLength = oldNode.children?.length || 0;
   const newLength = newNode.children?.length || 0;
   const maxLength = Math.max(oldLength, newLength);
-  console.log("maxLength", maxLength);
 
   for (let i = 0; i < maxLength; i++) {
     updateElement(

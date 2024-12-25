@@ -13,17 +13,17 @@ export function renderElement(vNode, container) {
   // container에 가상 노드가 있는 경우
   if (container._vNode) {
     // 업데이트 처리
-    updateElement(container.firstChild, normalizedNode, container._vNode);
-
-    // 현재의 가상 DOM을 다름 렌더링을 위해 저장한다. !!!!
-    container._vNode = normalizedNode;
+    updateElement(container, normalizedNode, container._vNode);
   }
   // container에 가상 노드가 없는 경우
   else {
-    container.innerHTML = ""; // 최초 렌더링인 경우 새로운 DOM을 생성한다
+    // container.innerHTML = ""; // 최초 렌더링인 경우 새로운 DOM을 생성한다
     const $el = createElement(normalizedNode); // 가상 DOM을 실제 DOM으로 변환한다
     container.appendChild($el); // 생성한 DOM을 container에 추가한다
   }
+
+  // 현재의 가상 DOM을 다름 렌더링을 위해 저장한다. !!!!
+  container._vNode = normalizedNode;
 
   // 이벤트 등록한다
   setupEventListeners(container);
