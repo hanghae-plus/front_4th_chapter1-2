@@ -8,55 +8,52 @@ const getNavItemClass = (path) => {
   return currentPath === path ? "text-blue-600 font-bold" : "text-gray-600";
 };
 
-function Link({ onClick, children, ...props }) {
-  const handleClick = (e) => {
-    e.preventDefault();
-    onClick?.();
-    router.get().push(e.target.href.replace(window.location.origin, ""));
-  };
-  return (
-    <a onClick={handleClick} {...props}>
-      {children}
-    </a>
-  );
-}
+const handleNavClick = (e) => {
+  const { logout } = globalStore.actions;
+  const link = e.target.closest("a");
+  if (!link) return;
+
+  e.preventDefault();
+
+  if (link.id === "logout") {
+    logout();
+    return;
+  }
+
+  const href = link.href.replace(window.location.origin, "");
+  router.get().push(href);
+};
 
 export const Navigation = () => {
   const { loggedIn } = globalStore.getState();
-  const { logout } = globalStore.actions;
   return (
-    <nav className="bg-white shadow-md p-2 sticky top-14">
+    <nav
+      className="bg-white shadow-md p-2 sticky top-14"
+      onClick={handleNavClick}
+    >
       <ul className="flex justify-around">
         <li>
-          <Link href="/" className={getNavItemClass("/")}>
+          <a href="/" className={getNavItemClass("/")}>
             홈
-          </Link>
+          </a>
         </li>
         {!loggedIn && (
           <li>
-            <Link href="/login" className={getNavItemClass("/login")}>
+            <a href="/login" className={getNavItemClass("/login")}>
               로그인
-            </Link>
+            </a>
           </li>
         )}
         {loggedIn && (
           <li>
-            <Link href="/profile" className={getNavItemClass("/profile")}>
+            <a href="/profile" className={getNavItemClass("/profile")}>
               프로필
-            </Link>
+            </a>
           </li>
         )}
         {loggedIn && (
           <li>
-            <a
-              href="#"
-              id="logout"
-              className="text-gray-600"
-              onClick={(e) => {
-                e.preventDefault();
-                logout();
-              }}
-            >
+            <a href="#" id="logout" className="text-gray-600">
               로그아웃
             </a>
           </li>
