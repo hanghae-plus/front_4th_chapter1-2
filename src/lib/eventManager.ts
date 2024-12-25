@@ -48,15 +48,12 @@ export function addEvent(
 
 export function removeEvent(
   element: EventTarget,
-  eventType: keyof ElementEventMap,
+  eventType: string,
   handler: (e: Event) => {},
 ) {
   const targetHandler = eventHandlersByEventType.get(eventType);
+
   if (!targetHandler) return;
 
   targetHandler.delete(element);
-}
-
-export function resetEventMap() {
-  eventHandlersByEventType.clear();
 }

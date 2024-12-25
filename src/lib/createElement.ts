@@ -1,4 +1,4 @@
-import { ATTR_NAME_MAP } from "./const";
+import { getAttributeName, getEventType, isEvent } from "./helper";
 import { addEvent } from "./eventManager";
 import { VNode, VNodeProps } from "./type";
 import { isBooleanTrue, isNumberZero, isStringOrNum } from "./typeChecker";
@@ -41,19 +41,15 @@ export function createElement(vNode: VNode | VNode[]) {
 function updateAttributes($el: HTMLElement, props: VNodeProps): HTMLElement {
   if (!props) return $el;
 
-  Object.keys(props).forEach((key: string) => {
-    if (key.startsWith("on") && typeof props[key] === "function") {
-      const eventHandler = props[key];
-      const eventType = key.replace("on", "").toLowerCase();
-      addEvent($el, eventType, eventHandler);
-      // $el._vNode = eventHandler;
-      return;
+  for (const [k, v] of Object.entries(props)) {
+    if (isEvent(k, v)) {
+      addEvent($el, getEventType(k), v);
+
+      continue;
     }
 
-    $el.setAttribute(getAttributeKey(key), props[key]);
-  });
+    $el.setAttribute(getAttributeName(k), v);
+  }
 
   return $el;
 }
-
-const getAttributeKey = (key: string) => ATTR_NAME_MAP[key] ?? key;
