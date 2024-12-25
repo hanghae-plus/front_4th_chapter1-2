@@ -14,7 +14,7 @@ beforeAll(async () => {
   // DOM 초기화
   window.alert = vi.fn();
   document.body.innerHTML = '<div id="root"></div>';
-  await import("../../main.jsx");
+  await import("../../main.tsx");
 });
 
 afterAll(() => {

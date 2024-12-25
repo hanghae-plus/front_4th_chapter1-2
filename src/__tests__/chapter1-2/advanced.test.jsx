@@ -1,7 +1,7 @@
 /** @jsx createVNode */
 /** @jsxFrag Fragment */
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { createVNode, renderElement } from "../../lib";
+import { createVNode, renderElement } from "../../libs";
 
 describe("Chapter1-2 > 심화과제 > Virtual DOM과 이벤트 관리", () => {
   let container;

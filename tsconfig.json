@@ -1,0 +1,46 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["./*"],
+      "@components": ["./components"],
+      "@components/*": ["./components/*"],
+      "@errors": ["./errors"],
+      "@errors/*": ["./errors/*"],
+      "@features": ["./features"],
+      "@features/*": ["./features/*"],
+      "@libs": ["./libs"],
+      "@libs/*": ["./libs/*"],
+      "@pages": ["./pages"],
+      "@pages/*": ["./pages/*"],
+      "@storages": ["./storages"],
+      "@storages/*": ["./storages/*"],
+      "@stores": ["./stores"],
+      "@stores/*": ["./stores/*"],
+      "@types": ["./types"],
+      "@types/*": ["./types/*"],
+      "@utils": ["./utils"],
+      "@utils/*": ["./utils/*"]
+    },
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ESNext", "DOM"],
+    "moduleResolution": "Node",
+    "strict": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "skipLibCheck": true,
+    "allowJs": true,
+
+    "jsx": "react",
+    "jsxFactory": "createVNode",
+    "jsxFragmentFactory": "Fragment"
+  },
+  "include": ["src", "**/*.ts", "**/*.d.ts"]
+}
