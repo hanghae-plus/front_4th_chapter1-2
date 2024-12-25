@@ -9,19 +9,26 @@
 
 let globalEvents = {};
 
+// 콜백으로 넣으면 add할때의 remove할때의 콜백이 다를 수 있음
+/**
+ *
+ * @param {HTMLElement} root
+ */
 export function setupEventListeners(root) {
-  Object.entries(globalEvents).forEach(([eventType, eventsMap]) => {
-    root.addEventListener(eventType, (e) => handleGlobalEvents(e, eventsMap));
+  Object.entries(globalEvents).forEach(([eventType]) => {
+    root.removeEventListener(eventType, handleGlobalEvents);
+    root.addEventListener(eventType, handleGlobalEvents);
   });
 }
 
-export function handleGlobalEvents(e, eventsMap) {
-  if (eventsMap.has(e.target)) {
-    eventsMap.get(e.target)(e);
+export function handleGlobalEvents(e) {
+  if (globalEvents[e.type].has(e.target)) {
+    globalEvents[e.type].get(e.target)(e);
   }
 }
 
 export function addEvent(element, eventType, handler) {
+  console.log("in?");
   if (!element || typeof handler !== "function") return;
 
   globalEvents[eventType] = globalEvents[eventType] || new WeakMap();
