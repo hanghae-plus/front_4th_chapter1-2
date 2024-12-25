@@ -1,5 +1,3 @@
-// import { addEvent } from "./eventManager";
-
 export function createElement(vNode) {
   if (
     vNode === null ||
@@ -7,11 +5,17 @@ export function createElement(vNode) {
     typeof vNode === "boolean"
   ) {
     return document.createTextNode("");
-  } else if (typeof vNode === "string") {
+  }
+
+  if (typeof vNode === "string") {
     return document.createTextNode(vNode);
-  } else if (typeof vNode === "number") {
+  }
+
+  if (typeof vNode === "number") {
     return document.createTextNode(String(vNode));
-  } else if (Array.isArray(vNode)) {
+  }
+
+  if (Array.isArray(vNode)) {
     // DocumentFragment 생성
     const fragment = document.createDocumentFragment();
     vNode.forEach((child) => {
@@ -19,22 +23,32 @@ export function createElement(vNode) {
       fragment.appendChild($e1);
     });
     return fragment;
-  } else {
-    const type = vNode.type;
-    const props = vNode.props;
-    // const children = vNode.children;
-    const $e1 = document.createElement(type);
-
-    // props -> attributes
-    for (const [key, value] of Object.entries(props)) {
-      // 이벤트 리스너(onclick), className, 일반 속성 등..
-      if (key === "className") {
-        $e1.className = value;
-      } else if (typeof key === "function") {
-        // addEvent(key, value, handler);
-      }
-    }
   }
+
+  const { type, props, children } = vNode;
+  const $el = document.createElement(type);
+
+  if (props) {
+    Object.entries(props).forEach(([key, value]) => {
+      if (key === "className") {
+        $el.setAttribute("class", value);
+      } else if (key === "id") {
+        $el.id = value;
+      } else if (typeof value === "function" && key.startsWith("on")) {
+        const eventType = key.slice(2).toLowerCase();
+        $el.addEventListener(eventType, value);
+      } else {
+        $el.setAttribute(key, value);
+      }
+    });
+  }
+
+  const childrenArray = Array.isArray(children) ? children : [children];
+  childrenArray
+    .map((child) => createElement(child))
+    .forEach((child) => $el.appendChild(child));
+
+  return $el;
 }
 
 // function updateAttributes($el, props) {}

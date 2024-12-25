@@ -5,42 +5,34 @@ export function normalizeVNode(vNode) {
     typeof vNode === "boolean"
   ) {
     return "";
-  } else if (typeof vNode === "string") {
+  }
+
+  if (typeof vNode === "string") {
     return vNode;
-  } else if (typeof vNode === "number") {
+  }
+
+  if (typeof vNode === "number") {
     return vNode.toString();
-  } else if (typeof vNode.type === "function") {
+  }
+
+  if (typeof vNode.type === "function") {
     const renderedVNode = vNode.type({
       ...vNode.props,
-      children: vNode.props?.children,
+      children: vNode.children,
     });
     return normalizeVNode(renderedVNode);
-  } else {
-    const { type, props = {} } = vNode;
-    const childArray = Array.isArray(props.children)
-      ? props.children
-      : [props.children];
-
-    const normalizedChildren = childArray.map((child) => normalizeVNode(child)); // ['']
-
-    // normalizedChildren[renderedVNode];
-
-    return {
-      type,
-      props,
-      children: normalizedChildren,
-    };
   }
-}
 
-// props: {
-//   ...props,
-//   children: [normalizedChildren],
-//   className: props.className,
-// }
-// .filter(
-//   (normalizedChild) =>
-//     normalizedChild !== null &&
-//     normalizedChild !== "undefined" &&
-//     normalizedChild,
-// )
+  const children = Array.isArray(vNode.children)
+    ? vNode.children
+    : [vNode.children];
+
+  let result = children
+    .map((child) => normalizeVNode(child))
+    .filter((child) => child !== null && child !== "undefined" && child);
+
+  return {
+    ...vNode,
+    children: result,
+  };
+}
