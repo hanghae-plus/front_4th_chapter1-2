@@ -1,71 +1,82 @@
-// 이벤트 핸들러를 저장
-const eventHandlers = new WeakMap();
+// 이벤트 타입별 핸들러 저장
+const eventHandlers = new Map();
+let rootElement = null;
 
-export function addEvent(element, eventType, handler) {
-  if (!eventHandlers.has(element)) {
-    eventHandlers.set(element, new Map());
-  }
+function delegateEvent(event) {
+  const eventType = event.type;
 
-  const elementEvents = eventHandlers.get(element);
+  const handlers = eventHandlers.get(eventType);
+  if (!handlers) return;
 
-  if (!elementEvents.has(eventType)) {
-    elementEvents.set(eventType, new Set());
-  }
-
-  elementEvents.get(eventType).add(handler);
-}
-
-export function removeEvent(element, eventType, handler) {
-  if (!eventHandlers.has(element)) {
-    return;
-  }
-
-  const elementEvents = eventHandlers.get(element);
-  if (!elementEvents.has(eventType)) {
-    return;
-  }
-
-  elementEvents.get(eventType).delete(handler);
-
-  if (elementEvents.get(eventType).size === 0) {
-    elementEvents.delete(eventType);
-  }
-
-  if (elementEvents.size === 0) {
-    eventHandlers.delete(element);
+  let target = event.target;
+  while (target && target !== rootElement?.parentElement) {
+    const elementHandlers = handlers.get(target);
+    if (elementHandlers) {
+      elementHandlers.forEach((handler) => {
+        handler.call(target, event);
+      });
+      if (!event.bubbles) break;
+    }
+    target = target.parentElement;
   }
 }
 
 export function setupEventListeners(root) {
-  // 지원할 이벤트 타입들
-  const supportedEvents = [
-    "click",
-    "input",
-    "change",
-    "submit",
-    "keydown",
-    "keyup",
-    "keypress",
-    "mousedown",
-    "mouseup",
-    "mousemove",
-  ];
-
-  supportedEvents.forEach((eventType) => {
-    root.addEventListener(eventType, (event) => {
-      let target = event.target;
-
-      while (target && target !== root) {
-        if (eventHandlers.has(target)) {
-          const elementEvents = eventHandlers.get(target);
-          if (elementEvents.has(eventType)) {
-            elementEvents.get(eventType).forEach((handler) => {
-              handler.call(target, event);
-            });
-          }
-        }
-        target = target.parentElement;
-      }
+  // 이전 root의 이벤트 리스너 제거
+  if (rootElement && rootElement !== root) {
+    eventHandlers.forEach((_, eventType) => {
+      rootElement.removeEventListener(eventType, delegateEvent);
     });
-  });
+  }
+
+  // 새로운 root 설정
+  if (rootElement !== root) {
+    rootElement = root;
+    // 기존에 등록된 이벤트 타입들에 대해 root에 이벤트 리스너 등록
+    eventHandlers.forEach((_, eventType) => {
+      rootElement.addEventListener(eventType, delegateEvent);
+    });
+  }
+}
+
+export function addEvent(element, eventType, handler) {
+  //이벤트 위임
+  if (!eventHandlers.has(eventType)) {
+    eventHandlers.set(eventType, new Map());
+    if (rootElement) {
+      rootElement.addEventListener(eventType, delegateEvent);
+    }
+  }
+
+  // 엘리먼트의 핸들러 Set이 없으면 생성
+  const handlers = eventHandlers.get(eventType);
+  if (!handlers.has(element)) {
+    handlers.set(element, new Set());
+  }
+
+  // 핸들러 추가
+  handlers.get(element).add(handler);
+}
+
+export function removeEvent(element, eventType, handler) {
+  const handlers = eventHandlers.get(eventType);
+  if (!handlers) return;
+
+  const elementHandlers = handlers.get(element);
+  if (!elementHandlers) return;
+
+  // 핸들러 제거
+  elementHandlers.delete(handler);
+
+  // 해당 요소가 가지는 핸들러가 없으면 핸들러에서 삭제
+  if (elementHandlers.size === 0) {
+    handlers.delete(element);
+  }
+
+  // 해당 이벤트 타입의 모든 핸들러가 제거되었는지 확인
+  const handlersMap = eventHandlers.get(eventType);
+  if (!handlersMap || handlersMap.size === 0) {
+    rootElement?.removeEventListener(eventType, delegateEvent);
+    eventHandlers.delete(eventType);
+  }
 }

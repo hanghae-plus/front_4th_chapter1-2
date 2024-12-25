@@ -10,7 +10,6 @@ export function renderElement(vNode, container) {
 
   // 1. 정규화
   const normalizedNode = normalizeVNode(vNode);
-
   if (!container.prevNode) {
     //최초 랜더링
     //2. 정규화된 노드로 실제 DOM 엘리먼트 생성

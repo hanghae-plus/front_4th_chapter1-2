@@ -10,14 +10,12 @@ function updateAttributes(target, originNewProps, originOldProps) {
   Object.keys(originOldProps).forEach((prop) => {
     if (prop === "children") return;
 
-    // 이벤트 리스너 제거
     if (prop.startsWith("on") && typeof originOldProps[prop] === "function") {
       const eventType = prop.substring(2).toLowerCase();
       removeEvent(target, eventType, originOldProps[prop]);
       return;
     }
 
-    // className 처리
     if (prop === "className") {
       if (!(prop in originNewProps)) {
         target.removeAttribute("class");
@@ -25,7 +23,6 @@ function updateAttributes(target, originNewProps, originOldProps) {
       return;
     }
 
-    // 새로운 props에 없는 속성 제거
     if (!(prop in originNewProps)) {
       target.removeAttribute(prop);
     }
@@ -35,20 +32,17 @@ function updateAttributes(target, originNewProps, originOldProps) {
   Object.keys(originNewProps).forEach((prop) => {
     if (prop === "children") return;
 
-    // 이벤트 리스너 추가
     if (prop.startsWith("on") && typeof originNewProps[prop] === "function") {
       const eventType = prop.substring(2).toLowerCase();
       addEvent(target, eventType, originNewProps[prop]);
       return;
     }
 
-    // className 특별 처리
     if (prop === "className") {
       target.setAttribute("class", originNewProps[prop]);
       return;
     }
 
-    // 일반 속성 업데이트
     if (originNewProps[prop] !== originOldProps[prop]) {
       target.setAttribute(prop, originNewProps[prop]);
     }
@@ -82,7 +76,7 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
     return;
   }
 
-  //다른 타입인 경우 노드 교체
+  //노드 교체
   if (newNode.type !== oldNode.type) {
     parentElement.replaceChild(
       createElement(newNode),
