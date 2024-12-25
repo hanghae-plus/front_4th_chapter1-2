@@ -4,10 +4,10 @@
 
 #### 가상돔을 기반으로 렌더링하기
 
-- [ ] createVNode 함수를 이용하여 vNode를 만든다.
-- [ ] normalizeVNode 함수를 이용하여 vNode를 정규화한다.
-- [ ] createElement 함수를 이용하여 vNode를 실제 DOM으로 만든다.
-- [ ] 결과적으로, JSX를 실제 DOM으로 변환할 수 있도록 만들었다.
+- [ ✓ ] createVNode 함수를 이용하여 vNode를 만든다.
+- [ ✓ ] normalizeVNode 함수를 이용하여 vNode를 정규화한다.
+- [ ✓ ] createElement 함수를 이용하여 vNode를 실제 DOM으로 만든다.
+- [ ✓ ] 결과적으로, JSX를 실제 DOM으로 변환할 수 있도록 만들었다.
 
 #### 이벤트 위임
 
