@@ -20,12 +20,7 @@ export const BASIC_EVENT_TYPES = [
 ];
 
 export function setupEventListeners(root: Element) {
-  const eventTypes = new Set([
-    ...BASIC_EVENT_TYPES,
-    ...eventHandlersByEventType.keys(),
-  ]);
-
-  eventTypes.forEach((eventType) => {
+  BASIC_EVENT_TYPES.forEach((eventType) => {
     root.addEventListener(eventType, (e) => {
       const eventHandlerByEl = eventHandlersByEventType.get(eventType);
       const element = e.target;

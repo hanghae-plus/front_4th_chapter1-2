@@ -5,28 +5,6 @@ import { PostData } from "../../stores/type.ts";
 
 import { toTimeFormat } from "../../utils/index.ts";
 
-const updatePost = (newPost: PostData) => {
-  const { id } = newPost;
-  const { getState, setState } = globalStore;
-  const { posts } = getState();
-  const newPosts: PostData[] = posts.map((post) =>
-    post.id === id ? newPost : post,
-  );
-  setState({ posts: newPosts });
-};
-
-const toggleLike = (postId: number, username: string) => {
-  const { posts } = globalStore.getState();
-  const targetPost = posts.find((post) => post.id === postId);
-  if (!targetPost) return;
-  const prevLikeUsers = targetPost.likeUsers;
-  const likeUsers = prevLikeUsers.includes(username)
-    ? prevLikeUsers.filter((user) => user !== username)
-    : [...prevLikeUsers, username];
-  const newPost: PostData = { ...targetPost, likeUsers };
-  updatePost(newPost);
-};
-
 export const Post = ({
   id,
   author,
@@ -35,7 +13,35 @@ export const Post = ({
   likeUsers,
   activationLike = false,
 }) => {
-  const { currentUser } = globalStore.getState();
+  const { getState, setState } = globalStore;
+  const { currentUser, posts } = getState();
+
+  const onClickLike = () => {
+    if (!currentUser) {
+      return window.alert("로그인 후 이용해주세요");
+    }
+    toggleLike(id, currentUser.username);
+  };
+
+  const toggleLike = (postId: number, username: string) => {
+    const targetPost = posts.find((post) => post.id === postId);
+    if (!targetPost) return;
+    const prevLikeUsers = targetPost.likeUsers;
+    const likeUsers = prevLikeUsers.includes(username)
+      ? prevLikeUsers.filter((user) => user !== username)
+      : [...prevLikeUsers, username];
+    const newPost: PostData = { ...targetPost, likeUsers };
+    updatePostData(newPost);
+  };
+
+  const updatePostData = (newPost: PostData) => {
+    const { id } = newPost;
+
+    const newPosts: PostData[] = posts.map((post) =>
+      post.id === id ? newPost : post,
+    );
+    setState({ posts: newPosts });
+  };
 
   return (
     <div className="bg-white rounded-lg shadow p-4 mb-4">
@@ -48,12 +54,7 @@ export const Post = ({
       <p>{content}</p>
       <div className="mt-2 flex justify-between text-gray-500">
         <span
-          onClick={() => {
-            if (!currentUser) {
-              return window.alert("로그인 후 이용해주세요");
-            }
-            toggleLike(id, currentUser.username);
-          }}
+          onClick={onClickLike}
           className={`like-button cursor-pointer${activationLike ? " text-blue-500" : ""}`}
         >
           좋아요 {likeUsers.length}

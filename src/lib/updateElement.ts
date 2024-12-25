@@ -47,15 +47,28 @@ export function updateElement(
 ) {
   const $oldEl = parentElement.childNodes[index];
 
-  if (!newNode) {
-    return parentElement.removeChild($oldEl);
+  if (oldNode && !newNode) {
+    parentElement.removeChild($oldEl);
+
+    const oldProps = oldNode.props;
+    if (!oldProps) return;
+
+    for (const [k, v] of Object.entries(oldNode.props)) {
+      if (isEvent(k, v)) {
+        // 문제점: children의 이벤트는 제거되지 않고 남아있음
+        removeEvent($oldEl, getEventType(k), v);
+        continue;
+      }
+    }
   }
 
   const $newEl = createElement(newNode);
 
-  if (!oldNode) {
+  if (!oldNode && newNode) {
     return parentElement.appendChild($newEl);
   }
+
+  if (!newNode || !oldNode) return;
 
   const { type: oldType, props: oldProps, children: oldChildren } = oldNode;
   const { type: newType, props: newProps, children: newChildren } = newNode;
@@ -70,7 +83,9 @@ export function updateElement(
 
   if (!$oldEl) return;
 
-  updateAttributes($oldEl, newProps, oldProps);
+  if (newProps !== oldProps) {
+    updateAttributes($oldEl, newProps, oldProps);
+  }
 
   for (let i = 0; i < Math.max(newChildren?.length, oldChildren?.length); i++) {
     updateElement($oldEl, newChildren[i], oldChildren[i], i);

@@ -9,14 +9,8 @@ export function createVNode(
   return {
     type,
     props,
-    children: children
-      ?.flat(Infinity)
-      .filter((child) => {
-        return (child && !isBooleanTrue(child)) || isNumberZero(child);
-      })
-      .map((child) => {
-        if (!child && !isNumberZero(child)) return "";
-        return child;
-      }),
+    children: children?.flat(Infinity).filter((child) => {
+      return (child && !isBooleanTrue(child)) || isNumberZero(child);
+    }),
   };
 }

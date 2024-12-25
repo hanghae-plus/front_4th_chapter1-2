@@ -44,7 +44,6 @@ function updateAttributes($el: HTMLElement, props: VNodeProps): HTMLElement {
   for (const [k, v] of Object.entries(props)) {
     if (isEvent(k, v)) {
       addEvent($el, getEventType(k), v);
-
       continue;
     }
 
