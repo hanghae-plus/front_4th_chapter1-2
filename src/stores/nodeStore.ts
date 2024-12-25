@@ -1,6 +1,6 @@
 import { VNode } from "../lib";
 
-const nodeStore = () => {
+export const nodeStore = (() => {
   let currVNode: VNode | null = null;
 
   return {
@@ -9,8 +9,4 @@ const nodeStore = () => {
       currVNode = vNode;
     },
   };
-};
-
-const getNodeStore = nodeStore();
-
-export default getNodeStore;
+})();

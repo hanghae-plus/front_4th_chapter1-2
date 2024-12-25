@@ -1,3 +1,4 @@
+import { deepEqual } from "../utils/deepEqual.ts";
 import { createObserver } from "./createObserver.ts";
 
 type State = { [key: string]: any };
@@ -11,7 +12,12 @@ export const createStore = <T extends State>(
   let state: T = { ...initialState };
 
   const setState = (newState: Partial<T>) => {
-    state = { ...state, ...newState };
+    const stateToSet = { ...state, ...newState };
+
+    // state가 동일한 경우 업데이트 방지
+    if (deepEqual(stateToSet, state)) return;
+
+    state = stateToSet;
     notify();
   };
 

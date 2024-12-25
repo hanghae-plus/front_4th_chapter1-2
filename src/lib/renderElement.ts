@@ -3,7 +3,7 @@ import { createElement } from "./createElement";
 import { normalizeVNode } from "./normalizeVNode";
 import { updateElement } from "./updateElement";
 import { VNode } from "./type";
-import getNodeStore from "../stores/nodeStore";
+import { nodeStore } from "../stores";
 
 export function renderElement(vNode: VNode, container: HTMLElement | null) {
   if (!container) return;
@@ -13,12 +13,12 @@ export function renderElement(vNode: VNode, container: HTMLElement | null) {
   if (!prevEl) {
     container.appendChild(createElement(normalizeVNode(vNode)));
     setupEventListeners(container);
-    getNodeStore.set(normalizeVNode(vNode));
+    nodeStore.set(normalizeVNode(vNode));
     return;
   }
 
-  updateElement(container, normalizeVNode(vNode), getNodeStore.get());
-  getNodeStore.set(normalizeVNode(vNode));
+  updateElement(container, normalizeVNode(vNode), nodeStore.get());
+  nodeStore.set(normalizeVNode(vNode));
   // container.replaceChild(createElement(normalizeVNode(vNode)), prevEl);
   // setupEventListeners(container);
   // 최초 렌더링시에는 createElement로 DOM을 생성하고

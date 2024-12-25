@@ -2,8 +2,16 @@
 import { createVNode } from "../../lib/index.ts";
 import { globalStore } from "../../stores/globalStore.ts";
 import { PostData } from "../../stores/type.ts";
-
 import { toTimeFormat } from "../../utils/index.ts";
+
+interface PostProps {
+  id: number;
+  author: string;
+  time: number;
+  content: string;
+  likeUsers: string[];
+  activationLike: boolean;
+}
 
 export const Post = ({
   id,
@@ -12,7 +20,7 @@ export const Post = ({
   content,
   likeUsers,
   activationLike = false,
-}) => {
+}: PostProps) => {
   const { getState, setState } = globalStore;
   const { currentUser, posts } = getState();
 

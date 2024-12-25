@@ -2,6 +2,7 @@ import { addEvent, removeEvent } from "./eventManager.ts";
 import { createElement } from "./createElement.ts";
 import { VNode, VNodeProps } from "./type.ts";
 import { getAttributeName, getEventType, isEvent } from "./helper.ts";
+import { deepEqual } from "../utils/deepEqual.ts";
 
 function updateAttributes(
   $el: HTMLElement,
@@ -62,10 +63,8 @@ export function updateElement(
     }
   }
 
-  const $newEl = createElement(newNode);
-
   if (!oldNode && newNode) {
-    return parentElement.appendChild($newEl);
+    return parentElement.appendChild(createElement(newNode));
   }
 
   if (!newNode || !oldNode) return;
@@ -74,16 +73,17 @@ export function updateElement(
   const { type: newType, props: newProps, children: newChildren } = newNode;
 
   if (newType !== oldType) {
-    return parentElement.replaceChild($newEl, $oldEl);
+    return parentElement.replaceChild(createElement(newNode), $oldEl);
   }
 
   if (!newType && !oldType && newNode !== oldNode) {
-    return parentElement.replaceChild($newEl, $oldEl);
+    return parentElement.replaceChild(createElement(newNode), $oldEl);
   }
 
   if (!$oldEl) return;
 
-  if (newProps !== oldProps) {
+  // 속성값이 동일한 경우 update 방지
+  if (!deepEqual(newProps, oldProps)) {
     updateAttributes($oldEl, newProps, oldProps);
   }
 
