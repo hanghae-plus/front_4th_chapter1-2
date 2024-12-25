@@ -104,7 +104,7 @@ export const eventManager = (() => {
           }
 
           while (target && target !== $root) {
-            const targetEvents = eventSet.get(eventType)!;
+            const targetEvents = eventSet.get(eventType) ?? [];
             for (const event of targetEvents) {
               if (event.element === target) {
                 event.handler(e);

@@ -9,12 +9,12 @@ function updateAttributes($el, props) {
     const isEvent = key.startsWith("on") && typeof value === "function";
     if (isEvent) {
       addEvent($el, key.slice(2).toLowerCase(), value);
-      return;
+      continue;
     }
 
     if (key === "className") {
       $el.className = value;
-      return;
+      continue;
     }
 
     $el.setAttribute(key, value);
