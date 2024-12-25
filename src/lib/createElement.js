@@ -28,15 +28,20 @@ export function createElement(vNode) {
   if (!Array.isArray(vNode) && typeof vNode === "object") {
     const container = document.createElement(vNode.type);
 
-    Object.entries(vNode?.props ?? []).forEach(([attr, value]) => {
-      attr = attr === "className" ? "class" : attr;
-      container.setAttribute(attr, value);
-    });
-
+    updateAttributes(container, vNode?.props);
     container.append(createElement(vNode.children));
 
     return container;
   }
+
+  return vNode;
 }
 
-function updateAttributes($el, props) {}
+function updateAttributes($el, props = {}) {
+  if (props === null) return;
+
+  Object.entries(props).forEach(([attr, value]) => {
+    attr = attr === "className" ? "class" : attr;
+    $el.setAttribute(attr, value);
+  });
+}
