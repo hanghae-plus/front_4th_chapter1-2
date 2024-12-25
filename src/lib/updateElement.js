@@ -1,88 +1,107 @@
-import { addEvent, removeEvent } from "./eventManager";
-import { createElement } from "./createElement.js";
+import { addEvent, removeEvent } from "./eventManager"; // 이벤트 관리
+import { createElement } from "./createElement"; // 요소 생성
 
-export function updateElement(element, normalizedVNode, prevVNode) {
-  const { children, props } = normalizedVNode;
-  const { children: prevChildren = [], props: prevProps = {} } =
-    prevVNode || {};
+function updateAttributes(target, originNewProps, originOldProps) {
+  //속성이 없는 경우 에러 방지
+  originOldProps = originOldProps || {};
+  originNewProps = originNewProps || {};
 
-  // 속성 업데이트 (props)
-  updateProps(element, props, prevProps);
+  // 이전 속성들 처리
+  Object.keys(originOldProps).forEach((prop) => {
+    if (prop === "children") return;
 
-  // 자식 업데이트 (children)
-  updateChildren(element, children, prevChildren);
+    if (prop.startsWith("on") && typeof originOldProps[prop] === "function") {
+      const eventType = prop.substring(2).toLowerCase();
+      removeEvent(target, eventType, originOldProps[prop]);
+      return;
+    }
+
+    if (prop === "className") {
+      if (!(prop in originNewProps)) {
+        target.removeAttribute("class");
+      }
+      return;
+    }
+
+    if (!(prop in originNewProps)) {
+      target.removeAttribute(prop);
+    }
+  });
+
+  // 새로운 속성들 처리
+  Object.keys(originNewProps).forEach((prop) => {
+    if (prop === "children") return;
+
+    if (prop.startsWith("on") && typeof originNewProps[prop] === "function") {
+      const eventType = prop.substring(2).toLowerCase();
+      addEvent(target, eventType, originNewProps[prop]);
+      return;
+    }
+
+    if (prop === "className") {
+      target.setAttribute("class", originNewProps[prop]);
+      return;
+    }
+
+    if (originNewProps[prop] !== originOldProps[prop]) {
+      target.setAttribute(prop, originNewProps[prop]);
+    }
+  });
 }
 
-function updateProps(element, newProps, oldProps) {
-  // 새로운 속성과 기존 속성 비교하여 업데이트
-  for (const key in newProps) {
-    if (newProps[key] !== oldProps[key]) {
-      if (key.startsWith("on")) {
-        // 이벤트 업데이트
-        const eventType = key.slice(2).toLowerCase();
-        if (oldProps[key]) {
-          removeEvent(element, eventType, oldProps[key]);
-        }
-        if (newProps[key]) {
-          addEvent(element, eventType, newProps[key]);
-        }
-      } else {
-        element.setAttribute(key, newProps[key]);
-      }
-    }
+export function updateElement(parentElement, newNode, oldNode, index = 0) {
+  //노드드 없을 경우
+  if (!oldNode && !newNode) return;
+
+  //노드 제거
+  if (!newNode) {
+    parentElement.removeChild(parentElement.children[index]);
+    return;
   }
 
-  // 이전 속성 중 더 이상 존재하지 않는 속성은 제거
-  for (const key in oldProps) {
-    if (!Object.prototype.hasOwnProperty.call(newProps, key)) {
-      if (key.startsWith("on")) {
-        // 이벤트 제거
-        const eventType = key.slice(2).toLowerCase();
-        removeEvent(element, eventType, oldProps[key]);
-      } else {
-        element.removeAttribute(key);
-      }
-    }
+  //노드 추가
+  if (!oldNode) {
+    parentElement.appendChild(createElement(newNode));
+    return;
   }
-}
 
-function updateChildren(element, newChildren, oldChildren) {
-  const maxLen = Math.max(newChildren.length, oldChildren.length);
-
-  for (let i = 0; i < maxLen; i++) {
-    const newChild = newChildren[i];
-    const oldChild = oldChildren[i];
-
-    if (newChild === undefined) {
-      // 자식 제거
-      element.removeChild(element.childNodes[i]);
-      continue;
+  //텍스트 업데이트
+  if (
+    typeof newNode === "string" &&
+    typeof newNode === "number" &&
+    typeof oldNode === "string" &&
+    typeof oldNode === "number"
+  ) {
+    if (newNode !== oldNode) {
+      parentElement.replaceChild(
+        document.createTextNode(newNode),
+        parentElement.childNodes[index],
+      );
     }
+    return;
+  }
 
-    if (oldChild === undefined) {
-      // 자식 추가
-      const newElement = createElement(newChild);
-      element.appendChild(newElement);
-      continue;
-    }
+  //노드 교체
+  if (newNode.type !== oldNode.type) {
+    parentElement.replaceChild(
+      createElement(newNode),
+      parentElement.childNodes[index],
+    );
 
-    if (typeof newChild === "string" || typeof newChild === "number") {
-      // 텍스트 노드 업데이트
-      if (typeof oldChild === "string" || typeof oldChild === "number") {
-        if (newChild !== oldChild) {
-          element.childNodes[i].textContent = newChild;
-        }
-      } else {
-        const textNode = document.createTextNode(newChild);
-        element.replaceChild(textNode, element.childNodes[i]);
-      }
-    } else if (newChild.type !== oldChild.type) {
-      // 노드 교체
-      const newElement = createElement(newChild);
-      element.replaceChild(newElement, element.childNodes[i]);
-    } else {
-      // 동일한 타입의 노드 업데이트
-      updateElement(element.childNodes[i], newChild, oldChild);
-    }
+    return;
+  }
+
+  //같은 타입의 노드 속성 업데이트
+  const element = parentElement.childNodes[index];
+  updateAttributes(element, newNode.props, oldNode.props);
+
+  //자식노드들 업데이트
+  const maxLength = Math.max(
+    newNode.children?.length || 0,
+    oldNode.children?.length || 0,
+  );
+
+  for (let i = 0; i < maxLength; i++) {
+    updateElement(element, newNode.children?.[i], oldNode.children?.[i], i);
   }
 }
