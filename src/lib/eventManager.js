@@ -34,3 +34,11 @@ export function setupEventListeners(root) {
     });
   });
 }
+
+export function removeAllEvents() {
+  eventRegistry.forEach((events, element) => {
+    events.forEach(({ eventType, handler }) => {
+      removeEvent(element, eventType, handler);
+    });
+  });
+}

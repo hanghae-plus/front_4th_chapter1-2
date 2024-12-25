@@ -9,11 +9,3 @@ export function createVNode(type, props, ...children) {
     children: flatChildren,
   };
 }
-
-const vNode = createVNode(
-  "div",
-  null,
-  createVNode("span", null, "Hello"),
-  createVNode("b", null, "world"),
-);
-console.log(vNode);
