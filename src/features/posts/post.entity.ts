@@ -3,6 +3,6 @@ export type Post = {
   author: string;
   time: number;
   content: string;
-  likeUsers: [];
+  likeUsers: string[];
   activationLike?: boolean;
 };

@@ -3,7 +3,7 @@ import User from "../features/user/user.entity";
 import { createStore, hour, minute } from "../libs";
 import { userStorage } from "../storages";
 
-type GlobalState = {
+export type GlobalState = {
   currentUser: User | null;
   loggedIn: boolean;
   posts?: Post[];

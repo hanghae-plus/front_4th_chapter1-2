@@ -11,8 +11,13 @@ export const createStore = <
 
   let state = { ...initialState };
 
-  const setState = (newState: State) => {
-    state = { ...state, ...newState };
+  const setState = (
+    newStateOrUpdateFn: State | ((prevState: State) => State),
+  ) => {
+    state =
+      typeof newStateOrUpdateFn === "function"
+        ? { ...state, ...newStateOrUpdateFn(state) }
+        : { ...state, ...newStateOrUpdateFn };
     notify();
   };
 
