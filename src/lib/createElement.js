@@ -1,5 +1,47 @@
 import { addEvent } from "./eventManager";
 
-export function createElement(vNode) {}
+export function createElement(vNode) {
+  if (typeof vNode === "function") {
+    throw new Error("invalid vNode");
+  }
 
-function updateAttributes($el, props) {}
+  if (
+    typeof vNode === "boolean" ||
+    typeof vNode === "undefined" ||
+    vNode === null
+  ) {
+    return new Text("");
+  }
+
+  if (typeof vNode === "number" || typeof vNode === "string") {
+    return new Text(String(vNode));
+  }
+
+  if (Array.isArray(vNode)) {
+    const fragment = new DocumentFragment();
+
+    vNode.forEach((node) => fragment.append(createElement(node)));
+
+    return fragment;
+  }
+
+  if (!Array.isArray(vNode) && typeof vNode === "object") {
+    const container = document.createElement(vNode.type);
+
+    updateAttributes(container, vNode?.props);
+    container.append(createElement(vNode.children));
+
+    return container;
+  }
+
+  return vNode;
+}
+
+function updateAttributes($el, props = {}) {
+  if (props === null) return;
+
+  Object.entries(props).forEach(([attr, value]) => {
+    attr = attr === "className" ? "class" : attr;
+    $el.setAttribute(attr, value);
+  });
+}
