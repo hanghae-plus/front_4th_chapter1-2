@@ -1,10 +1,11 @@
 /** @jsx createVNode */
+import { ForbiddenError, UnauthorizedError } from "./errors";
 import { createRouter, createVNode } from "./libs";
 import { HomePage, LoginPage, ProfilePage } from "./pages";
-import { globalStore } from "./stores";
-import { ForbiddenError, UnauthorizedError } from "./errors";
-import { router } from "./router";
 import { render } from "./render";
+import { router } from "./router";
+import { globalStore } from "./stores";
+import { postFormStore } from "./stores/postFormStore";
 
 router.set(
   createRouter({
@@ -29,6 +30,7 @@ router.set(
 function main() {
   router.get().subscribe(render);
   globalStore.subscribe(render);
+  postFormStore.subscribe(render);
 
   render();
 }
