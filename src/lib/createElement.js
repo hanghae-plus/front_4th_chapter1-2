@@ -1,3 +1,5 @@
+import { addEvent } from "./eventManager";
+
 export function createElement(vNode) {
   //빈 텍스트 노드로 변환
   if (vNode === null || vNode === undefined || typeof vNode === "boolean") {
@@ -34,6 +36,13 @@ export function updateAttributes($el, props) {
     Object.keys(props).forEach((key) => {
       if (key === "className") {
         $el.setAttribute("class", props[key]);
+        return;
+      }
+
+      if (key.startsWith("on")) {
+        const eventType = key.slice(2).toLowerCase();
+        const handler = props[key];
+        addEvent($el, eventType, handler);
         return;
       }
 

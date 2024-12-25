@@ -16,8 +16,6 @@ export function normalizeVNode(vNode) {
     );
   }
 
-  console.log(vNode);
-
   // vNode.type이 함수형 컴포넌트인 경우 처리
   if (typeof vNode.type === "function") {
     // 함수형 컴포넌트를 호출하고 그 결과를 정규화
