@@ -5,18 +5,8 @@ import { globalStore } from "../../stores";
 
 export const PostForm = () => {
   const postSubmitHandler = () => {
-    const state = globalStore.getState();
-
-    const newPost = {
-      id: Math.max(...state.posts.map((post) => post.id)) + 1 || 1,
-      author: userStorage.get().username,
-      time: Date.now(),
-      content: document.getElementById("post-content").value,
-      likeUsers: [],
-    };
-
-    state.posts = [...state.posts, newPost];
-    globalStore.setState(state);
+    const content = document.getElementById("post-content").value;
+    globalStore.actions.addPost(content);
   };
   return (
     <form className="mb-4 bg-white rounded-lg shadow p-4">

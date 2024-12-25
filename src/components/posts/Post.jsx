@@ -12,27 +12,8 @@ export const Post = ({
   likeUsers,
   activationLike = false,
 }) => {
-  const state = globalStore.getState();
-
   const clickLikeHandler = () => {
-    if (!state.loggedIn) {
-      alert("로그인 후 이용해주세요");
-      return;
-    }
-
-    const username = state.currentUser?.username;
-    if (likeUsers.includes(username)) {
-      likeUsers = likeUsers.filter((user) => user !== username);
-    } else {
-      likeUsers.push(username);
-    }
-
-    state.posts.map((post) => {
-      if (post.id === id) {
-        post.likeUsers = likeUsers;
-      }
-    });
-    globalStore.setState(state);
+    globalStore.actions.changeLikePost(id);
   };
 
   return (
