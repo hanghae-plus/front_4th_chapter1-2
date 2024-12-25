@@ -4,22 +4,28 @@ export function normalizeVNode(vNode) {
   }
 
   if (typeof vNode === "object") {
-    const { type, props, children } = vNode;
+    const { type, children, props } = vNode;
 
     if (typeof type === "function") {
-      return normalizeVNode(type(props, children));
+      return normalizeVNode(type({ ...props, children }));
     }
 
     if (Array.isArray(children)) {
       return {
-        type: vNode.type,
+        type,
         children: children
           .map((child) => normalizeVNode(child))
           .filter((child) => child != null && child !== ""),
-        props: { ...props },
+        props: props,
       };
     }
-    return vNode;
+
+    return {
+      ...vNode,
+      props: {
+        ...vNode.props,
+      },
+    };
   }
 
   // if (typeof vNode === "string" || typeof vNode === "number") {

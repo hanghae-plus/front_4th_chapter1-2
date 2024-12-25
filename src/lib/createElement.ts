@@ -1,3 +1,5 @@
+import { addEvent } from "./eventManager";
+
 function updateAttributes($el, props) {
   if (props == null) {
     return;
@@ -6,7 +8,7 @@ function updateAttributes($el, props) {
   for (let [key, value] of Object.entries(props)) {
     const isEvent = key.startsWith("on") && typeof value === "function";
     if (isEvent) {
-      $el.addEventListener(key.slice(2).toLowerCase(), value);
+      addEvent($el, key.slice(2).toLowerCase(), value);
       return;
     }
 
