@@ -1,38 +1,33 @@
-// 이벤트 타입별 핸들러 저장
+// Map(이벤트타입 : Map(요소: Set(), 요소: (핸들러1, 핸들러2), 요소: (핸들러1) ))
+
 const eventHandlers = new Map();
 let rootElement = null;
 
 function delegateEvent(event) {
-  const eventType = event.type;
-
-  const handlers = eventHandlers.get(eventType);
-  if (!handlers) return;
-
   let target = event.target;
-  while (target && target !== rootElement?.parentElement) {
-    const elementHandlers = handlers.get(target);
-    if (elementHandlers) {
-      elementHandlers.forEach((handler) => {
-        handler.call(target, event);
-      });
-      if (!event.bubbles) break;
+
+  //루트 노드까지 올라가며 이벤트가 발생한 요소를 찾아 그 요소의 핸들러를 실행
+  while (target && target !== rootElement) {
+    const handlers = eventHandlers.get(event.type)?.get(target);
+    if (handlers) {
+      handlers.forEach((handler) => handler(event));
     }
-    target = target.parentElement;
+    target = target.parentNode;
   }
 }
 
 export function setupEventListeners(root) {
-  // 이전 root의 이벤트 리스너 제거
+  // 새로운 root 설정
+  // 1. 기존 이벤트 리스너 제거
   if (rootElement && rootElement !== root) {
     eventHandlers.forEach((_, eventType) => {
       rootElement.removeEventListener(eventType, delegateEvent);
     });
   }
 
-  // 새로운 root 설정
+  //2. 기존에 등록된 이벤트 root에 등록
   if (rootElement !== root) {
     rootElement = root;
-    // 기존에 등록된 이벤트 타입들에 대해 root에 이벤트 리스너 등록
     eventHandlers.forEach((_, eventType) => {
       rootElement.addEventListener(eventType, delegateEvent);
     });
@@ -40,43 +35,38 @@ export function setupEventListeners(root) {
 }
 
 export function addEvent(element, eventType, handler) {
-  //이벤트 위임
   if (!eventHandlers.has(eventType)) {
     eventHandlers.set(eventType, new Map());
+    //루트에 이벤트 등록
     if (rootElement) {
       rootElement.addEventListener(eventType, delegateEvent);
     }
   }
 
-  // 엘리먼트의 핸들러 Set이 없으면 생성
-  const handlers = eventHandlers.get(eventType);
-  if (!handlers.has(element)) {
-    handlers.set(element, new Set());
+  const elementMap = eventHandlers.get(eventType);
+  if (!elementMap.has(element)) {
+    elementMap.set(element, new Set());
   }
-
-  // 핸들러 추가
-  handlers.get(element).add(handler);
+  elementMap.get(element).add(handler);
 }
 
 export function removeEvent(element, eventType, handler) {
-  const handlers = eventHandlers.get(eventType);
-  if (!handlers) return;
+  const elementMap = eventHandlers.get(eventType);
+  if (!elementMap?.has(element)) return;
 
-  const elementHandlers = handlers.get(element);
-  if (!elementHandlers) return;
-
-  // 핸들러 제거
-  elementHandlers.delete(handler);
-
-  // 해당 요소가 가지는 핸들러가 없으면 핸들러에서 삭제
-  if (elementHandlers.size === 0) {
-    handlers.delete(element);
+  const handlers = elementMap.get(element);
+  if (handlers) {
+    handlers.delete(handler);
+    if (handlers.size === 0) {
+      elementMap.delete(element);
+    }
   }
 
-  // 해당 이벤트 타입의 모든 핸들러가 제거되었는지 확인
-  const handlersMap = eventHandlers.get(eventType);
-  if (!handlersMap || handlersMap.size === 0) {
-    rootElement?.removeEventListener(eventType, delegateEvent);
+  if (elementMap.size === 0) {
     eventHandlers.delete(eventType);
+    //루트에 이벤트 제거
+    if (rootElement) {
+      rootElement.removeEventListener(eventType, delegateEvent);
+    }
   }
 }
