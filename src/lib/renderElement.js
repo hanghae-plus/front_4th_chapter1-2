@@ -15,7 +15,6 @@ export function renderElement(vNode, container) {
   } else {
     // 이후에는 updateElement로 기존 DOM을 업데이트한다.
     updateElement(container, newNode, oldNode);
-    // container.replaceChildren(createElement(newNode));
   }
 
   oldNodeMap.set(container, newNode);

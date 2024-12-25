@@ -10,16 +10,24 @@ export function setupEventListeners(root) {
 
 function handleEvent(event) {
   let target = event.target;
-  const elementHandlers = eventMap.get(event.type).get(target);
-  if (elementHandlers) {
-    elementHandlers.forEach((handler) => handler(event));
+  while (target && target !== rootElement) {
+    const elementHandlers = eventMap.get(event.type).get(target);
+    if (elementHandlers) {
+      elementHandlers.forEach((handler) => handler(event));
+      break;
+    }
+    target = target.parentNode;
   }
 }
 
 export function addEvent(element, eventType, handler) {
-  eventMap.set(eventType, new WeakMap());
+  if (!eventMap.has(eventType)) {
+    eventMap.set(eventType, new WeakMap());
+  }
   const elementMap = eventMap.get(eventType);
-  elementMap.set(element, new Set());
+  if (!elementMap.has(element)) {
+    elementMap.set(element, new Set());
+  }
   elementMap.get(element).add(handler);
 }
 
