@@ -1,8 +1,10 @@
 import { defineConfig as defineTestConfig, mergeConfig } from "vitest/config";
 import { defineConfig } from "vite";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 export default mergeConfig(
   defineConfig({
+    plugins: [tsconfigPaths()],
     esbuild: {
       jsxFactory: "createVNode",
     },
