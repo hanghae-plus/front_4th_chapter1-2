@@ -416,6 +416,7 @@ describe("Chapter1-2 > 기본과제 > 가상돔 만들기 > ", () => {
 
     it("undefined 자식을 무시해야 한다", () => {
       const result = createElement(<div>{undefined}</div>);
+      console.log("🚀 ~ it ~ result:", result);
       expect(result.tagName).toBe("DIV");
       expect(result.childNodes.length).toBe(0);
     });

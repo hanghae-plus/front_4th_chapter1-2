@@ -18,7 +18,6 @@ export const HomePage = () => {
       <div className="max-w-md w-full">
         <Header />
         <Navigation />
-
         <main className="p-4">
           <PostForm />
           <div id="posts-container" className="space-y-4">
@@ -28,8 +27,8 @@ export const HomePage = () => {
                 return <Post {...props} activationLike={false} />;
               })}
           </div>
+          <div>{undefined}</div>
         </main>
-
         <Footer />
       </div>
     </div>
