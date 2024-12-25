@@ -1,11 +1,10 @@
 /** @jsx createVNode */
-import { ForbiddenError, UnauthorizedError } from "./errors";
-import { createRouter, createVNode } from "./libs";
-import { HomePage, LoginPage, ProfilePage } from "./pages";
-import { render } from "./render";
-import { router } from "./router";
-import { globalStore } from "./stores";
-import { postFormStore } from "./stores/postFormStore";
+import { ForbiddenError, UnauthorizedError } from "@errors";
+import { createRouter, createVNode } from "@libs";
+import { HomePage, LoginPage, ProfilePage } from "@pages";
+import { render } from "@/render";
+import { router } from "@/router";
+import { globalStore, postFormStore } from "@stores";
 
 router.set(
   createRouter({

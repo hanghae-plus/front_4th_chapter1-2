@@ -1,5 +1,5 @@
-import { VNodeChild, VNodeProps } from "../types";
-import { updateAttributes } from "./updateAttributes";
+import { VNodeChild, VNodeProps } from "@types";
+import { updateAttributes } from "@libs";
 
 /**
  * Virtual DOM Node를 실제 DOM Element로 변환하는 함수

@@ -1,5 +1,5 @@
 /** @jsx createVNode */
-import { createVNode } from "../../libs";
+import { createVNode } from "@libs";
 
 export const Header = () => {
   return (

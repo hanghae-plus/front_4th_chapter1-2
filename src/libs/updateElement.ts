@@ -1,6 +1,5 @@
-import { createElement } from "./createElement.js";
-import { VNode, VNodeChild, VNodeProps } from "../types";
-import { updateAttributes } from "./updateAttributes";
+import { VNodeChild } from "@types";
+import { createElement, updateAttributes } from "@libs";
 
 /**
  * Virtual DOM의 변경사항을 실제 DOM에 반영하는 함수

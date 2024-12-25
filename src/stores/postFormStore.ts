@@ -1,4 +1,4 @@
-import { createStore } from "../libs";
+import { createStore } from "@libs";
 
 type PostFormState = { content: string };
 

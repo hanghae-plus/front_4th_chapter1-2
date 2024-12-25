@@ -1,5 +1,5 @@
-import { RouterObject, Routes } from "../router";
-import { createObserver } from "./createObserver";
+import { RouterObject, Routes } from "@/router";
+import { createObserver } from "@libs";
 
 export const createHashRouter = (routes: Routes): RouterObject => {
   const { subscribe, notify } = createObserver();

@@ -1,7 +1,7 @@
 /** @jsx createVNode */
-import { createVNode } from "../../libs";
-import { router } from "../../router";
-import { globalStore } from "../../stores";
+import { createVNode } from "@libs";
+import { router } from "@/router";
+import { globalStore } from "@stores";
 
 type NavProps = {
   className?: string;

@@ -1,11 +1,11 @@
 /** @jsx createVNode */
-import { createVNode } from "../libs";
-import { globalStore } from "../stores";
-import { userStorage } from "../storages";
-import User from "../features/user/user.entity";
+import { createVNode } from "@libs";
+import { globalStore } from "@stores";
+import { userStorage } from "@storages";
+import { UserEntity } from "@features/user";
 
 function login(username: string): void {
-  const user: User = {
+  const user: UserEntity = {
     username,
     email: "",
     bio: "",

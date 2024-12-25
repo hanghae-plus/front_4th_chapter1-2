@@ -1,10 +1,10 @@
 /** @jsx createVNode */
-import { createHashRouter, createVNode } from "./libs";
-import { HomePage, LoginPage, ProfilePage } from "./pages";
-import { globalStore } from "./stores";
-import { ForbiddenError, UnauthorizedError } from "./errors";
-import { router } from "./router";
-import { render } from "./render";
+import { createHashRouter, createVNode } from "@libs";
+import { HomePage, LoginPage, ProfilePage } from "@pages";
+import { globalStore } from "@stores";
+import { ForbiddenError, UnauthorizedError } from "@errors";
+import { router } from "@/router";
+import { render } from "@/render";
 
 router.set(
   createHashRouter({

@@ -1,9 +1,9 @@
 /** @jsx createVNode */
-import { createVNode } from "../libs";
+import { createVNode } from "@libs";
 
-import { Footer, Header, Navigation } from "../components";
-import { globalStore } from "../stores";
-import { Post, PostForm } from "../features/posts";
+import { Footer, Header, Navigation } from "@components";
+import { globalStore } from "@stores";
+import { Post, PostForm } from "@features/posts";
 
 /**
  * 심화과제
@@ -43,7 +43,7 @@ export const HomePage = () => {
         ? {
             ...post,
             likeUsers: post.likeUsers.includes(userName)
-              ? post.likeUsers.filter((name) => name !== userName)
+              ? post.likeUsers.filter((name: string) => name !== userName)
               : [...post.likeUsers, userName],
           }
         : post,

@@ -1,5 +1,5 @@
-import { Routes, RouterObject } from "../router";
-import { createObserver } from "./createObserver";
+import { Routes, RouterObject } from "@/router";
+import { createObserver } from "@libs";
 
 export const createRouter = (routes: Routes): RouterObject => {
   const { subscribe, notify } = createObserver();

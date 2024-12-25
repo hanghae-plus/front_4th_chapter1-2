@@ -1,4 +1,4 @@
-import { createObserver } from "./libs/createObserver";
+import { createObserver } from "@libs";
 
 export type Routes = Record<string, () => JSX.Element>;
 

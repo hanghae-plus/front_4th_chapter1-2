@@ -1,8 +1,10 @@
-import { setupEventListeners } from "./eventManager";
-import { createElement } from "./createElement";
-import { normalizeVNode } from "./normalizeVNode";
-import { updateElement } from "./updateElement";
-import { VNode, VNodeChild } from "../types";
+import { VNode, VNodeChild } from "@types";
+import {
+  createElement,
+  normalizeVNode,
+  setupEventListeners,
+  updateElement,
+} from "@libs";
 
 const vNodeMap = new WeakMap<HTMLElement, VNode | string>();
 

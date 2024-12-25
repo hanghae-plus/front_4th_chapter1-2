@@ -1,4 +1,4 @@
-import { day, hour, minute } from "../libs";
+import { day, hour, minute } from "@libs";
 
 export const toTimeFormat = (time: number) => {
   const diff = Date.now() - time;

@@ -1,9 +1,9 @@
 /** @jsx createVNode */
-import { createVNode } from "../libs";
-import { Footer, Header, Navigation } from "../components";
-import { globalStore } from "../stores";
-import { userStorage } from "../storages";
-import User from "../features/user/user.entity";
+import { createVNode } from "@libs";
+import { Footer, Header, Navigation } from "@components";
+import { globalStore } from "@stores";
+import { userStorage } from "@storages";
+import { UserEntity } from "@features/user";
 
 type Profile = {
   username: string;
@@ -16,7 +16,7 @@ function updateProfile(profile: Partial<Profile>): void {
   const currentUser = state.currentUser;
   if (!currentUser) return;
 
-  const user: User = {
+  const user: UserEntity = {
     ...currentUser,
     ...profile,
     username: currentUser.username,

@@ -1,6 +1,6 @@
 /** @jsx createVNode */
-import { createVNode } from "../../libs";
-import { postFormStore } from "../../stores/postFormStore";
+import { createVNode } from "@libs";
+import { postFormStore } from "@stores";
 
 interface PostFormProps {
   onSubmit: (content: string) => void;

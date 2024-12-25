@@ -1,4 +1,4 @@
-import { VNode, VNodeChild, VNodeProps } from "../types";
+import { VNode, VNodeChild, VNodeProps } from "@types";
 
 /**
  * Virtual DOM Node를 생성하는 함수

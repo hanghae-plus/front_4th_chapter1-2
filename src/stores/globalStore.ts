@@ -1,12 +1,12 @@
-import { Post } from "../features/posts/post.entity";
-import User from "../features/user/user.entity";
-import { createStore, hour, minute } from "../libs";
-import { userStorage } from "../storages";
+import { PostEntity } from "@features/posts";
+import { UserEntity } from "@features/user";
+import { createStore, hour, minute } from "@libs";
+import { userStorage } from "@storages";
 
 export type GlobalState = {
-  currentUser: User | null;
+  currentUser: UserEntity | null;
   loggedIn: boolean;
-  posts?: Post[];
+  posts?: PostEntity[];
   error?: string | null;
 };
 

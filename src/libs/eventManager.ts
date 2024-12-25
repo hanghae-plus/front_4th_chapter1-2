@@ -1,4 +1,4 @@
-import { DOMEventType, eventTypes } from "../types";
+import { DOMEventType, eventTypes } from "@types";
 
 type EventHandlerMap = Map<string, Set<Function>>;
 const eventMap = new WeakMap<HTMLElement, EventHandlerMap>();

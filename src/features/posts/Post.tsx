@@ -1,9 +1,9 @@
 /** @jsx createVNode */
-import { createVNode } from "../../libs";
-import { toTimeFormat } from "../../utils/index.js";
-import type { Post as PostType } from "./post.entity";
+import { createVNode } from "@libs";
+import { toTimeFormat } from "@utils";
+import { PostEntity } from "@features/posts";
 
-interface PostProps extends PostType {
+interface PostProps extends PostEntity {
   onLikeClick: () => void;
 }
 

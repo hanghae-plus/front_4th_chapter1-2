@@ -1,4 +1,4 @@
-import { createObserver } from "./createObserver";
+import { createObserver } from "@libs";
 
 export const createStore = <
   State extends object,

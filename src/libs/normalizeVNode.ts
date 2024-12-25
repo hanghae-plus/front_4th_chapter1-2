@@ -1,4 +1,4 @@
-import { VNode, VNodeChild } from "../types";
+import { VNode, VNodeChild } from "@types";
 
 /**
  * Virtual Node를 정규화하는 함수
