@@ -5,3 +5,12 @@ export function checkNullishExceptZero(value) {
   if (value === 0) return true;
   return Boolean(value);
 }
+
+/**
+ * @description prop이 className인 경우 class로 변경
+ * @param {object} prop
+ * @returns {string}
+ */
+export function replaceIfPropIsClass(prop) {
+  return prop === "className" ? "class" : prop;
+}

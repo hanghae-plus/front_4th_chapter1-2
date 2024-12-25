@@ -1,4 +1,7 @@
-import { checkNullishExceptZero } from "../utils/commonUtils";
+import {
+  checkNullishExceptZero,
+  replaceIfPropIsClass,
+} from "../utils/commonUtils";
 import { addEvent } from "./eventManager";
 // import { addEvent } from "./eventManager";
 
@@ -55,13 +58,4 @@ function updateAttributes($el, props) {
     }
     $el.setAttribute(replaceIfPropIsClass(prop), props[prop]);
   }
-}
-
-/**
- * @description prop이 className인 경우 class로 변경
- * @param {object} prop
- * @returns {string}
- */
-function replaceIfPropIsClass(prop) {
-  return prop === "className" ? "class" : prop;
 }
