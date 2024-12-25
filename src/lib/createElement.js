@@ -15,7 +15,7 @@ export function createElement(vNode) {
 
   // 문자열 또는 숫자인 경우 텍스트 노드로 처리
   if (typeof vNode === "string" || typeof vNode === "number") {
-    return document.createTextNode(vNode);
+    return document.createTextNode(String(vNode));
   }
 
   // 배열로 들어온 경우 fragment로 처리
