@@ -1,12 +1,21 @@
 import { addEvent } from "./eventManager";
 
 export function createElement(vNode) {
-  if (!vNode || typeof vNode === "boolean") {
+  if (
+    vNode === null ||
+    typeof vNode === "undefined" ||
+    typeof vNode === "boolean"
+  ) {
     return document.createTextNode("");
   }
   if (typeof vNode === "string" || typeof vNode === "number") {
     return document.createTextNode(`${vNode}`);
   }
+
+  if (typeof vNode.type === "function" && typeof vNode === "object") {
+    throw new Error();
+  }
+
   if (Array.isArray(vNode)) {
     const $fragment = document.createDocumentFragment();
     vNode.forEach((child) => {
@@ -15,9 +24,13 @@ export function createElement(vNode) {
     return $fragment;
   }
 
-  const $el = document.createElement(vNode.type, vNode.props);
+  const $el = document.createElement(vNode.type);
   updateAttributes($el, vNode.props);
-  vNode.children.forEach((child) => $el.appendChild(createElement(child)));
+  if (Array.isArray(vNode.children)) {
+    vNode.children.forEach((child) => {
+      $el.appendChild(createElement(child));
+    });
+  }
   return $el;
 }
 
@@ -25,7 +38,10 @@ function updateAttributes($el, props) {
   Object.entries(props || {}).forEach(([key, value]) => {
     if (key.startsWith("on")) {
       const eventType = key.toLowerCase().substring(2);
-      addEvent(eventType, value);
+      addEvent($el, eventType, value);
+    } else if (key.toLowerCase() === "classname") {
+      // console.log($el, key, value);
+      $el.setAttribute("class", value);
     } else {
       $el.setAttribute(key, value);
     }
