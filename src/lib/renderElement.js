@@ -1,7 +1,7 @@
 import { setupEventListeners } from "./eventManager";
 import { createElement } from "./createElement";
 import { normalizeVNode } from "./normalizeVNode";
-// import { updateElement } from "./updateElement";
+import { updateElement } from "./updateElement";
 
 /* 
   vNode를 정규화 한 다음에
@@ -17,7 +17,7 @@ export function renderElement(vNode, container) {
 
   if (prevVNode.has(container)) {
     // 이미 존재하는 경우에는 replaceWith로 기존 DOM을 교체한다.
-    container.firstChild.replaceWith(createElement(newNode));
+    updateElement(container, newNode, prevVNode.get(container));
   } else {
     // 최초 렌더링시에는 createElement로 DOM을 생성한다.
     container.append(createElement(newNode));
