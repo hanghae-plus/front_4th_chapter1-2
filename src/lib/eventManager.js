@@ -1,19 +1,24 @@
+import { eventTypes } from "../constants/constant";
+
 const eventMap = new Map();
 let rootElement = null;
 
 export function setupEventListeners(root) {
   rootElement = root;
-  rootElement.addEventListener("click", (event) => {
-    const target = event.target;
 
-    for (const [element, handlers] of eventMap.entries()) {
-      if (element === target || element.contains(target)) {
-        const eventTypeHandlers = handlers.get("click");
-        if (eventTypeHandlers) {
-          eventTypeHandlers.forEach((handler) => handler(event));
+  eventTypes.forEach((eventType) => {
+    rootElement.addEventListener(eventType, (event) => {
+      const target = event.target;
+
+      for (const [element, handlers] of eventMap.entries()) {
+        if (element === target || element.contains(target)) {
+          const eventTypeHandlers = handlers.get("click");
+          if (eventTypeHandlers) {
+            eventTypeHandlers.forEach((handler) => handler(event));
+          }
         }
       }
-    }
+    });
   });
 }
 
