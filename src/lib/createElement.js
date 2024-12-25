@@ -35,7 +35,7 @@ export function createElement(vNode) {
 
 function updateAttributes($el, props) {
   Object.keys(props).forEach((key) => {
-    if (key.startsWith("on") && typeof props[key]) {
+    if (key.startsWith("on") && typeof props[key] == "function") {
       const eventType = key.toLowerCase().substring(2);
       addEvent($el, eventType, props[key]);
     } else if (key == "className") {
