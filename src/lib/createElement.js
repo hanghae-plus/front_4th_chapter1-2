@@ -41,7 +41,16 @@ function updateAttributes($el, props = {}) {
   if (props === null) return;
 
   Object.entries(props).forEach(([attr, value]) => {
-    attr = attr === "className" ? "class" : attr;
+    if (attr === "className") {
+      $el.setAttribute("class", value);
+      return;
+    }
+
+    if (attr.startsWith("on")) {
+      addEvent($el, attr.slice(2).toLowerCase(), value);
+      return;
+    }
+
     $el.setAttribute(attr, value);
   });
 }

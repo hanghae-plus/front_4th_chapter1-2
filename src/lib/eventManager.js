@@ -21,6 +21,10 @@ const eventListeners = new Map();
 let root = null;
 
 export function setupEventListeners(_root) {
+  if (!_root) {
+    throw new Error("이벤트 리스너 설정을 위해 root 엘리먼트가 필요합니다.");
+  }
+
   root = _root;
 
   eventListeners.forEach((eventTypeMap) => {
