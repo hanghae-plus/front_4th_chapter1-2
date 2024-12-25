@@ -3,9 +3,7 @@ export function createVNode(type, props, ...children) {
     type,
     props,
     children: children.flat(Infinity).filter((item) => {
-      if (item === 0) return true;
-      if (!item) return false;
-      return true;
+      return item === 0 || item;
     }),
   };
 }
