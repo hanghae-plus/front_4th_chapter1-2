@@ -1,7 +1,9 @@
 import { setupEventListeners } from "./eventManager";
 import { createElement } from "./createElement";
 import { normalizeVNode } from "./normalizeVNode";
-// import { updateElement } from "./updateElement";
+import { updateElement } from "./updateElement";
+
+const containerMap = new WeakMap();
 
 export function renderElement(vNode, container) {
   // 최초 렌더링시에는 createElement로 DOM을 생성하고
@@ -9,9 +11,15 @@ export function renderElement(vNode, container) {
   // 렌더링이 완료되면 container에 이벤트를 등록한다.
   // vNode를 정규화한 다음에 createElement로 노드를 만들고, container에 삽입하고, 이벤트를 등록합니다.
   const normalizedVNode = normalizeVNode(vNode);
-  const element = createElement(normalizedVNode);
-  container.appendChild(element);
-  setupEventListeners(container);
 
-  return element;
+  if (containerMap.has(container)) {
+    const oldNode = containerMap.get(container);
+    updateElement(container, normalizedVNode, oldNode);
+  } else {
+    const element = createElement(normalizedVNode);
+    container.appendChild(element);
+  }
+
+  setupEventListeners(container);
+  containerMap.set(container, normalizedVNode);
 }
