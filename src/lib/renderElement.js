@@ -12,8 +12,9 @@ let oldVNode = null;
  * @param {HTMLElement} container 실제 DOM 엘리먼트(해당 VNode를 렌더링할 대상)
  */
 export function renderElement(vNode, container) {
-  // step0. 이벤트 초기화
-  clearEvents();
+  if (!container.children[0]) {
+    initOldVNode();
+  }
 
   // step1. vNode 정규화
   if (!vNode) {

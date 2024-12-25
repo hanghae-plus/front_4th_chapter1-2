@@ -1,9 +1,16 @@
-// import { addEvent, removeEvent } from "./eventManager";
-import { checkNullishExceptZero } from "../utils/commonUtils.js";
+import { replaceIfPropIsClass } from "../utils/commonUtils.js";
 import { createElement } from "./createElement.js";
+import { addEvent, removeEvent } from "./eventManager.js";
 
 export function updateElement(parentElement, newNode, oldNode, index = 0) {
-  if (!checkNullishExceptZero(newNode) || typeof newNode === "boolean") {
+  if (newNode && !oldNode) {
+    parentElement.appendChild(createElement(newNode));
+    return;
+  }
+
+  // newNode가 없는 경우 oldNode 제거
+  if (oldNode && !newNode) {
+    parentElement.removeChild(parentElement.childNodes[index]);
     return;
   }
 
@@ -12,12 +19,6 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
     if (parentElement.textContent !== newNode) {
       parentElement.textContent = newNode;
     }
-    return;
-  }
-
-  // oldNode가 없는 경우 새로운 element를 생성해 append
-  if (!oldNode) {
-    parentElement.appendChild(createElement(newNode));
     return;
   }
 
@@ -31,7 +32,11 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
   }
 
   // 타입이 같은 경우 props 및 children 비교
-  // updateAttributes(parentElement, newNode.props, oldNode.props);
+  updateAttributes(
+    parentElement.childNodes[index],
+    newNode.props,
+    oldNode.props,
+  );
 
   // children이 없는 경우 return
   if (Math.max(newNode.children.length, oldNode.children.length) === 0) {
@@ -41,7 +46,7 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
   const maxLength = Math.max(newNode.children.length, oldNode.children.length);
   for (let i = 0; i < maxLength; i++) {
     updateElement(
-      parentElement?.childNodes[index] || parentElement,
+      parentElement.childNodes[index],
       newNode.children[i],
       oldNode.children[i],
       i,
@@ -49,4 +54,51 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
   }
 }
 
-// function updateAttributes(target, originNewProps, originOldProps) {}
+/**
+ *
+ * @param {HTMLElement} target
+ * @param {*} originNewProps
+ * @param {*} originOldProps
+ */
+function updateAttributes(target, originNewProps, originOldProps) {
+  const newPropsArr = originNewProps ? Object.entries(originNewProps) : [];
+  const oldPropsArr = originOldProps ? Object.entries(originOldProps) : [];
+
+  for (const [prop, value] of oldPropsArr) {
+    console.log(prop);
+    if (prop?.startsWith("on")) {
+      removeEvent(target, prop.slice(2).toLowerCase(), value);
+      continue;
+    }
+
+    // 새로운 props에 없는 경우 제거
+    if (!originNewProps || !(prop in originNewProps)) {
+      target.removeAttribute(prop);
+    }
+    // 값이 다른 경우 업데이트
+    if (value !== originNewProps[prop]) {
+      if (prop?.startsWith("on")) {
+        addEvent(target, prop.slice(2).toLowerCase(), originNewProps[prop]);
+        continue;
+      }
+      target.setAttribute(replaceIfPropIsClass(prop), originNewProps[prop]);
+    }
+
+    if (value === originNewProps[prop]) {
+      if (prop?.startsWith("on")) {
+        addEvent(target, prop.slice(2).toLowerCase(), originNewProps[prop]);
+        continue;
+      }
+    }
+  }
+  // 새로운 props에 추가
+  for (const [prop, value] of newPropsArr) {
+    if (!originOldProps[prop]) {
+      if (prop?.startsWith("on")) {
+        addEvent(target, prop.slice(2).toLowerCase(), value);
+        continue;
+      }
+      target.setAttribute(replaceIfPropIsClass(prop), value);
+    }
+  }
+}
