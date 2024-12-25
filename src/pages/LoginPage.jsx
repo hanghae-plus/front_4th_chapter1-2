@@ -15,8 +15,11 @@ function login(username) {
 export const LoginPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
-    const username = document.getElementById("username").value;
-    login(username);
+    console.log("로그인 페이지 확인", document);
+    const username = document.getElementById("username")?.value;
+    if (username) {
+      login(username);
+    }
   };
 
   return (
