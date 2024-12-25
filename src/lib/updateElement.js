@@ -20,8 +20,8 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
 
   // 텍스트 노드인 경우
   if (typeof newNode === "string" || typeof newNode === "number") {
-    if (parentElement.textContent !== newNode) {
-      parentElement.textContent = newNode;
+    if (oldNode !== newNode) {
+      parentElement.childNodes[index].textContent = newNode;
     }
     return;
   }
