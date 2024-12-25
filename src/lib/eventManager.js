@@ -42,7 +42,7 @@ function handleEvent(e) {
 export function addEvent(element, eventType, handler) {
   //  eventMap에 해당 eventType이 있는지 먼저 확인
   if (!eventMap.has(eventType)) {
-    eventMap.set(eventType, new Map());
+    eventMap.set(eventType, new WeakMap());
   }
 
   const eventTypeMap = eventMap.get(eventType);
