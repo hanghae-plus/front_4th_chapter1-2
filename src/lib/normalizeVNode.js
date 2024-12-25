@@ -10,27 +10,34 @@ export function normalizeVNode(vNode) {
   }
   // 문자열, 숫자 -> 문자열로 처리
   if (typeof vNode === "number" || typeof vNode === "string") {
-    return vNode.toString();
+    return String(vNode);
   }
   // vNode가 function일 때
-  if (typeof vNode === "object") {
-    if (typeof vNode.type === "function") {
-      return normalizeVNode(
-        vNode.type({ ...vNode.props, children: vNode.children }),
-      );
-    }
-    if (Array.isArray(vNode.children)) {
-      return {
-        type: vNode.type,
-        props: { ...vNode.props },
-        children: vNode.children.map((child) => normalizeVNode(child)),
-      };
-    }
+  if (typeof vNode.type === "function") {
+    return normalizeVNode(
+      vNode.type({
+        ...vNode.props,
+        children: vNode.children.filter(
+          (child) => child !== null && child !== undefined && child !== false,
+        ),
+      }),
+    );
+  }
+  if (Array.isArray(vNode.children)) {
+    return {
+      type: vNode.type,
+      props: vNode.props,
+      children: vNode.children
+        .filter(
+          (child) =>
+            child !== null && child !== undefined && typeof child !== "boolean",
+        )
+        .map((child) => normalizeVNode(child)),
+    };
   }
 
   return {
-    type: vNode.type,
-    props: vNode.props,
-    children: vNode.children,
+    ...vNode,
+    children: normalizeVNode(vNode.children),
   };
 }
