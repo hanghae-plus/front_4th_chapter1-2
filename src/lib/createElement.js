@@ -2,11 +2,11 @@
 
 export function createElement(vNode) {
   if (vNode === undefined || vNode === null || typeof vNode === "boolean") {
-    vNode = document.createTextNode("");
+    return document.createTextNode("");
   }
 
   if (typeof vNode === "string" || typeof vNode === "number") {
-    vNode = document.createTextNode(String(vNode));
+    return document.createTextNode(String(vNode));
   }
 
   if (Array.isArray(vNode)) {
@@ -16,8 +16,10 @@ export function createElement(vNode) {
       fragment.appendChild(createElement(element));
     });
 
-    vNode = fragment;
-  } else if (typeof vNode === "object") {
+    return fragment;
+  }
+
+  if (typeof vNode === "object") {
     const element =
       vNode.type !== undefined
         ? document.createElement(vNode.type)
@@ -33,7 +35,7 @@ export function createElement(vNode) {
       });
     }
 
-    vNode = element;
+    return element;
   }
 
   return vNode;
