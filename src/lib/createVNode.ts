@@ -1,4 +1,10 @@
-export function createVNode(type, props, ...children) {
+import type { VNode, VNodeProps, VNodeType } from "./types";
+
+export function createVNode(
+  type: VNodeType,
+  props: VNodeProps,
+  ...children: VNode[]
+): VNode {
   return {
     type,
     props,

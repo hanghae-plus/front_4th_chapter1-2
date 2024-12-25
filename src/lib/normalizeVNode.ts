@@ -1,4 +1,6 @@
-export function normalizeVNode(vNode) {
+import { NormalizedVNode, VNode } from "./types";
+
+export function normalizeVNode(vNode: VNode): NormalizedVNode {
   if (vNode == null || typeof vNode === "boolean") {
     return "";
   }
@@ -21,7 +23,8 @@ export function normalizeVNode(vNode) {
     }
 
     return {
-      ...vNode,
+      type,
+      children,
       props: {
         ...vNode.props,
       },

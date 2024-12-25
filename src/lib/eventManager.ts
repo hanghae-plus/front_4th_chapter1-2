@@ -20,10 +20,6 @@ export const eventManager = (() => {
 
   function sync() {
     for (const event of deleteQueue) {
-      console.log(
-        `${event.element.tagName}의 ${event.eventType} 이벤트가 제거되었습니다.`,
-      );
-
       $root.removeEventListener(event.eventType, event.handler);
     }
 
@@ -48,14 +44,6 @@ export const eventManager = (() => {
           },
         ]);
       }
-      console.log(
-        `${element.tagName} 의 ${eventType} 이벤트(${handler.name})가 추가되었습니다.`,
-        eventSet.get(eventType)?.map((x) => ({
-          ...x,
-          element: x.element.tagName,
-          handler: x.handler.name,
-        })),
-      );
     },
 
     removeEvent: (element, eventType, handler: EventListener) => {
@@ -64,10 +52,6 @@ export const eventManager = (() => {
           event.element === element &&
           event.eventType === eventType &&
           event.handler === handler,
-      );
-
-      console.log(
-        `${element.tagName} 의 ${eventType} 이벤트(${handler.name})가 제거되었습니다.`,
       );
 
       for (const targetEvent of targetEvents) {
@@ -91,13 +75,7 @@ export const eventManager = (() => {
 
       for (const _eventType of SIMPLE_EVENTS) {
         const eventType = _eventType.toLowerCase();
-        if (eventType === "focus" || eventType === "click") {
-          console.log(
-            `${$root.tagName} #root 의 ${eventType} 전역 이벤트가 추가되었습니다.`,
-          );
-        }
         $root.addEventListener(eventType, function (e) {
-          console.log(`${eventType} 전역 이벤트가 발생했습니다.`);
           let target = e.target;
           if (!eventSet.has(eventType)) {
             return;
