@@ -1,4 +1,8 @@
-import { replaceIfPropIsClass } from "../utils/commonUtils.js";
+import {
+  isClass,
+  isEventProp,
+  replaceEventProp,
+} from "../utils/commonUtils.js";
 import { createElement } from "./createElement.js";
 import { addEvent, removeEvent } from "./eventManager.js";
 
@@ -34,8 +38,8 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
   // 타입이 같은 경우 props 및 children 비교
   updateAttributes(
     parentElement.childNodes[index],
-    newNode.props,
-    oldNode.props,
+    newNode.props || {},
+    oldNode.props || {},
   );
 
   // children이 없는 경우 return
@@ -65,40 +69,50 @@ function updateAttributes(target, originNewProps, originOldProps) {
   const oldPropsArr = originOldProps ? Object.entries(originOldProps) : [];
 
   for (const [prop, value] of oldPropsArr) {
-    console.log(prop);
-    if (prop?.startsWith("on")) {
-      removeEvent(target, prop.slice(2).toLowerCase(), value);
+    let newPropValue = originNewProps[prop];
+
+    // 이벤트 프로퍼티인 경우 이벤트 제거하고 시작
+    if (isEventProp(prop)) {
+      removeEvent(target, replaceEventProp(prop), value);
+      newPropValue = originNewProps[replaceEventProp(prop)];
+    }
+
+    // 새로 들어올 프로퍼티 값이 없는 경우 제거
+    if (newPropValue === undefined) {
+      target.removeAttribute(prop);
       continue;
     }
 
-    // 새로운 props에 없는 경우 제거
-    if (!originNewProps || !(prop in originNewProps)) {
-      target.removeAttribute(prop);
-    }
-    // 값이 다른 경우 업데이트
-    if (value !== originNewProps[prop]) {
-      if (prop?.startsWith("on")) {
-        addEvent(target, prop.slice(2).toLowerCase(), originNewProps[prop]);
+    // 새로 들어올 프로퍼티 값이 있는 경우 업데이트
+    if (value !== newPropValue) {
+      if (isClass(prop)) {
+        target.classList = newPropValue;
         continue;
       }
-      target.setAttribute(replaceIfPropIsClass(prop), originNewProps[prop]);
+      if (isEventProp(prop)) {
+        addEvent(target, replaceEventProp(prop), newPropValue);
+        continue;
+      }
+
+      target.setAttribute(prop, newPropValue);
+      continue;
     }
 
+    // 새로 들어올 프로퍼티 값이 같은 경우
     if (value === originNewProps[prop]) {
-      if (prop?.startsWith("on")) {
-        addEvent(target, prop.slice(2).toLowerCase(), originNewProps[prop]);
-        continue;
-      }
+      continue;
     }
   }
-  // 새로운 props에 추가
+
   for (const [prop, value] of newPropsArr) {
-    if (!originOldProps[prop]) {
-      if (prop?.startsWith("on")) {
-        addEvent(target, prop.slice(2).toLowerCase(), value);
+    // 이전 프로퍼티에 없는 프로퍼티인 경우 추가
+    if (oldPropsArr[prop] === undefined) {
+      if (isEventProp(prop)) addEvent(target, replaceEventProp(prop), value);
+      if (isClass(prop)) {
+        target.classList = value;
         continue;
       }
-      target.setAttribute(replaceIfPropIsClass(prop), value);
+      target.setAttribute(prop, value);
     }
   }
 }

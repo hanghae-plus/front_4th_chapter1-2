@@ -14,3 +14,30 @@ export function checkNullishExceptZero(value) {
 export function replaceIfPropIsClass(prop) {
   return prop === "className" ? "class" : prop;
 }
+
+/**
+ *
+ * @param {string} prop
+ * @returns {boolean}
+ */
+export function isEventProp(prop) {
+  return prop.startsWith("on");
+}
+
+/**
+ * @description 이벤트 프로퍼티인 경우 on 제거하고 소문자로 변경
+ * @param {string} prop
+ * @returns {string}
+ */
+export function replaceEventProp(prop) {
+  return prop.replace("on", "").toLowerCase();
+}
+
+/**
+ *
+ * @param {string} prop
+ * @returns {boolean}
+ */
+export function isClass(prop) {
+  return prop === "className";
+}
