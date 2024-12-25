@@ -12,7 +12,7 @@ export function renderElement(vNode, container) {
   const normalizedNode = normalizeVNode(vNode);
 
   if (!container.prevNode) {
-    //최최 랜더링
+    //최초 랜더링
     //2. 정규화된 노드로 실제 DOM 엘리먼트 생성
     const element = createElement(normalizedNode);
     //3. container 초기화 및 새로운 엘리먼트 삽입
@@ -23,7 +23,7 @@ export function renderElement(vNode, container) {
     updateElement(container, normalizedNode, container.prevNode);
   }
 
-  //다음 업데이트때 비교하도록
+  //다음 업데이트때 비교하도록 저장
   container.prevNode = normalizedNode;
   setupEventListeners(container);
 }

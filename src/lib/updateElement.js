@@ -82,7 +82,7 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
     return;
   }
 
-  //노드 교체
+  //다른 타입인 경우 노드 교체
   if (newNode.type !== oldNode.type) {
     parentElement.replaceChild(
       createElement(newNode),
