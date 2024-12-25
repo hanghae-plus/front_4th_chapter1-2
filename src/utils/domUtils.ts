@@ -14,7 +14,6 @@ export function addAttributeByCase(
   value: unknown,
 ) {
   if (key === "children") return;
-  console.log(key, value);
 
   if (key === "className") {
     $el.className = value as string;
