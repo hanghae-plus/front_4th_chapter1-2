@@ -21,14 +21,6 @@ export function createElement(vNode) {
   const { type, props, children } = vNode;
   const $el = document.createElement(type);
 
-  Object.entries(props || {}).forEach(([k, v]) => {
-    k.startsWith("on")
-      ? addEvent($el, k, v) // 이벤트를 저장한다
-      : k === "className" // setAttribute : 속성을 설정하는 메서드, k : 속성 이름, v : 속성 값
-        ? $el.setAttribute("class", v)
-        : $el.setAttribute(k, v); // 일반 속성 처리
-  });
-
   // children 처리
   if (Array.isArray(children)) {
     children
@@ -42,6 +34,23 @@ export function createElement(vNode) {
       .map(createElement)
       .forEach((child) => $el.appendChild(child)); // 자식 노드를 부모 노드에 추가
   }
+
+  // 이벤트 및 요소 할당
+  Object.entries(props || {}).forEach(([k, v]) => {
+    if (k.startsWith("on")) {
+      addEvent(type, k.slice(2).toLowerCase(), v); // 이벤트를 저장한다
+    } else {
+      if (typeof v === "function") addEvent($el, k, v);
+      else {
+        if (k === "className") {
+          // setAttribute : 속성을 설정하는 메서드, k : 속성 이름, v : 속성 값
+          $el.setAttribute("class", v);
+        } else {
+          $el.setAttribute(k, v); // 일반 속성 처리
+        }
+      }
+    }
+  });
 
   return $el;
 }
