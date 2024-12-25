@@ -7,11 +7,11 @@ export interface UserProfile {
 export interface GlobalStoreState {
   currentUser: UserProfile | null;
   loggedIn: boolean;
-  posts: Post[];
+  posts: PostData[];
   error: Error | null;
 }
 
-export interface Post {
+export interface PostData {
   id: number;
   author: string;
   time: number;

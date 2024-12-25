@@ -2,7 +2,6 @@
 import { createVNode } from "../lib";
 import { globalStore } from "../stores";
 import { userStorage } from "../storages";
-import { router } from "../router";
 
 function login(username) {
   const user = { username, email: "", bio: "" };
@@ -46,10 +45,6 @@ export const LoginPage = () => {
           <button
             type="submit"
             className="w-full bg-blue-600 text-white p-2 rounded"
-            onClick={(e: MouseEvent) => {
-              e.preventDefault();
-              router.get().push("/");
-            }}
           >
             로그인
           </button>

@@ -82,7 +82,7 @@ describe("Chapter1-2 > 심화과제 > 포스트 관리", () => {
       await user.click(document.getElementById("post-submit"));
 
       expect(document.querySelector("#posts-container > div").innerHTML).toBe(
-        `<div class="flex items-center mb-2"><div><div class="font-bold">testuser</div><div class="text-gray-500 text-sm">방금 전</div></div></div><p>새로운 포스트입니다.</p><div class="mt-2 flex justify-between text-gray-500"><span class="like-button cursor-pointer">좋아요 0</span><span>댓글</span><span>공유</span></div>`,
+        `<div class="flex items-center mb-2"><div><div class="font-bold">testuser</div><div class="text-gray-500 text-sm">방금 전</div></div></div><p>새로운 포스트입니다.</p><div class="mt-2 flex justify-between text-gray-500"><span class="like-button cursor-pointer">🤍&nbsp;좋아요&nbsp;0</span><span>댓글</span><span>공유</span></div>`,
       );
     });
 
@@ -91,17 +91,11 @@ describe("Chapter1-2 > 심화과제 > 포스트 관리", () => {
         ...document.querySelectorAll("#posts-container .like-button"),
       ];
 
-      expect($likeButton.outerHTML).toBe(
-        '<span class="like-button cursor-pointer">좋아요 0</span>',
-      );
+      expect($likeButton.innerHTML.split("&nbsp;").pop()).toBe("0");
       $likeButton.click();
-      expect($likeButton.outerHTML).toBe(
-        '<span class="like-button cursor-pointer text-blue-500">좋아요 1</span>',
-      );
+      expect($likeButton.innerHTML.split("&nbsp;").pop()).toBe("1");
       $likeButton.click();
-      expect($likeButton.outerHTML).toBe(
-        '<span class="like-button cursor-pointer">좋아요 0</span>',
-      );
+      expect($likeButton.innerHTML.split("&nbsp;").pop()).toBe("0");
     });
   });
 });

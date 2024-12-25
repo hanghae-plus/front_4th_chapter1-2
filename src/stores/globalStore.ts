@@ -54,5 +54,6 @@ export const globalStore = createStore<GlobalStoreState>(
       userStorage.reset();
       return { ...state, currentUser: null, loggedIn: false };
     },
+    updatePost(state) {},
   },
 );

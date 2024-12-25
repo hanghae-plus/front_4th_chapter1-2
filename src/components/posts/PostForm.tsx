@@ -1,5 +1,29 @@
 /** @jsx createVNode */
 import { createVNode } from "../../lib";
+import { globalStore, PostData } from "../../stores";
+
+const addPost = () => {
+  const { getState, setState } = globalStore;
+  const { currentUser, posts } = getState();
+  const content = (
+    document.querySelector("#post-content") as HTMLTextAreaElement
+  )?.value;
+
+  if (!currentUser || !content) return;
+
+  const newPosts: PostData[] = [
+    ...posts,
+    {
+      id: posts.length + 1,
+      author: currentUser?.username,
+      content,
+      time: new Date().getTime(),
+      likeUsers: [],
+    },
+  ];
+
+  setState({ posts: newPosts });
+};
 
 export const PostForm = () => {
   return (
@@ -12,6 +36,7 @@ export const PostForm = () => {
       <button
         id="post-submit"
         className="mt-2 bg-blue-600 text-white px-4 py-2 rounded"
+        onClick={addPost}
       >
         게시
       </button>
