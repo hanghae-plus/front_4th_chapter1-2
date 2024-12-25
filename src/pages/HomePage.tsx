@@ -13,9 +13,27 @@ import { Post, PostForm } from "../features/posts";
  */
 export const HomePage = () => {
   const { posts = [], loggedIn, currentUser } = globalStore.getState();
+
+  const handleCreatePost = (content: string) => {
+    globalStore.setState((prev) => ({
+      ...prev,
+      posts: [
+        {
+          id: Date.now(),
+          content,
+          author: currentUser?.username ?? "Anonymous",
+          time: Date.now(),
+          likeUsers: [],
+        },
+        ...(prev.posts || []),
+      ],
+    }));
+  };
+
   const handleLikeClick = (postId: number) => {
     if (!loggedIn) {
       alert("로그인 후 이용해주세요");
+      return;
     }
 
     const userName = currentUser?.username ?? "";
@@ -44,21 +62,19 @@ export const HomePage = () => {
         <Navigation />
 
         <main className="p-4">
-          {loggedIn && <PostForm />}
+          {loggedIn && <PostForm onSubmit={handleCreatePost} />}
           <div id="posts-container" className="space-y-4">
-            {[...posts]
+            {posts
               .sort((a, b) => b.time - a.time)
-              .map((post) => {
-                return (
-                  <Post
-                    {...post}
-                    activationLike={post.likeUsers.includes(
-                      currentUser?.username ?? "",
-                    )}
-                    onLikeClick={() => handleLikeClick(post.id)}
-                  />
-                );
-              })}
+              .map((post) => (
+                <Post
+                  {...post}
+                  activationLike={post.likeUsers.includes(
+                    currentUser?.username ?? "",
+                  )}
+                  onLikeClick={() => handleLikeClick(post.id)}
+                />
+              ))}
           </div>
         </main>
 
