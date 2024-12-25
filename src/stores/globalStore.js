@@ -56,6 +56,7 @@ export const globalStore = createStore(
     like(state, id) {
       if (!state.loggedIn) {
         alert("로그인 후 이용해주세요");
+        return;
       }
 
       const post = state.posts.find((post) => post.id === id);
