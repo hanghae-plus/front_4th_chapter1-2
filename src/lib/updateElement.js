@@ -107,7 +107,10 @@ function updateAttributes(target, originNewProps, originOldProps) {
   for (const [prop, value] of newPropsArr) {
     // 이전 프로퍼티에 없는 프로퍼티인 경우 추가
     if (oldPropsArr[prop] === undefined) {
-      if (isEventProp(prop)) addEvent(target, replaceEventProp(prop), value);
+      if (isEventProp(prop)) {
+        addEvent(target, replaceEventProp(prop), value);
+        return;
+      }
       if (isClass(prop)) {
         target.classList = value;
         continue;
