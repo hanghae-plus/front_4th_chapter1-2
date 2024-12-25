@@ -1,6 +1,10 @@
 import { addEvent } from "./eventManager";
 
 export function createElement(vNode) {
+  if (typeof vNode === "function") {
+    throw new Error("invalid vNode");
+  }
+
   if (
     typeof vNode === "boolean" ||
     typeof vNode === "undefined" ||
@@ -25,10 +29,11 @@ export function createElement(vNode) {
     const container = document.createElement(vNode.type);
 
     Object.entries(vNode?.props ?? []).forEach(([attr, value]) => {
+      attr = attr === "className" ? "class" : attr;
       container.setAttribute(attr, value);
     });
 
-    container.textContent = vNode.children?.join("");
+    container.append(createElement(vNode.children));
 
     return container;
   }
