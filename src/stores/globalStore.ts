@@ -83,11 +83,14 @@ export const globalStore = createStore<StateType, ActionsType>(
     toggleLike(state: StateType, postId: number) {
       const targetPost = state.posts?.find((post) => post.id === postId);
 
+      if (!targetPost) {
+        return state;
+      }
+
       const hasLike = targetPost?.likeUsers?.includes(
         state.currentUser?.username || "",
       );
 
-      // if (hasLike) {
       return {
         ...state,
         posts: state.posts?.map((post) => {
