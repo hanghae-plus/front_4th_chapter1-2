@@ -53,14 +53,6 @@ export function updateElement(
 
     const oldProps = oldNode.props;
     if (!oldProps) return;
-
-    for (const [k, v] of Object.entries(oldNode.props)) {
-      if (isEvent(k, v)) {
-        // 문제점: children의 이벤트는 제거되지 않고 남아있음
-        removeEvent($oldEl, getEventType(k), v);
-        continue;
-      }
-    }
   }
 
   if (!oldNode && newNode) {
