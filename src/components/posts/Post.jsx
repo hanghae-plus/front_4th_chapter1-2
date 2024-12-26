@@ -1,14 +1,17 @@
 /** @jsx createVNode */
 import { createVNode } from "../../lib";
 import { toTimeFormat } from "../../utils/index.js";
+import { globalStore } from "../../stores/index.js";
 
 export const Post = ({
+  id,
   author,
   time,
   content,
   likeUsers,
   activationLike = false,
 }) => {
+  const { likeToggle } = globalStore.actions;
   return (
     <div className="bg-white rounded-lg shadow p-4 mb-4">
       <div className="flex items-center mb-2">
@@ -20,6 +23,7 @@ export const Post = ({
       <p>{content}</p>
       <div className="mt-2 flex justify-between text-gray-500">
         <span
+          onClick={() => likeToggle(id)}
           className={`like-button cursor-pointer${activationLike ? " text-blue-500" : ""}`}
         >
           좋아요 {likeUsers.length}
