@@ -12,6 +12,7 @@ import { globalStore } from "../stores";
  */
 export const HomePage = () => {
   const { posts } = globalStore.getState();
+  const user = localStorage.getItem("user");
 
   return (
     <div className="bg-gray-100 min-h-screen flex justify-center">
@@ -20,7 +21,7 @@ export const HomePage = () => {
         <Navigation />
 
         <main className="p-4">
-          <PostForm />
+          {user && <PostForm />}
           <div id="posts-container" className="space-y-4">
             {[...posts]
               .sort((a, b) => b.time - a.time)
