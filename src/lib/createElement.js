@@ -38,7 +38,7 @@ export function createElement(vNode) {
   // 이벤트 및 요소 할당
   Object.entries(props || {}).forEach(([k, v]) => {
     if (k.startsWith("on")) {
-      addEvent(type, k.slice(2).toLowerCase(), v); // 이벤트를 저장한다
+      addEvent($el, k.slice(2).toLowerCase(), v); // 이벤트를 저장한다
     } else {
       if (typeof v === "function") addEvent($el, k, v);
       else {

@@ -1,10 +1,10 @@
-const eventHandlers = {};
+const eventHandlers = new Map();
 const registeredEvents = new Set();
 
 // 1. container 에 이벤트 등록: 상위 요소에 이벤트 리스너를 등록
 export function setupEventListeners(root) {
-  ["click", "submit"].forEach((eventType) => {
-    // 2. 이벤트가 이미 등록되어 있는지 확인
+  eventHandlers.forEach((_, eventType) => {
+    // 2. eventHandlers 의 키 값으로(이벤트명) 순회하며, 이벤트가 이미 등록되어 있는지 확인
     if (!registeredEvents.has(eventType)) {
       // 3. 이벤트 리스너를 상위 요소에 등록
       root.addEventListener(eventType, handleEvent);
@@ -16,27 +16,29 @@ export function setupEventListeners(root) {
 // 4. 이벤트 핸들러 함수: 이벤트가 발생하면 호출
 function handleEvent(e) {
   const { type, target } = e; // 발생한 이벤트 객체의 속성들을 파라미터 변수로 담음
-  if (eventHandlers[type]) {
-    eventHandlers[type].forEach(({ selector, handler }) => {
+  if (eventHandlers.has(type)) {
+    const handlers = eventHandlers.get(type);
+    // 6. 핸들러 호출
+    handlers.forEach(({ selector, handler }) => {
       // 5. 이벤트가 발생한 요소가 특정 조건을 만족하는지 췍
-      if (target.matches(selector)) {
-        //6. 핸들러 호출
+      if (target === selector) {
+        // 6. 핸들러 호출
         handler.call(target, e);
       }
     });
   }
 }
 
-// 7. 이벤트 핸들러를 등록: 이벤트 핸들러를 등록
+// 1. 이벤트 핸들러를 등록: 이벤트 핸들러를 등록
 export function addEvent(selector, eventType, handler) {
-  if (!eventHandlers[eventType]) {
-    eventHandlers[eventType] = [];
-    // element.addEventListener(eventType, handler);
+  if (!eventHandlers.has(eventType)) {
+    eventHandlers.set(eventType, []);
   }
-  eventHandlers[eventType].push({ selector, handler });
+  const handlers = eventHandlers.get(eventType);
+  handlers.push({ selector, handler });
 }
 
-// 8. 이벤트 핸들러를 제거: 이벤트 핸들러를 제거
+// 1. 이벤트 핸들러를 제거: 이벤트 핸들러를 제거
 export function removeEvent(selector, eventType, handler) {
   if (eventHandlers[eventType]) {
     eventHandlers[eventType] = eventHandlers[eventType].filter(
