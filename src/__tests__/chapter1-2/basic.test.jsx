@@ -247,8 +247,6 @@ describe("Chapter1-2 > 기본과제 > 가상돔 만들기 > ", () => {
         </UnorderedList>
       );
 
-      console.log(TestComponent().type);
-
       const normalized = normalizeVNode(<TestComponent />);
 
       expect(normalized).toEqual(
