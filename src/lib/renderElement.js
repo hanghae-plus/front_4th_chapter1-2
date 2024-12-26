@@ -3,17 +3,15 @@ import { createElement } from "./createElement";
 import { normalizeVNode } from "./normalizeVNode";
 import { updateElement } from "./updateElement";
 
-let oldVNode = null;
-
 export function renderElement(vNode, container) {
   const newVNode = normalizeVNode(vNode);
 
-  if (oldVNode) {
-    updateElement(container, newVNode, oldVNode);
+  if (container.oldVNode) {
+    updateElement(container, newVNode, container.oldVNode);
   } else {
-    container.replaceChildren(createElement(newVNode));
+    container.append(createElement(newVNode));
   }
 
+  container.oldVNode = newVNode;
   setupEventListeners(container);
-  oldVNode = newVNode;
 }
