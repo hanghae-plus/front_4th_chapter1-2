@@ -4,8 +4,14 @@ import { normalizeVNode } from "./normalizeVNode";
 import { updateElement } from "./updateElement";
 
 export function renderElement(vNode, container) {
-  // TODO:  updateElement로 기존 DOM을 업데이트한다.
-  container.innerHTML = null;
-  container.append(createElement(normalizeVNode(vNode)));
+  const newVNode = normalizeVNode(vNode);
+
+  if (container.oldVNode) {
+    updateElement(container, newVNode, container.oldVNode);
+  } else {
+    container.append(createElement(newVNode));
+  }
+
+  container.oldVNode = newVNode;
   setupEventListeners(container);
 }
