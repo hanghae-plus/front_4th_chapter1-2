@@ -22,7 +22,6 @@ function createSyntheticEvent(event) {
 
 function eventHandler(event) {
   event = createSyntheticEvent(event);
-  console.log(event);
   const eventType = event.type;
   const handlers = eventManager.get(eventType);
 
