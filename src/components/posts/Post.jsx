@@ -1,3 +1,5 @@
+/** @jsx createVNode */
+import { createVNode } from "../../lib";
 import { toTimeFormat } from "../../utils/index.js";
 
 export const Post = ({
