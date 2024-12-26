@@ -5,13 +5,12 @@ import { removeEvent } from "./eventManager.js";
 
 function updateAttributes(element, newProps, oldProps) {
   for (let [key, value] of Object.entries(oldProps)) {
-    if (key in newProps) return;
+    if (key in newProps) continue;
 
     element.removeAttribute(key);
 
     if (key.startsWith("on")) {
       removeEvent(element, getEventTypeFromProps(key), value);
-      return element;
     }
   }
   for (let [key, value] of Object.entries(newProps)) {
@@ -42,8 +41,7 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
   }
   //oldNode와 newNode의 태그 이름(type)이 다를 경우
   if (newNode.type !== oldNode.type) {
-    parentElement.removeChild(oldElement);
-    parentElement.appendChild(createElement(newNode));
+    parentElement.replaceChild(createElement(newNode), oldElement);
     return;
   }
 
