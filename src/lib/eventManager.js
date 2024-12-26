@@ -12,6 +12,10 @@ const eventManager = () => {
   const setupEventListeners = (root) => {
     rootElement = root;
 
+    events.forEach(({ eventType, handler: convertHandler }) => {
+      rootElement.removeEventListener(eventType, convertHandler);
+    });
+
     events.forEach((event) => {
       rootElement.addEventListener(event.eventType, event.handler);
     });
@@ -20,9 +24,9 @@ const eventManager = () => {
   const addEvent = (element, eventType, handler) => {
     const existingEvent = events.find(
       (event) =>
-        event.element === element &&
-        event.eventType === eventType &&
-        event.originalHandler === handler,
+        event.element == element &&
+        event.eventType == eventType &&
+        event.originalHandler == handler,
     );
     if (existingEvent) return;
     const convertEventHandler = eventWrapper({ element, eventType, handler });
