@@ -1,5 +1,5 @@
 import { addEvent } from "./eventManager";
-import { checkArray, checkFalsy, checkStringOrNumber } from "./shared/index.js";
+import { isArray, isFalsy, isStringOrNumber } from "./shared/index.js";
 
 const updateAttributes = ($el, props) => {
   if (props) {
@@ -7,7 +7,7 @@ const updateAttributes = ($el, props) => {
       // 리액트 이벤트 규칙에는 on으로 시작해야한다는 규칙이 있다.
       if (key.startsWith("on")) {
         const eventType = key.slice(2).toLowerCase();
-        addEvent(eventType, props[key], props[key]);
+        addEvent($el, eventType, props[key]); // element 인자를 추가함
         return;
       }
 
@@ -43,11 +43,11 @@ const createFragmentFromVNodeArray = (vNodeArray) => {
 };
 
 export function createElement(vNode) {
-  if (checkFalsy(vNode)) return document.createTextNode("");
+  if (isFalsy(vNode)) return document.createTextNode("");
 
-  if (checkStringOrNumber(vNode)) return document.createTextNode(String(vNode));
+  if (isStringOrNumber(vNode)) return document.createTextNode(String(vNode));
 
-  if (checkArray(vNode)) return createFragmentFromVNodeArray(vNode);
+  if (isArray(vNode)) return createFragmentFromVNodeArray(vNode);
 
   const $el = document.createElement(vNode.type);
 

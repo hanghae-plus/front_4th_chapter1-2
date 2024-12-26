@@ -1,22 +1,22 @@
 import {
-  checkFalsy,
-  checkFunction,
-  checkObject,
-  checkStringOrNumber,
+  isFalsy,
+  isFunction,
+  isObject,
+  isStringOrNumber,
 } from "./shared/index.js";
 
 export function normalizeVNode(vNode) {
-  if (checkFalsy(vNode)) return "";
+  if (isFalsy(vNode)) return "";
 
-  if (checkStringOrNumber(vNode)) return String(vNode);
+  if (isStringOrNumber(vNode)) return String(vNode);
 
-  if (checkFunction(vNode.type)) {
+  if (isFunction(vNode.type)) {
     const { type, props, children } = vNode;
 
     return normalizeVNode(type({ ...props, children }));
   }
 
-  if (checkObject(vNode)) {
+  if (isObject(vNode)) {
     if (vNode.children && Array.isArray(vNode.children)) {
       vNode.children = vNode.children
         .map((child) => normalizeVNode(child))

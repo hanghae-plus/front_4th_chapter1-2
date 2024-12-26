@@ -47,7 +47,7 @@ export function addEvent(element, eventType, handler) {
   if (!element || !eventType || typeof handler !== "function") return;
 
   if (!eventStore.has(eventType)) {
-    eventStore.set(eventType, new Map());
+    eventStore.set(eventType, new WeakMap());
   }
 
   const handlers = eventStore.get(eventType);

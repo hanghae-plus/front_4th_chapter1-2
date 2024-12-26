@@ -1,11 +1,11 @@
-export const checkFalsy = (vNode) =>
+export const isFalsy = (vNode) =>
   vNode === null || vNode === undefined || typeof vNode === "boolean";
 
-export const checkStringOrNumber = (vNode) =>
+export const isStringOrNumber = (vNode) =>
   typeof vNode === "string" || typeof vNode === "number";
 
-export const checkFunction = (vNode) => typeof vNode === "function";
+export const isFunction = (vNode) => typeof vNode === "function";
 
-export const checkObject = (vNode) => typeof vNode === "object";
+export const isObject = (vNode) => typeof vNode === "object";
 
-export const checkArray = (vNode) => vNode && Array.isArray(vNode);
+export const isArray = (vNode) => vNode && Array.isArray(vNode);
