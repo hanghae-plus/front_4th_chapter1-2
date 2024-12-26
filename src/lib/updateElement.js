@@ -1,7 +1,51 @@
 import { addEvent, removeEvent } from "./eventManager";
 import { createElement } from "./createElement.js";
 
-function updateAttributes(target, originNewProps, originOldProps) {}
+function updateAttributes(target, originNewProps, originOldProps) {
+  // update 되지 않아도 되는 경우
+  if (originNewProps === originOldProps) return;
+
+  const allAttrs = new Set([
+    ...Object.keys(originNewProps),
+    ...Object.keys(originOldProps),
+  ]);
+
+  allAttrs.forEach((attr) => {
+    const isEvent = attr.startsWith("on");
+    // newProps에 없고, oldProps에 있는거 제거
+    if (!originNewProps[attr] && originOldProps[attr]) {
+      if (isEvent) {
+        const eventType = attr.slice(2).toLowerCase();
+        removeEvent(target, eventType, originOldProps[attr]);
+        return;
+      }
+
+      const _attr = attr === "className" ? "class" : attr;
+      target.removeAttribute(_attr);
+    }
+    // newProps에 있고, oldProps에 없는거 등록
+    if (originNewProps[attr] && !originOldProps[attr]) {
+      if (isEvent) {
+        const eventType = attr.slice(2).toLowerCase();
+        addEvent(target, eventType, originNewProps[attr]);
+        return;
+      }
+
+      target[attr] = originNewProps[attr];
+    }
+    // newProps에 있고, oldProps에 있을 때 값이 다르면 oldProps제거 후 newProps 등록
+    if (originNewProps[attr] !== originOldProps[attr]) {
+      if (isEvent) {
+        const eventType = attr.slice(2).toLowerCase();
+        removeEvent(target, eventType, originOldProps[attr]);
+        addEvent(target, eventType, originNewProps[attr]);
+        return;
+      }
+
+      target[attr] = originNewProps[attr];
+    }
+  });
+}
 
 export function updateElement(parentElement, newVNode, oldVNode, index = 0) {
   const targetElement = parentElement.children[index];
@@ -28,6 +72,8 @@ export function updateElement(parentElement, newVNode, oldVNode, index = 0) {
   }
   // 같은 타입의 노드 업데이트
   if (targetElement && newVNode.type === oldVNode.type) {
+    updateAttributes(targetElement, newVNode.props ?? {}, oldVNode.props ?? {});
+
     const newVNodeChildren = newVNode.children ?? [];
     const oldVNodeChildren = oldVNode.children ?? [];
 
@@ -40,35 +86,4 @@ export function updateElement(parentElement, newVNode, oldVNode, index = 0) {
       updateElement(targetElement, newVNodeChildren[i], oldVNodeChildren[i], i);
     }
   }
-}
-
-function isDeepEqual(obj1, obj2) {
-  // 기본 타입이거나 null인 경우 직접 비교
-  if (obj1 === obj2) return true;
-
-  // null 체크
-  if (obj1 === null || obj2 === null) return false;
-
-  // 타입이 다른 경우
-  if (typeof obj1 !== typeof obj2) return false;
-
-  // 배열인 경우
-  if (Array.isArray(obj1) && Array.isArray(obj2)) {
-    if (obj1.length !== obj2.length) return false;
-    return obj1.every((item, index) => isDeepEqual(item, obj2[index]));
-  }
-
-  // 객체인 경우
-  if (typeof obj1 === "object" && typeof obj2 === "object") {
-    const keys1 = Object.keys(obj1);
-    const keys2 = Object.keys(obj2);
-
-    if (keys1.length !== keys2.length) return false;
-
-    return keys1.every((key) => {
-      return keys2.includes(key) && isDeepEqual(obj1[key], obj2[key]);
-    });
-  }
-
-  return obj1 === obj2;
 }
