@@ -1,12 +1,13 @@
 /**
- * JSX를 생성하는 함수 가상돔 노드 생성하는 역할
- * 조건 : children은 평탄화(flat)되어야 하며, 0을 제외한 Falsy는 필터
+ * Virtual DOM 노드를 생성
+ * 자식 요소는 모두 평탄화하며, 유효하지 않은 자식 요소는 제거
  */
-
 export function createVNode(type, props, ...children) {
   return {
     type,
     props: props || null,
-    children: children.flat(Infinity).filter((child) => child === 0 || child),
+    children: children
+      .flat(Infinity)
+      .filter((child) => child != null && child !== false && child !== true),
   };
 }

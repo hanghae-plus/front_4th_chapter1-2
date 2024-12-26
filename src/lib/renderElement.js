@@ -1,28 +1,30 @@
 import { createElement } from "./createElement";
-import { setupEventListeners } from "./eventManager";
+import { setupEventListeners } from "./eventManager.js";
 import { normalizeVNode } from "./normalizeVNode";
-import { updateElement } from "./updateElement";
+import { updateElement } from "./updateElement.js";
 
 /*
- * 가상돔 시나리오 정리
- * 1. createVNode: JSX에서 VDOM 노드 생성
- * 2. normalizeVNode: Virtual DOM 노드 정규화
- * 3. createElement: 돔 요소 생성
- * 4. renderElement: DOM 렌더링
+ * Virtual DOM 기반 파이프라인
+ * 1. JSX -> Virtual DOM 노드 생성 (createVNode)
+ * 2. Virtual DOM 노드 정규화 (normalizeVNode)
+ * 3. 실제 DOM 요소 생성 (createElement)
+ * 4. DOM 렌더링 (renderElement)
  */
 
 export function renderElement(vNode, container) {
+  // root 엘리먼트에 합성 이벤트로 처리되는 리스너 등록
   setupEventListeners(container);
+
+  // 이전 가상 DOM 가져오기
   const oldVNode = container._vnode;
 
   // 새로운 가상 DOM 정규화
   const normalizedVNode = normalizeVNode(vNode);
 
-  // 최초 렌더링
   if (!oldVNode) {
+    // 최초 렌더링
     container.appendChild(createElement(normalizedVNode));
   } else {
-    // 이전 HTML 초기화
     updateElement(container, normalizedVNode, oldVNode, 0);
   }
 

@@ -1,8 +1,8 @@
 /** @jsx createVNode */
-import { createVNode } from "../lib";
 import { Footer, Header, Navigation } from "../components";
-import { globalStore } from "../stores";
+import { createVNode } from "../lib";
 import { userStorage } from "../storages";
+import { globalStore } from "../stores";
 
 function updateProfile(profile) {
   const user = { ...globalStore.getState().currentUser, ...profile };
@@ -27,7 +27,6 @@ export const ProfilePage = () => {
       <div className="max-w-md w-full">
         <Header />
         <Navigation loggedIn={loggedIn} />
-
         <main className="p-4">
           <div className="bg-white p-8 rounded-lg shadow-md">
             <h2 className="text-2xl font-bold text-center text-blue-600 mb-8">
