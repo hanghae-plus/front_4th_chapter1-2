@@ -9,7 +9,13 @@
 import { addEvent } from "./eventManager";
 import { normalizeVNode } from "./normalizeVNode";
 
-export function createElement(vNode) {
+interface VNode {
+  type: string | Function;
+  props: Record<string, any>;
+  children?: Array<VNode | string | number>;
+}
+
+export function createElement(vNode: VNode) {
   if (vNode && typeof vNode.type === "function") {
     throw new Error("Function component is not supported");
   }
@@ -30,7 +36,7 @@ export function createElement(vNode) {
     typeof normalizedVNode === "string" ||
     typeof normalizedVNode === "number"
   ) {
-    return document.createTextNode(normalizedVNode);
+    return document.createTextNode(String(normalizedVNode));
   }
 
   if (Array.isArray(normalizedVNode)) {
@@ -45,7 +51,7 @@ export function createElement(vNode) {
 
   // 일반 DOM 요소 생성
   const { type, props = {}, children = [] } = normalizedVNode;
-  const $element = document.createElement(type);
+  const $element = document.createElement(type) as HTMLElement;
 
   // props 적용
   updateAttributes($element, props);
@@ -58,7 +64,7 @@ export function createElement(vNode) {
   return $element;
 }
 
-function updateAttributes($element, props) {
+function updateAttributes($element: HTMLElement, props: Record<string, any>) {
   if (!props) return;
 
   Object.entries(props).forEach(([key, value]) => {

@@ -3,31 +3,116 @@
 // 객체 노드는 tagName을 비교하여 처리합니다.
 // 자식 노드 처리는 재귀적으로 이루어집니다.
 
-import { addEvent, removeEvent } from "./eventManager.js";
-import { createElement } from "./createElement.js";
+import { createElement } from "./createElement";
+import { addEvent, removeEvent } from "./eventManager";
 
-// updateElement 함수는 Virtual DOM의 diff 알고리즘을 구현합니다
-// 다음과 같은 순서로 처리하면 됩니다:
-// 1. 기본 케이스 처리:
-//    - oldNode가 없으면? -> 새로운 요소 생성
-//    - newNode가 없으면? -> 기존 요소 제거
-//
-// 2. 노드 타입 비교:
-//    - 타입이 다르면? (문자열 vs 객체, 또는 다른 태그) -> 완전히 교체
-//
-// 3. 노드 종류별 처리:
-//    - 문자열이면? -> textContent 업데이트
-//    - 객체면? -> 속성 업데이트 후 자식들 재귀적으로 처리
-//
-// 4. 자식 노드들 처리:
-//    - 새로운 노드의 자식들과 기존 노드의 자식들을 비교하며 재귀적으로 업데이트
-//    - 자식 수가 다르면? -> 더 긴 쪽 기준으로 처리
-export function updateElement(parentElement, newNode, oldNode, index = 0) {
-  //   parentElement.replaceChild(createElement(newNode), oldNode);
+const TEXT_NODE = 3;
+
+interface VNode {
+  type: string | Function;
+  props: Record<string, any>;
+  children?: Array<VNode | string | number>;
 }
 
-// updateAttributes 함수는 DOM 요소의 속성을 업데이트합니다
-// 1. 이전 속성들 중 새로운 속성에 없는 것들은 제거
-// 2. 이벤트 리스너('on'으로 시작하는 속성)는 특별히 처리
-// 3. 새로운 속성들을 추가하거나 업데이트
-function updateAttributes(target, originNewProps, originOldProps) {}
+export function updateElement(
+  parentElement: HTMLElement,
+  newVNode: VNode,
+  oldVNode: VNode,
+  index = 0,
+) {
+  // 실제 DOM 노드 (업데이트 대상)
+  const domNode = parentElement.childNodes[index] as HTMLElement;
+
+  // 기본 케이스 처리
+  if (!oldVNode && newVNode) {
+    parentElement.appendChild(createElement(newVNode));
+    return;
+  }
+
+  if (!newVNode) {
+    parentElement.removeChild(domNode);
+    return;
+  }
+
+  // 텍스트 노드 처리
+  if (typeof newVNode === "string" || typeof newVNode === "number") {
+    if (domNode.nodeType === TEXT_NODE) {
+      if (domNode.textContent !== String(newVNode)) {
+        domNode.textContent = String(newVNode);
+      }
+    } else {
+      parentElement.replaceChild(
+        document.createTextNode(String(newVNode)),
+        domNode,
+      );
+    }
+    return;
+  }
+
+  // 함수형 컴포넌트 처리
+  if (typeof newVNode.type === "function") {
+    const newComponent = newVNode.type(newVNode.props);
+    updateElement(parentElement, newComponent, oldVNode, index);
+    return;
+  }
+
+  // 노드 타입이 다르면 완전히 교체
+  if (oldVNode.type !== newVNode.type) {
+    parentElement.replaceChild(createElement(newVNode), domNode);
+    return;
+  }
+
+  // 속성 업데이트
+  updateAttributes(domNode, newVNode.props || {}, oldVNode.props || {});
+
+  // 자식 노드들 재귀적으로 업데이트
+  const newChildren = newVNode.children || [];
+  const oldChildren = oldVNode.children || [];
+  const maxLength = Math.max(newChildren.length, oldChildren.length);
+
+  for (let i = 0; i < maxLength; i++) {
+    updateElement(domNode, newChildren[i] as VNode, oldChildren[i] as VNode, i);
+  }
+}
+
+function updateAttributes(
+  target: HTMLElement,
+  newProps: Record<string, any>,
+  oldProps: Record<string, any>,
+) {
+  // 이전 속성 제거
+  for (const key in oldProps) {
+    if (!(key in newProps)) {
+      if (key.startsWith("on")) {
+        const eventName = key.toLowerCase().substring(2);
+        removeEvent(target, eventName);
+      } else {
+        target.removeAttribute(key === "className" ? "class" : key);
+      }
+    }
+  }
+
+  // 새로운 속성 설정 또는 업데이트
+  for (const key in newProps) {
+    const oldValue = oldProps[key];
+    const newValue = newProps[key];
+
+    if (oldValue !== newValue) {
+      if (key.startsWith("on")) {
+        const eventName = key.toLowerCase().substring(2);
+        if (oldValue) {
+          removeEvent(target, eventName);
+        }
+        if (newValue) {
+          addEvent(target, eventName, newValue);
+        }
+      } else {
+        if (key === "className") {
+          target.setAttribute("class", newValue);
+        } else {
+          target.setAttribute(key, newValue);
+        }
+      }
+    }
+  }
+}

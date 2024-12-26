@@ -3,13 +3,17 @@
 
 const handlers = {};
 
-export function setupEventListeners(root) {
+export function setupEventListeners(root: HTMLElement) {
   Object.keys(handlers).forEach((eventType) => {
     root.addEventListener(eventType, handleEvent);
   });
 }
 
-export function addEvent(element, eventType, handler) {
+export function addEvent(
+  element: HTMLElement,
+  eventType: string,
+  handler: Function,
+) {
   if (!handlers[eventType]) {
     handlers[eventType] = new WeakMap<Element, Map<string, Set<Function>>>();
   }
@@ -17,13 +21,15 @@ export function addEvent(element, eventType, handler) {
   handlers[eventType].set(element, handler);
 }
 
-export function removeEvent(element, eventType) {
+export function removeEvent(element: HTMLElement, eventType: string) {
+  console.log("!@@@@@@");
   if (handlers[eventType] && handlers[eventType].has(element)) {
+    console.log(handlers[eventType]);
     handlers[eventType].delete(element);
   }
 }
 
-function handleEvent(event) {
+function handleEvent(event: Event) {
   const handler = handlers[event.type].get(event.target);
 
   if (!handler) return;
