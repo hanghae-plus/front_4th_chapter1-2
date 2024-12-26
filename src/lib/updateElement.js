@@ -4,41 +4,38 @@ import { createElement } from "./createElement.js";
 function updateAttributes(target, originNewProps, originOldProps) {
   if (!originOldProps && !originNewProps) return;
 
-  // 새로 추가 해야하는 경우
-  if (originNewProps) {
-    Object.entries(originNewProps).forEach(([attr, value]) => {
-      if (value !== originOldProps[attr]) {
-        if (attr.startsWith("on")) {
-          // 함수
-          addEvent(target, attr, value);
-          return;
-        } else if (attr === "className") {
-          target.setAttribute("class", value);
-          return;
-        } else {
-          target.setAttribute(attr, value);
-          return;
-        }
-      }
-    });
-  }
+  const newProps = originNewProps || {};
+  const oldProps = originOldProps || {};
 
-  // 삭제해야 하는 경우
-  if (originOldProps) {
-    Object.entries(originOldProps).forEach(([attr, value]) => {
-      if (originNewProps?.[attr] !== value) {
-        if (attr.startsWith("on")) {
-          removeEvent(target, attr.slice(2).toLowerCase(), value);
-          return;
-        } else if (attr === "className") {
-          removeEvent(target, "class", value);
-          return;
-        } else {
-          removeEvent(target, attr, value);
-        }
+  // 속성 제거 처리
+  Object.entries(oldProps).forEach(([attr, value]) => {
+    if (!newProps[attr]) {
+      if (attr.startsWith("on")) {
+        const eventType = attr.slice(2).toLowerCase();
+        removeEvent(target, eventType, value);
+      } else {
+        target.removeAttribute(attr);
       }
-    });
-  }
+    }
+  });
+
+  // 속성 추가/갱신 처리
+  Object.entries(newProps).forEach(([attr, value]) => {
+    if (oldProps[attr] !== value) {
+      if (attr.startsWith("on")) {
+        const eventType = attr.slice(2).toLowerCase();
+        //
+        if (typeof oldProps[attr] === "function") {
+          removeEvent(target, eventType, oldProps[attr]);
+        }
+        addEvent(target, eventType, value);
+      } else if (attr === "className") {
+        target.setAttribute("class", value);
+      } else {
+        target.setAttribute(attr, value);
+      }
+    }
+  });
 }
 
 export function updateElement(parentElement, newNode, oldNode, index = 0) {
