@@ -1,8 +1,3 @@
-// typeof 연산자를 사용하여 노드 타입을 비교할 수 있습니다.
-// 문자열 노드는 textContent로 처리합니다.
-// 객체 노드는 tagName을 비교하여 처리합니다.
-// 자식 노드 처리는 재귀적으로 이루어집니다.
-
 import { createElement } from "./createElement";
 import { addEvent, removeEvent } from "./eventManager";
 

@@ -1,8 +1,3 @@
-// TODO: renderElement 함수 구현 [심화]
-// 기존의 renderElement에서 코드를 수정해야 합니다.
-// - 최초 렌더링일 때는 createElement 사용
-// - 리렌더링일 때는 updateElement 사용
-
 import { setupEventListeners } from "./eventManager";
 import { createElement } from "./createElement";
 import { normalizeVNode } from "./normalizeVNode";
