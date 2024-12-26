@@ -42,7 +42,13 @@ export function createElement(vNode) {
 
   // 자식 노드 추가
   vNode.children.forEach((child) => {
-    element.appendChild(createElement(child)); // 재귀적으로 자식 요소 생성
+    const childElement = createElement(child);
+    element.appendChild(childElement); // 재귀적으로 자식 요소 생성
+
+    // 자식 요소의 이벤트 핸들러 설정
+    if (child.props) {
+      updateAttributes(childElement, child.props);
+    }
   });
 
   return element;
