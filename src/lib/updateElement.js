@@ -11,6 +11,7 @@ function updateAttributes(target, originNewProps, originOldProps) {
         target.setAttribute("class", newProps[key]);
       } else if (key.startsWith("on") && typeof newProps[key] === "function") {
         const eventName = key.toLowerCase().substring(2);
+        // removeEvent(target, eventName);
         addEvent(target, eventName, newProps[key]);
       } else {
         target.setAttribute(key, newProps[key]);
@@ -25,7 +26,6 @@ function updateAttributes(target, originNewProps, originOldProps) {
         target.removeAttribute("class");
       } else if (key.startsWith("on") && typeof oldProps[key] === "function") {
         const eventName = key.toLowerCase().substring(2);
-        console.log("🚀 ~ updateAttributes ~ eventName:", eventName);
         removeEvent(target, eventName);
       } else {
         target.removeAttribute(key);
@@ -35,7 +35,6 @@ function updateAttributes(target, originNewProps, originOldProps) {
 }
 
 export function updateElement(parentElement, newNode, oldNode, index = 0) {
-  console.log("🚀", parentElement, newNode, oldNode);
   if (!newNode) {
     parentElement.removeChild(parentElement.children[index]);
     return;
@@ -47,7 +46,7 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
 
   if (typeof newNode === "string" || typeof newNode === "number") {
     if (newNode !== oldNode) {
-      parentElement.textContent = newNode;
+      parentElement.childNodes[index].nodeValue = newNode; // 변경된 코드
     }
     return;
   }
@@ -62,8 +61,8 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
 
   updateAttributes(parentElement.children[index], newNode.props, oldNode.props);
 
-  const newChildren = newNode.children;
-  const oldChildren = oldNode.children;
+  const newChildren = newNode.children || [];
+  const oldChildren = oldNode.children || [];
 
   for (let i = 0; i < newChildren.length; i++) {
     updateElement(
@@ -72,5 +71,12 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
       oldChildren[i],
       i,
     );
+  }
+  if (oldChildren.length > newChildren.length) {
+    for (let i = newChildren.length; i < oldChildren.length; i++) {
+      parentElement.children[index].removeChild(
+        parentElement.children[index].children[newChildren.length],
+      );
+    }
   }
 }

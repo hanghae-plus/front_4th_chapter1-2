@@ -3,38 +3,53 @@
  * 이벤트가 걸려있는 요소를 저장하여 위임된 이벤트를 처리한다.
  */
 
-const eventHandlers = new Map();
-let globalRoot = null;
+/**
+ * eventHandlers Map
+ * [eventType: WeakMap
+ *  element: handler
+ * ]
+ */
+
+export const eventMap = new Map();
+function handleEvent(e) {
+  const eventType = e.type;
+  const elementEventMap = eventMap.get(eventType);
+
+  if (!elementEventMap || !elementEventMap.has(e.target)) {
+    return;
+  }
+  const handler = elementEventMap.get(e.target);
+  handler(e);
+}
+
 export function setupEventListeners(root) {
-  globalRoot = root;
-  eventHandlers.forEach((event, element) => {
-    if (root.contains(element)) {
-      Object.entries(event).forEach(([eventType, handler]) => {
-        root.addEventListener(eventType, handler);
-      });
-    }
+  if (!eventMap.size) {
+    return;
+  }
+
+  eventMap.forEach((elementEventMap, eventType) => {
+    root.addEventListener(eventType, handleEvent);
   });
 }
 
 export function addEvent(element, eventType, handler) {
-  let event = eventHandlers.get(element);
-  if (!event) {
-    event = {};
-    event[eventType] = handler;
+  if (!eventMap.has(eventType)) {
+    eventMap.set(eventType, new WeakMap());
   }
-  event[eventType] = handler;
-  eventHandlers.set(element, event);
+
+  const elementEventMap = eventMap.get(eventType);
+  elementEventMap.set(element, handler);
 }
 
-export function removeEvent(element, eventType, handler) {
-  let event = eventHandlers.get(element);
-  if (!event || !event[eventType]) {
+export function removeEvent(element, eventType) {
+  const elementEventMap = eventMap.get(eventType);
+  if (!elementEventMap || !elementEventMap.has(element)) {
     return;
   }
-  if (!handler) {
-    globalRoot.removeEventListener(eventType, event[eventType]);
-  } else {
-    globalRoot.removeEventListener(eventType, handler);
+
+  elementEventMap.delete(element);
+
+  if (elementEventMap.size === 0) {
+    eventMap.delete(eventType);
   }
-  delete event[eventType];
 }

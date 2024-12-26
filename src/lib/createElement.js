@@ -40,14 +40,14 @@ export function createElement(vNode) {
 function updateAttributes($el, props) {
   if (props === null) return;
 
-  Object.keys(props).forEach((key) => {
+  Object.entries(props).forEach(([key, value]) => {
     if (key === "className") {
-      $el.setAttribute("class", props[key]);
-    } else if (key.startsWith("on") && typeof props[key] === "function") {
-      const eventName = key.toLowerCase().substring(2);
-      addEvent($el, eventName, props[key]);
+      $el.setAttribute("class", value);
+    } else if (key.startsWith("on") && typeof value === "function") {
+      const eventType = key.toLowerCase().substring(2);
+      addEvent($el, eventType, value);
     } else {
-      $el.setAttribute(key, props[key]);
+      $el.setAttribute(key, value);
     }
   });
 }
