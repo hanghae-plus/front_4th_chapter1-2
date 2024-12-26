@@ -27,11 +27,12 @@ function updateAttributes(target, originNewProps, originOldProps) {
     }
 
     const onEvent = getOnEventName(key);
-    if (onEvent) {
-      if (newProps[key] && !oldProps[key]) {
-        addEvent(target, onEvent, newProps[key]);
-      } else if (!newProps[key] && oldProps[key]) {
+    if (onEvent && newProps[key] !== oldProps[key]) {
+      if (oldProps[key]) {
         removeEvent(target, onEvent, oldProps[key]);
+      }
+      if (newProps[key]) {
+        addEvent(target, onEvent, newProps[key]);
       }
       return;
     }
