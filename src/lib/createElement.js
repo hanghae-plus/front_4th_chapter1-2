@@ -43,7 +43,7 @@ export function createElement(vNode) {
   return $el;
 }
 
-//
+// 5-1. 속성 노드 처리 함수
 function updateAttributes($el, props) {
   // props가 없으면 아무것도 없다는 것을 고려하지 않아서 계속 오류가 났었음...
   if (!props) return $el;
