@@ -1,4 +1,4 @@
-// import { addEvent } from "./eventManager";
+import { addEvent } from "./eventManager";
 
 export function createElement(vNode) {
   //1. falsy값 처리
@@ -8,7 +8,7 @@ export function createElement(vNode) {
 
   // 2. 텍스트 노드 처리
   if (typeof vNode === "string" || typeof vNode === "number") {
-    return document.createTextNode(vNode);
+    return document.createTextNode(String(vNode));
   }
 
   // 3. 배열이면 DocumentFragment로 생성하고 재귀 호출하여 추가
@@ -23,31 +23,31 @@ export function createElement(vNode) {
 
   // 4. 함수형 컴포넌트 처리
   if (typeof vNode.type === "function") {
-    // const componentVNode = vNode.type({
-    //   ...vNode.props,
-    //   children: vNode.children,
-    // });
-    // return createElement(componentVNode); // 반환된 VNode를 재귀적으로 처리
-    throw new Error("Unsupported component type");
+    const componentVNode = vNode.type({
+      ...(vNode.props || {}),
+      children: vNode.children,
+    });
+    return createElement(componentVNode); // 반환된 VNode를 재귀적으로 처리
+    // throw new Error("Unsupported component type"); // 주석해제하면 chapter1-2 basic 테스트는 통과 chater1-1 basic 테스트는 실패
   }
 
   // 5. DOM 요소 처리
-  if (typeof vNode === "object" && vNode.type) {
-    const { type, props = {}, children = [] } = vNode;
-    const $el = document.createElement(type);
+  // if (typeof vNode === "object" && vNode.type) {
+  const { type, props = {}, children = [] } = vNode;
+  const $el = document.createElement(type);
 
-    // 5.1 속성 노드 처리
-    updateAttributes($el, props);
+  // 5.1 속성 노드 처리
+  updateAttributes($el, props);
 
-    // 5.2 자식 노드 처리
-    const childNodes = Array.isArray(children) ? children : [children];
-    childNodes.forEach((child) => {
-      const childNode = createElement(child);
-      if (childNode) $el.appendChild(childNode);
-    });
+  // 5.2 자식 노드 처리
+  const childNodes = Array.isArray(children) ? children : [children];
+  childNodes.forEach((child) => {
+    const childNode = createElement(child);
+    if (childNode) $el.appendChild(childNode);
+  });
 
-    return $el;
-  }
+  return $el;
+  // }
 }
 
 //
@@ -56,7 +56,11 @@ function updateAttributes($el, props) {
   if (!props) return $el;
 
   Object.entries(props).forEach(([key, value]) => {
-    if (key === "className") {
+    // 이벤트
+    if (key.startsWith("on") && typeof value === "function") {
+      const eventType = key.slice(2).toLowerCase(); // "onClick" -> "click"
+      addEvent($el, eventType, value);
+    } else if (key === "className") {
       $el.className = value; // className -> class
     } else if (key.startsWith("data-")) {
       $el.setAttribute(key, value); // data-* 속성 처리
