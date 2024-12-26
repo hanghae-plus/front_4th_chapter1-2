@@ -1,7 +1,7 @@
 const eventManager = new Map();
 
 function createSyntheticEvent(event) {
-  let propagated = false;
+  let propagationStopped = false;
   return {
     type: event.type,
     target: event.target,
@@ -10,24 +10,23 @@ function createSyntheticEvent(event) {
       event.preventDefault();
     },
     stopPropagation() {
-      propagated = true;
+      propagationStopped = true;
       event.stopPropagation();
     },
-    isPropatation() {
-      return propagated;
+    isPropagationStopped() {
+      return propagationStopped;
     },
     nativeEvent: event,
   };
 }
 
-function eventHandler(event) {
+function handleGlobalEvent(event) {
   event = createSyntheticEvent(event);
   const eventType = event.type;
   const handlers = eventManager.get(eventType);
 
   let currentElement = event.target;
-
-  while (currentElement && !event.isPropatation()) {
+  while (currentElement && !event.isPropagationStopped()) {
     if (handlers.has(currentElement)) {
       const handler = handlers.get(currentElement);
       handler(event);
@@ -38,8 +37,8 @@ function eventHandler(event) {
 
 export function setupEventListeners(root) {
   eventManager.forEach((_, eventType) => {
-    root?.removeEventListener(eventType, eventHandler);
-    root?.addEventListener(eventType, eventHandler);
+    root?.removeEventListener(eventType, handleGlobalEvent);
+    root?.addEventListener(eventType, handleGlobalEvent);
   });
 }
 

@@ -10,9 +10,9 @@ function isChangedAttributes(originNewProps, originOldProps) {
     return true;
   }
 
-  const mergesProps = { ...originOldProps, ...originNewProps };
-  return Object.keys(mergesProps ?? {}).some(
-    (key) => mergesProps[key] !== originOldProps[key],
+  const mergedProps = { ...originOldProps, ...originNewProps };
+  return Object.keys(mergedProps ?? {}).some(
+    (key) => mergedProps[key] !== originOldProps[key],
   );
 }
 
