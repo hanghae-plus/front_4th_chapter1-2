@@ -12,7 +12,7 @@ export function renderElement(vNode, container) {
   const normalizedVNode = normalizeVNode(vNode);
 
   // 기존 DOM 제거
-  while (container.firstChild) {
+  if (container.firstChild) {
     container.removeChild(container.firstChild);
   }
 
