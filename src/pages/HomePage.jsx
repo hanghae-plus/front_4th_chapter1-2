@@ -12,46 +12,13 @@ import { globalStore } from "../stores";
  */
 export const HomePage = () => {
   const { posts, loggedIn, currentUser } = globalStore.getState();
-
-  const updateLike = (id) => {
-    const { posts, loggedIn, currentUser } = globalStore.getState();
-
-    if (!loggedIn) return alert("로그인 후 이용해주세요");
-    const { username } = currentUser;
-
-    const targetPost = posts.find((post) => post.id === id);
-    let newLikeUsers = [...targetPost.likeUsers];
-
-    if (newLikeUsers.includes(username)) {
-      newLikeUsers = newLikeUsers.filter((user) => user !== username);
-    } else {
-      newLikeUsers = [...newLikeUsers, username];
-    }
-
-    const newPosts = posts.map((post) =>
-      post.id === id ? { ...post, likeUsers: newLikeUsers } : post,
-    );
-
-    globalStore.setState({ ...globalStore.getState(), posts: newPosts });
-  };
+  const { toggleLike, addPost } = globalStore.actions;
 
   const handleSubmitPostForm = (e) => {
     e.preventDefault();
 
-    const { posts, currentUser } = globalStore.getState();
-
-    const value = document.querySelector("#post-content").value;
-    const newPost = {
-      author: currentUser.username,
-      content: value,
-      id: posts.length + 1,
-      likeUsers: [],
-      time: Date.now(),
-    };
-    globalStore.setState({
-      ...globalStore.getState(),
-      posts: [...posts, newPost],
-    });
+    const content = document.querySelector("#post-content").value;
+    addPost(content);
   };
 
   return (
@@ -71,7 +38,7 @@ export const HomePage = () => {
                   <Post
                     {...props}
                     activationLike={isLiked}
-                    onUpdateLike={updateLike}
+                    onToggleLike={toggleLike}
                   />
                 );
               })}
