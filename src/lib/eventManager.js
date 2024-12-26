@@ -4,7 +4,7 @@ let $el = null;
 export function setupEventListeners(root) {
   $el = root;
   eventArray.forEach((event) => {
-    root.addEventListener(event.eventType, event.handler);
+    $el.addEventListener(event.eventType, event.handler);
   });
 }
 
@@ -13,13 +13,14 @@ export function addEvent(element, eventType, handler) {
 }
 
 export function removeEvent(element, eventType, handler) {
-  const index = eventArray.findIndex(
+  const delEvent = eventArray.find(
     ({ element: el, eventType: et, handler: h }) =>
       el === element && et === eventType && h === handler,
   );
-  if (index !== -1) {
-    eventArray.splice(index, 1);
-  }
 
-  $el.removeEventListener(eventType, handler);
+  if (!delEvent) {
+    return;
+  }
+  eventArray.splice(eventArray.indexOf(delEvent), 1);
+  element.removeEventListener(eventType, delEvent.handler);
 }
