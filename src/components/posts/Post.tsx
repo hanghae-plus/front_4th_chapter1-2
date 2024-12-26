@@ -1,7 +1,11 @@
 /** @jsx createVNode */
 import { createVNode } from "../../lib";
-import { globalStore } from "../../stores/globalStore.js";
+import { globalStore, PostType } from "../../stores/globalStore.js";
 import { toTimeFormat } from "../../utils/index.js";
+
+interface PostProps extends PostType {
+  activationLike?: boolean;
+}
 
 export const Post = ({
   author,
@@ -10,13 +14,17 @@ export const Post = ({
   likeUsers,
   activationLike = false,
   id,
-}) => {
+}: PostProps) => {
   const { loggedIn } = globalStore.getState();
   const { toggleLike } = globalStore.actions;
 
   const handleToggleLike = () => {
     if (!loggedIn) {
       window.alert("로그인 후 이용해주세요");
+      return;
+    }
+
+    if (!id) {
       return;
     }
 
@@ -37,7 +45,7 @@ export const Post = ({
           className={`like-button cursor-pointer${activationLike ? " text-blue-500" : ""}`}
           onClick={handleToggleLike}
         >
-          좋아요 {likeUsers.length}
+          좋아요 {likeUsers?.length}
         </span>
         <span>댓글</span>
         <span>공유</span>

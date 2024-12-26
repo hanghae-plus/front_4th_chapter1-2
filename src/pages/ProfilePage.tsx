@@ -1,11 +1,12 @@
 /** @jsx createVNode */
 import { createVNode } from "../lib";
 import { Footer, Header, Navigation } from "../components";
-import { globalStore } from "../stores";
+import { globalStore, User } from "../stores";
 import { userStorage } from "../storages";
 
 function updateProfile(profile) {
-  const user = { ...globalStore.getState().currentUser, ...profile };
+  console.log(profile);
+  const user = { ...globalStore.getState().currentUser, ...profile } as User;
   globalStore.setState({ currentUser: user });
   userStorage.set(user);
   alert("프로필이 업데이트되었습니다.");
@@ -15,9 +16,10 @@ export const ProfilePage = () => {
   const { loggedIn, currentUser } = globalStore.getState();
   const { username = "", email = "", bio = "" } = currentUser ?? {};
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: SubmitEvent) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
+
+    const formData = new FormData(e.target as HTMLFormElement);
     const updatedProfile = Object.fromEntries(formData);
     updateProfile(updatedProfile);
   };

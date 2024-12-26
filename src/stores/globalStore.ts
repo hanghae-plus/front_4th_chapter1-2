@@ -5,13 +5,13 @@ const 초 = 1000;
 const 분 = 초 * 60;
 const 시간 = 분 * 60;
 
-interface User {
+export interface User {
   username: string;
   email: string;
   bio: string;
 }
 
-interface PostType {
+export interface PostType {
   id?: number;
   author: string;
   time: number;
@@ -20,10 +20,10 @@ interface PostType {
 }
 
 interface StateType {
-  currentUser: User | null;
-  loggedIn: boolean;
-  posts: PostType[];
-  error: Error | null;
+  currentUser?: User | null;
+  loggedIn?: boolean;
+  posts?: PostType[];
+  error?: Error | null;
 }
 
 interface ActionsType {
@@ -80,16 +80,40 @@ export const globalStore = createStore<StateType, ActionsType>(
       userStorage.reset();
       return { ...state, currentUser: null, loggedIn: false };
     },
-    toggleLike(state: StateType, postId: number) {},
+    toggleLike(state: StateType, postId: number) {
+      const targetPost = state.posts?.find((post) => post.id === postId);
+
+      const hasLike = targetPost?.likeUsers?.includes(
+        state.currentUser?.username || "",
+      );
+
+      // if (hasLike) {
+      return {
+        ...state,
+        posts: state.posts?.map((post) => {
+          if (post.id === postId) {
+            return {
+              ...post,
+              likeUsers: hasLike
+                ? post.likeUsers?.filter(
+                    (username) => username !== state.currentUser?.username,
+                  )
+                : post.likeUsers?.concat(state.currentUser?.username || ""),
+            };
+          }
+          return post;
+        }),
+      };
+    },
     addPost(state: StateType, post: PostType) {
       console.log(post);
       return {
         ...state,
         posts: [
-          ...state.posts,
+          ...(state.posts || []),
           {
             ...post,
-            id: state.posts.length + 1,
+            id: (state.posts?.length || 0) + 1,
             likeUsers: [],
           },
         ],
