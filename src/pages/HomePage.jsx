@@ -28,8 +28,8 @@ export const HomePage = () => {
                 return (
                   <Post
                     likeUsers={likeUsers}
-                    {...props}
                     activationLike={likeUsers.includes(currentUser?.username)}
+                    {...props}
                   />
                 );
               })}

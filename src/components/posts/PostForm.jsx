@@ -2,28 +2,18 @@
 import { createVNode } from "../../lib";
 import { globalStore } from "../../stores";
 
+const handleSubmit = (e) => {
+  e.preventDefault();
+  const content = document.getElementById("post-content").value;
+  if (!content) {
+    return;
+  }
+
+  const { submitPost } = globalStore.actions;
+  submitPost(content);
+};
+
 export const PostForm = () => {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const content = document.getElementById("post-content").value;
-    if (!content) {
-      return;
-    }
-
-    globalStore.setState({
-      posts: [
-        ...globalStore.getState().posts,
-        {
-          id: globalStore.getState().posts.length + 1,
-          author: globalStore.getState().currentUser.username,
-          time: Date.now(),
-          content,
-          likeUsers: [],
-        },
-      ],
-    });
-  };
-
   return (
     <form className="mb-4 bg-white rounded-lg shadow p-4">
       <textarea

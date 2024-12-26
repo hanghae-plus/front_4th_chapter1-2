@@ -53,5 +53,38 @@ export const globalStore = createStore(
       userStorage.reset();
       return { ...state, currentUser: null, loggedIn: false };
     },
+    submitPost(state, content) {
+      const newPost = {
+        id: Date.now(),
+        author: globalStore.getState().currentUser.username,
+        time: Date.now(),
+        content,
+        likeUsers: [],
+      };
+
+      return { ...state, posts: [...state.posts, newPost] };
+    },
+    toggleLike(state, id) {
+      if (!state.currentUser) {
+        alert("로그인 후 이용해주세요");
+        return;
+      }
+
+      const { posts, currentUser } = state;
+      const updatedPosts = posts.map((post) => {
+        if (post.id === id) {
+          const isLiked = post.likeUsers.includes(currentUser.username);
+          return {
+            ...post,
+            likeUsers: isLiked
+              ? post.likeUsers.filter((user) => user !== currentUser.username)
+              : [...post.likeUsers, state.currentUser.username],
+          };
+        }
+        return post;
+      });
+
+      return { ...state, posts: updatedPosts };
+    },
   },
 );
