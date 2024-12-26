@@ -44,6 +44,7 @@ describe("심화과제 > 해시 라우터 테스트", () => {
       const submitButtons = [
         ...document.querySelectorAll("form button[type='submit']"),
       ];
+      console.log(document.body.innerHTML);
       expect([...document.querySelectorAll("header")].length).toBe(0);
       expect(submitButtons.length).toBe(1);
       expect(submitButtons[0].innerHTML.includes("로그인")).toBe(true);

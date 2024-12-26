@@ -1,5 +1,4 @@
 export function normalizeVNode(vNode) {
-  console.log("🚀 ~ normalizeVNode ~ vNode:", vNode);
   // 0은 문자열로 변환
   if (vNode === 0) return "0";
 
@@ -16,7 +15,6 @@ export function normalizeVNode(vNode) {
   // 함수형 컴포넌트 처리
   if (typeof vNode.type === "function") {
     const Component = vNode.type;
-
     const props = { ...vNode.props, children: vNode.children };
     return normalizeVNode(Component(props));
   }

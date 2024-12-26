@@ -416,7 +416,6 @@ describe("Chapter1-2 > 기본과제 > 가상돔 만들기 > ", () => {
 
     it("undefined 자식을 무시해야 한다", () => {
       const result = createElement(<div>{undefined}</div>);
-      console.log("🚀 ~ it ~ result:", result);
       expect(result.tagName).toBe("DIV");
       expect(result.childNodes.length).toBe(0);
     });
@@ -559,6 +558,7 @@ describe("Chapter1-2 > 기본과제 > 가상돔 만들기 > ", () => {
 
     it("이벤트가 위임 방식으로 등록되어야 한다", () => {
       const clickHandler = vi.fn();
+
       const vNode = (
         <div>
           <button onClick={clickHandler}>Click me</button>
