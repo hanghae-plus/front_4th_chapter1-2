@@ -6,6 +6,7 @@ import { render } from "./render";
 import { router } from "./router";
 import { globalStore } from "./stores";
 
+// 라우터 설정
 router.set(
   createRouter({
     "/": HomePage,
@@ -27,8 +28,13 @@ router.set(
 );
 
 function main() {
+  // 라우터 구독
   router.get().subscribe(render);
+
+  // 전역 상태 구독
   globalStore.subscribe(render);
+
+  // 초기 렌더링
   render();
 }
 

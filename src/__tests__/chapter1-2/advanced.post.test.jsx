@@ -80,7 +80,6 @@ describe("Chapter1-2 > 심화과제 > 포스트 관리", () => {
         "새로운 포스트입니다.",
       );
       await user.click(document.getElementById("post-submit"));
-      console.log(document.querySelector("#posts-container > div").innerHTML);
 
       expect(document.querySelector("#posts-container > div").innerHTML).toBe(
         `<div class="flex items-center mb-2"><div><div class="font-bold">testuser</div><div class="text-gray-500 text-sm">방금 전</div></div></div><p>새로운 포스트입니다.</p><div class="mt-2 flex justify-between text-gray-500"><span class="like-button cursor-pointer">좋아요 0</span><span>댓글</span><span>공유</span></div>`,

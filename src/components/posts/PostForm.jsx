@@ -5,7 +5,8 @@ import { globalStore } from "../../stores";
 export const PostForm = () => {
   const { loggedIn, currentUser } = globalStore.getState();
   const { posts } = globalStore.getState();
-  console.log("🚀 ~ PostForm ~ posts:", posts);
+
+  // 로그인되어있지 않은경우 렌더링 안함
   if (!loggedIn) return null;
 
   const handleSubmit = (e) => {

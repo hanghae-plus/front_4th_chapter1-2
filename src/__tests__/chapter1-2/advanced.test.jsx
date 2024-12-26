@@ -34,7 +34,6 @@ describe("Chapter1-2 > 심화과제 > Virtual DOM과 이벤트 관리", () => {
       const originalH1 = container.querySelector("h1");
       const originalP = container.querySelector("p");
 
-      console.log("🚀 이전:", container.innerHTML);
       const updatedVNode = (
         <div>
           <h1>Updated Title</h1>
@@ -42,7 +41,6 @@ describe("Chapter1-2 > 심화과제 > Virtual DOM과 이벤트 관리", () => {
         </div>
       );
       renderElement(updatedVNode, container);
-      console.log("🚀 이후:", container.innerHTML);
       expect(container.innerHTML).toBe(
         "<div><h1>Updated Title</h1><p>Paragraph 1</p></div>",
       );

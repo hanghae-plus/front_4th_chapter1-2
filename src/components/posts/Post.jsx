@@ -13,15 +13,19 @@ export const Post = ({
 }) => {
   const handleLike = () => {
     const { posts, loggedIn, currentUser } = globalStore.getState();
+
+    // 로그인되어있지 않은경우 alert
     if (!loggedIn) return alert("로그인 후 이용해주세요");
 
+    // 좋아요 누른 게시물 업데이트
     const updatedPosts = posts.map((post) => {
       if (post.id === id) {
-        console.log(id);
+        // 좋아요 누른 게시물 업데이트 (얕은 복사)
         const newLikeUsers = post.likeUsers.includes(currentUser.username)
           ? post.likeUsers.filter((user) => user !== currentUser.username)
           : [...post.likeUsers, currentUser.username];
 
+        // 좋아요 누른 게시물 업데이트
         return {
           ...post,
           likeUsers: newLikeUsers,
@@ -30,6 +34,8 @@ export const Post = ({
       return post;
     });
 
+    // 좋아요 누른 게시물 업데이트
+    // 어쨋든 여기서 notify가 호출되므로 좋아요 누른 게시물 업데이트
     globalStore.setState({ posts: updatedPosts });
   };
 
