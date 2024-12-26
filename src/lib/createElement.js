@@ -1,5 +1,5 @@
-import { ALL_EVENTS } from "../constants";
-import { addEvent } from "./eventManager";
+import { ALL_EVENTS } from "@constants";
+import { addEvent } from "@lib";
 
 /*
  * [createElement workFlow]

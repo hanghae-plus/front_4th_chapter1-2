@@ -1,5 +1,5 @@
-import { ALL_EVENTS } from "@/constants/events";
-import { createBaseSyntheticEvent } from "../utils";
+import { ALL_EVENTS } from "@/constants";
+import { createBaseSyntheticEvent } from "@/utils";
 
 const eventHandlersMap = new WeakMap();
 

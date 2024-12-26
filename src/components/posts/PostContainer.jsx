@@ -1,7 +1,7 @@
 /** @jsx createVNode */
-import { createVNode } from "@/lib";
-import { globalStore } from "@/stores";
-import { Post, PostForm } from "@/components";
+import { createVNode } from "@lib";
+import { globalStore } from "@stores";
+import { Post, PostForm } from "@components";
 
 export const PostContainer = () => {
   const { posts, loggedIn, currentUser } = globalStore.getState();
