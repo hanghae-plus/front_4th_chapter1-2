@@ -7,3 +7,4 @@ export * from "./createElement";
 export * from "./normalizeVNode";
 export * from "./renderElement";
 export * from "./eventManager";
+export * from "./updateElement";

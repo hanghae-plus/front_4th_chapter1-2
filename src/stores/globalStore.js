@@ -1,5 +1,5 @@
-import { createStore } from "../lib";
-import { userStorage } from "../storages";
+import { createStore } from "@/lib";
+import { userStorage } from "@/storages";
 
 const 초 = 1000;
 const 분 = 초 * 60;
