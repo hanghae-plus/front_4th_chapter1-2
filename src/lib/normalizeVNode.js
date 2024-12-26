@@ -29,7 +29,7 @@ export function normalizeVNode(vNode) {
     return normalizeVNode(componentVNode); // 반환된 VNode를 재귀적으로 처리
   }
 
-  // 기본 노드 처리
+  // 4. 기본 노드 처리
   if (typeof vNode.type === "string") {
     return {
       type: vNode.type,
