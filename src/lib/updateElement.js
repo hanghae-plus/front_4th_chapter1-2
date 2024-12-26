@@ -7,7 +7,7 @@ function updateAttributes(target, originNewProps, originOldProps) {
 
   for (const attr in oldProps) {
     if (!(attr in newProps)) {
-      if (attr.startsWith("on") && typeof newProps[attr] === "function") {
+      if (attr.startsWith("on") && typeof oldProps[attr] === "function") {
         const eventType = attr.slice(2).toLowerCase();
         removeEvent(target, eventType, oldProps[attr]);
       } else {
@@ -17,7 +17,7 @@ function updateAttributes(target, originNewProps, originOldProps) {
   }
 
   for (const attr in newProps) {
-    if (oldProps[attr] !== newProps[attr]) {
+    if (!(attr in newProps)) {
       if (attr.startsWith("on") && typeof newProps[attr] === "function") {
         const eventType = attr.slice(2).toLowerCase();
         if (typeof oldProps[attr] === "function") {
@@ -28,10 +28,11 @@ function updateAttributes(target, originNewProps, originOldProps) {
         target.className = newProps[attr];
       } else if (attr === "style" && typeof newProps[attr] === "object") {
         Object.entries(newProps[attr]).forEach(([key, value]) => {
-          target.style[key] = value;
+          target.style[key] = value || "";
         });
       } else {
         target.setAttribute(attr, newProps[attr]);
+        // target.removeAttribute(attr);
       }
     }
   }

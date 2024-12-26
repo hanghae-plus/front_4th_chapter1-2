@@ -14,7 +14,7 @@ function handleEvent(e) {
 }
 
 export function setupEventListeners(root) {
-  if ($root) return;
+  if (!root) return;
   $root = root;
 
   eventListeners.forEach((handlers, eventType) => {
@@ -47,23 +47,64 @@ export function addEvent(element, eventType, handler) {
 }
 
 export function removeEvent(element, eventType, handler) {
-  const handlers = eventListeners.get(eventType);
+  const handlersMap = eventListeners.get(eventType);
+  if (!handlersMap) return;
 
+  const handlers = handlersMap.get(element);
   if (!handlers) return;
 
-  const handlerList = handlers.get(element);
-  if (handlerList) {
-    handlerList.delete(handler);
-    if (handlerList.size === 0) {
-      handlers.delete(element);
+  if (handler) {
+    handlers.delete(handler);
+
+    if (handlers.size === 0) {
+      handlersMap.delete(element);
     }
+  } else {
+    handlersMap.delete(element);
   }
 
-  if (eventListeners.size === 0) {
+  if (handlersMap.size === 0) {
     eventListeners.delete(eventType);
-    if ($root && $root._listeners?.has(eventType)) {
-      $root.removeEventListener(eventType, handleEvent, true);
-      $root._listeners.delete(eventType);
-    }
   }
 }
+
+// export function removeEvent(element, eventType, handler) {
+//   const elementEvents = eventListeners.get(element);
+//   if (!elementEvents) return;
+
+//   if (handler) {
+//     const handlers = elementEvents.get(eventType);
+//     if (handlers) {
+//       handlers.delete(handler);
+//       if (handlers.size === 0) {
+//         elementEvents.delete(eventType);
+//       }
+//     }
+//   } else {
+//     elementEvents.delete(eventType);
+//   }
+
+//   if (elementEvents.size === 0) {
+//     eventListeners.delete(element);
+//   }
+
+//   // const handlers = eventListeners.get(eventType);
+
+//   // if (!handlers) return;
+
+//   // const handlerList = handlers.get(element);
+//   // if (handlerList) {
+//   //   handlerList.delete(handler);
+//   //   if (handlerList.size === 0) {
+//   //     handlers.delete(element);
+//   //   }
+//   // }
+
+//   // if (eventListeners.size === 0) {
+//   //   eventListeners.delete(eventType);
+//   //   if ($root && $root._listeners?.has(eventType)) {
+//   //     $root.removeEventListener(eventType, handleEvent, true);
+//   //     $root._listeners.delete(eventType);
+//   //   }
+//   // }
+// }

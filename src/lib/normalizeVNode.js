@@ -17,12 +17,18 @@ export function normalizeVNode(vNode) {
     );
   }
 
-  if (Array.isArray(vNode)) {
-    return vNode.map(normalizeVNode).join("");
-  }
+  // if (Array.isArray(vNode)) {
+  //   return vNode.map(normalizeVNode).join("");
+  // }
+
+  const children = Array.isArray(vNode.children)
+    ? vNode.children
+    : vNode.children
+      ? [vNode.children]
+      : [];
 
   return {
     ...vNode,
-    children: vNode.children.map(normalizeVNode).filter(Boolean),
+    children: children.map(normalizeVNode).filter(Boolean),
   };
 }
