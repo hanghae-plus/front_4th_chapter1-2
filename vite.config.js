@@ -12,6 +12,11 @@ export default mergeConfig(
         jsxFactory: "createVNode",
       },
     },
+    resolve: {
+      alias: {
+        "@": new URL("./src", import.meta.url).pathname,
+      },
+    },
   }),
   defineTestConfig({
     test: {
