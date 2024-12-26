@@ -1,9 +1,35 @@
 /** @jsx createVNode */
 import { createVNode } from "../../lib";
+import { globalStore } from "../../stores";
+import { getTime } from "../../utils";
 
 export const PostForm = () => {
+  const { currentUser } = globalStore.getState();
+  const { addPost } = globalStore.actions;
+
+  const onSumbit = (event) => {
+    event.preventDefault();
+
+    const contentElement = document.getElementById("post-content");
+    const content = contentElement.value || "";
+
+    if (!contentElement.value.trim()) {
+      alert("게시글 내용을 입력해주세요.");
+
+      return;
+    }
+
+    addPost({
+      author: currentUser.username,
+      content,
+      time: getTime(),
+    });
+
+    contentElement.value = "";
+  };
+
   return (
-    <div className="mb-4 bg-white rounded-lg shadow p-4">
+    <form className="mb-4 bg-white rounded-lg shadow p-4" onSubmit={onSumbit}>
       <textarea
         id="post-content"
         placeholder="무슨 생각을 하고 계신가요?"
@@ -15,6 +41,6 @@ export const PostForm = () => {
       >
         게시
       </button>
-    </div>
+    </form>
   );
 };

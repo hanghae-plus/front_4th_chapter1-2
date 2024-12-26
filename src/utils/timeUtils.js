@@ -19,3 +19,7 @@ export const toTimeFormat = (time) => {
 
   return new Date(time).toLocaleString();
 };
+
+export const getTime = () => {
+  return Date.now();
+};

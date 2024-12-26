@@ -1,3 +1,9 @@
+import * as _ from "lodash";
+
 export function createVNode(type, props, ...children) {
-  return {};
+  return {
+    type,
+    props,
+    children: _.flattenDeep(children).filter((item) => item || item === 0),
+  };
 }

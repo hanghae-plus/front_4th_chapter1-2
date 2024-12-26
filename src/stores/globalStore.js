@@ -53,5 +53,46 @@ export const globalStore = createStore(
       userStorage.reset();
       return { ...state, currentUser: null, loggedIn: false };
     },
+    btnLike(state, postId) {
+      const targetPost = state.posts?.find((post) => post.id === postId);
+
+      if (!targetPost) {
+        return state;
+      }
+
+      const hasLike = targetPost.likeUsers?.includes(
+        state.currentUser?.username || "",
+      );
+
+      return {
+        ...state,
+        posts: state.posts?.map((post) => {
+          if (post.id === postId) {
+            return {
+              ...post,
+              likeUsers: hasLike
+                ? post.likeUsers?.filter(
+                    (username) => username !== state.currentUser?.username,
+                  )
+                : post.likeUsers?.concat(state.currentUser?.username || ""),
+            };
+          }
+          return post;
+        }),
+      };
+    },
+    addPost(state, post) {
+      return {
+        ...state,
+        posts: [
+          ...(state.posts || []),
+          {
+            ...post,
+            id: (state.posts?.length || 0) + 1,
+            likeUsers: [],
+          },
+        ],
+      };
+    },
   },
 );
