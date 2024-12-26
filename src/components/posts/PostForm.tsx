@@ -1,6 +1,7 @@
 /** @jsx createVNode */
 import { createVNode } from "../../lib";
 import { globalStore } from "../../stores";
+import { getCurrentTime } from "../../utils";
 
 export const PostForm = () => {
   const { addPost } = globalStore.actions;
@@ -15,7 +16,7 @@ export const PostForm = () => {
     addPost({
       author: currentUser.username,
       content,
-      time: Date.now(),
+      time: getCurrentTime(),
     });
   };
 
