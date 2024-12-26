@@ -63,5 +63,26 @@ export const globalStore = createStore(
       };
       return { ...state, posts: [...state.posts, newPost] };
     },
+    toggleLike(state, postId) {
+      if (!state.currentUser) {
+        alert("로그인 후 이용해주세요");
+        return;
+      }
+
+      const { posts, currentUser } = state;
+      const likePosts = posts.map((post) => {
+        if (post.id === postId) {
+          const isLiked = post.likeUsers.includes(currentUser.username);
+          return {
+            ...post,
+            likeUsers: isLiked
+              ? post.likeUsers.filter((user) => user !== currentUser.username)
+              : [...post.likeUsers, currentUser.username],
+          };
+        }
+        return post;
+      });
+      return { ...state, posts: likePosts };
+    },
   },
 );
