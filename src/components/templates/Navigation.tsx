@@ -2,24 +2,12 @@
 import { createVNode } from "../../lib";
 import { router } from "../../router";
 import { globalStore } from "../../stores";
+import { Link } from "./Link";
 
 const getNavItemClass = (path) => {
   const currentPath = window.location.pathname;
   return currentPath === path ? "text-blue-600 font-bold" : "text-gray-600";
 };
-
-function Link({ onClick, children, ...props }) {
-  const handleClick = (e) => {
-    e.preventDefault();
-    onClick?.();
-    router.get().push(e.target.href.replace(window.location.origin, ""));
-  };
-  return (
-    <a onClick={handleClick} {...props}>
-      {children}
-    </a>
-  );
-}
 
 export const Navigation = () => {
   const { loggedIn } = globalStore.getState();
