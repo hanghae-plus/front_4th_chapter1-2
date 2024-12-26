@@ -6,4 +6,6 @@ export * from "./createVNode";
 export * from "./createElement";
 export * from "./normalizeVNode";
 export * from "./renderElement";
-export * from "./eventManager";
+export * from "./eventManager.js";
+export * from "./createSyntheticEvent.js";
+export * from "./extractEvent.js";

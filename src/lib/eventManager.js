@@ -1,47 +1,62 @@
-import {
-  createSyntheticEvent,
-  SUPPORTED_EVENTS,
-} from "./createSyntheticEvent.js";
+import { extractEvent, supportedEventNames } from "./extractEvent.js";
 
-const eventStore = new WeakMap();
+export const eventStore = new WeakMap();
 
-/*
- * 이벤트 위임을 설정한다.
- */
-export function setupEventListeners(root) {
-  // 중복 이벤트 리스너 등록 방지
+export function listenToAllSupportedEvents(root) {
   if (root._eventsInitialized) return;
-
-  SUPPORTED_EVENTS.forEach((eventType) => {
-    root.addEventListener(eventType, (event) => {
-      let target = event.target;
-      const syntheticEvent = createSyntheticEvent(event);
-
-      // 이벤트 버블링
-      while (target && target !== root) {
-        const elementEvents = eventStore.get(target);
-        if (elementEvents && elementEvents.has(eventType)) {
-          const handlers = elementEvents.get(eventType);
-          for (const handler of handlers) {
-            // 버블링 진행하며 현재 target 변경
-            syntheticEvent.currentTarget = target;
-            handler(syntheticEvent);
-
-            // 이벤트 전파 중단 확인
-            if (syntheticEvent.propagationStopped) {
-              return;
-            }
-          }
-        }
-        target = target.parentNode;
-      }
-    });
+  supportedEventNames.forEach((domEventName) => {
+    listenToNativeEvent(root, domEventName);
   });
 
   root._eventsInitialized = true;
 }
 
-/*
+function listenToNativeEvent(target, eventType) {
+  const listener = (nativeEvent) => {
+    dispatchEvent(eventType, target, nativeEvent);
+  };
+
+  target.addEventListener(eventType, listener, false);
+}
+
+function dispatchEvent(domEventName, targetContainer, nativeEvent) {
+  const syntheticEvent = extractEvent(
+    domEventName,
+    nativeEvent,
+    nativeEvent.target,
+  );
+  const dispatchQueue = accumulateListeners(
+    nativeEvent.target,
+    targetContainer,
+    domEventName,
+  );
+
+  for (let i = 0; i < dispatchQueue.length; i++) {
+    const { handler, currentTarget } = dispatchQueue[i];
+    syntheticEvent.currentTarget = currentTarget;
+    handler(syntheticEvent);
+    syntheticEvent.currentTarget = null;
+  }
+}
+
+function accumulateListeners(target, rootContainer, eventType) {
+  let dispatchQueue = [];
+  let currentTarget = target;
+
+  while (currentTarget && currentTarget !== rootContainer) {
+    const elementEvents = eventStore.get(currentTarget);
+    if (elementEvents?.has(eventType)) {
+      const handlers = elementEvents.get(eventType);
+      handlers.forEach((handler) => {
+        dispatchQueue.push({ handler, currentTarget });
+      });
+    }
+    currentTarget = currentTarget.parentNode;
+  }
+  return dispatchQueue;
+}
+
+/**
  * 이벤트 핸들러를 등록한다.
  */
 export function addEvent(element, eventType, handler) {

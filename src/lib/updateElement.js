@@ -1,4 +1,4 @@
-import { addEvent, removeEvent } from "./eventManager";
+import { addEvent, removeEvent } from "./eventManager.js";
 import { createElement } from "./createElement.js";
 
 /*

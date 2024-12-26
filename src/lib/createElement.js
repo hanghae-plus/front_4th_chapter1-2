@@ -1,9 +1,9 @@
-/*
+import { addEvent } from "./eventManager.js";
+import { supportedEventNames } from "./extractEvent.js";
+
+/**
  * DOM API를 이용하여 Virtual DOM을 실제 DOM으로 변환한다.
  */
-import { addEvent } from "./eventManager.js";
-import { SUPPORTED_EVENTS } from "./createSyntheticEvent.js";
-
 export function createElement(vNode) {
   // 문자열이나 숫자 처리
   if (typeof vNode === "string" || typeof vNode === "number") {
@@ -39,7 +39,7 @@ export function createElement(vNode) {
         element.setAttribute("class", value);
       } else if (key.startsWith("on") && typeof value === "function") {
         const eventType = key.slice(2).toLowerCase();
-        if (SUPPORTED_EVENTS.has(eventType)) {
+        if (supportedEventNames.has(eventType)) {
           addEvent(element, eventType, value);
         }
       } else if (key !== "key" && key !== "children") {

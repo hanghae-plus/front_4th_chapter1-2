@@ -1,7 +1,7 @@
 import { createElement } from "./createElement";
 import { normalizeVNode } from "./normalizeVNode";
-import { setupEventListeners } from "./eventManager.js";
 import { updateElement } from "./updateElement.js";
+import { listenToAllSupportedEvents } from "./eventManager.js";
 
 /*
  * Virtual DOM 기반 파이프라인
@@ -25,7 +25,8 @@ export function renderElement(vNode, container) {
   if (!oldVNode) {
     // 최초 렌더링
     container.appendChild(createElement(normalizedVNode));
-    setupEventListeners(container);
+    // setupEventListeners(container);
+    listenToAllSupportedEvents(container);
   } else {
     // diff 기반 리렌더링
     updateElement(container, normalizedVNode, oldVNode, 0);
