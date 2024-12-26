@@ -5,13 +5,13 @@ import { globalStore } from "../../stores";
 
 const getNavItemClass = (path) => {
   const currentPath = window.location.pathname;
+  console.log("currentPath= ", currentPath);
   return currentPath === path ? "text-blue-600 font-bold" : "text-gray-600";
 };
 
-function Link({ onClick, children, ...props }) {
+function Link({ children, ...props }) {
   const handleClick = (e) => {
     e.preventDefault();
-    onClick?.();
     router.get().push(e.target.href.replace(window.location.origin, ""));
   };
   return (
