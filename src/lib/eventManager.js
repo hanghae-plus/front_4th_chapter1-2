@@ -1,65 +1,29 @@
 const eventManager = () => {
-  let events = [];
-  let rootElement = null;
+  const events = {};
 
-  const createScopedEventHandler = (addEvent) => {
-    return (e) => {
-      const target = e.target;
-      if (target !== addEvent.element) return;
-      addEvent.handler(e);
-    };
+  const scopedEventHandler = (e) => {
+    const targetgetEvent = events[e.type].get(e.target);
+    if (targetgetEvent) targetgetEvent(e);
   };
+
   const setupEventListeners = (root) => {
-    rootElement = root;
-
-    events.forEach(({ eventType, handler: convertHandler }) => {
-      rootElement.removeEventListener(eventType, convertHandler);
-    });
-
-    events.forEach((event) => {
-      rootElement.addEventListener(event.eventType, event.handler);
-    });
+    for (const eventType in events) {
+      root.removeEventListener(eventType, scopedEventHandler);
+      root.addEventListener(eventType, scopedEventHandler);
+    }
   };
 
   const addEvent = (element, eventType, handler) => {
-    const isExistingEvent = events.some(
-      (event) =>
-        event.element == element &&
-        event.eventType == eventType &&
-        event.originalHandler == handler,
-    );
-    if (isExistingEvent) return;
-
-    const scopedEventHandler = createScopedEventHandler({
-      element,
-      eventType,
-      handler,
-    });
-    events.push({
-      element,
-      eventType,
-      handler: scopedEventHandler,
-      originalHandler: handler,
-    });
+    if (!events[eventType]) {
+      events[eventType] = new WeakMap();
+    }
+    events[eventType].set(element, handler);
   };
+
   const removeEvent = (element, eventType, handler) => {
-    const sameEvent = events.filter(
-      (prevEvent) =>
-        prevEvent.element === element &&
-        prevEvent.eventType === eventType &&
-        prevEvent.originalHandler === handler,
-    );
-
-    sameEvent.forEach(({ eventType, handler: convertHandler }) => {
-      rootElement.removeEventListener(eventType, convertHandler);
-    });
-
-    events = events.filter(
-      (prevEvent) =>
-        prevEvent.element !== element ||
-        prevEvent.eventType !== eventType ||
-        prevEvent.originalHandler !== handler,
-    );
+    if (events[eventType].get(element) === handler) {
+      events[eventType].delete(element);
+    }
   };
 
   return { setupEventListeners, addEvent, removeEvent };

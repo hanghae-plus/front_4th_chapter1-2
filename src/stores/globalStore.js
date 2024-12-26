@@ -77,11 +77,11 @@ export const globalStore = createStore(
     addPost(state, content) {
       const { currentUser, posts } = state;
       const newPost = {
-        author: currentUser.username,
-        content,
         id: posts.length > 0 ? posts[posts.length - 1].id + 1 : 1,
-        likeUsers: [],
+        author: currentUser.username,
         time: Date.now(),
+        content,
+        likeUsers: [],
       };
       return { ...state, posts: [...posts, newPost] };
     },
