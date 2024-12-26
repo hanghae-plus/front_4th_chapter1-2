@@ -1,6 +1,6 @@
 /** @jsx createVNode */
 /** @jsxFrag Fragment */
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createVNode, renderElement } from "../../lib";
 
 describe("Chapter1-2 > 심화과제 > Virtual DOM과 이벤트 관리", () => {
@@ -41,7 +41,6 @@ describe("Chapter1-2 > 심화과제 > Virtual DOM과 이벤트 관리", () => {
         </div>
       );
       renderElement(updatedVNode, container);
-
       expect(container.innerHTML).toBe(
         "<div><h1>Updated Title</h1><p>Paragraph 1</p></div>",
       );

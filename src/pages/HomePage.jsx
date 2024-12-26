@@ -18,18 +18,21 @@ export const HomePage = () => {
       <div className="max-w-md w-full">
         <Header />
         <Navigation />
-
         <main className="p-4">
           <PostForm />
           <div id="posts-container" className="space-y-4">
             {[...posts]
               .sort((a, b) => b.time - a.time)
               .map((props) => {
-                return <Post {...props} activationLike={false} />;
+                return (
+                  <Post
+                    {...props}
+                    activationLike={props.likeUsers.length > 0}
+                  />
+                );
               })}
           </div>
         </main>
-
         <Footer />
       </div>
     </div>

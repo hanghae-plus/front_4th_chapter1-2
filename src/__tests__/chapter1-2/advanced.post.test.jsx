@@ -1,5 +1,6 @@
 /** @jsx createVNode */
 /** @jsxFrag Fragment */
+import userEvent from "@testing-library/user-event";
 import {
   afterAll,
   afterEach,
@@ -10,7 +11,6 @@ import {
   it,
   vi,
 } from "vitest";
-import userEvent from "@testing-library/user-event";
 
 let user;
 

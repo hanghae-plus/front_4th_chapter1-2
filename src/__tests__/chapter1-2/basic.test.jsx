@@ -558,6 +558,7 @@ describe("Chapter1-2 > 기본과제 > 가상돔 만들기 > ", () => {
 
     it("이벤트가 위임 방식으로 등록되어야 한다", () => {
       const clickHandler = vi.fn();
+
       const vNode = (
         <div>
           <button onClick={clickHandler}>Click me</button>
