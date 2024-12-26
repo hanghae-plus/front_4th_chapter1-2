@@ -49,7 +49,7 @@ export function addEvent(element, eventType, handler) {
 
   const wrappedHandler = (e) => {
     if (e.target === element) {
-      handler();
+      handler(e);
     }
   };
 

@@ -15,17 +15,13 @@ export function normalizeVNode(vNode) {
     return normalizeVNode(
       vNode.type({
         ...vNode.props,
-        children: normalizeVNode(vNode.children),
+        children: vNode.children,
       }),
     );
   }
 
-  if (Array.isArray(vNode)) {
-    return vNode.map(normalizeVNode);
-  }
-
   if (Array.isArray(vNode.children)) {
-    vNode.children = vNode.children.filter(normalizeVNode);
+    vNode.children = vNode.children.filter(normalizeVNode).map(normalizeVNode);
   }
 
   return vNode;
