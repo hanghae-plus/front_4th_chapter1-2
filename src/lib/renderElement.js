@@ -1,6 +1,7 @@
 import { removeAllEvents, setupEventListeners } from "./eventManager";
 import { createElement } from "./createElement";
 import { normalizeVNode } from "./normalizeVNode";
+import { updateElement } from "./updateElement";
 // import { updateElement } from "./updateElement";
 
 export function renderElement(vNode, container) {
@@ -8,8 +9,16 @@ export function renderElement(vNode, container) {
   // 이후에는 updateElement로 기존 DOM을 업데이트한다.
   // 렌더링이 완료되면 container에 이벤트를 등록한다.
   removeAllEvents();
-  const element = createElement(normalizeVNode(vNode));
-  container.innerHTML = "";
-  container.appendChild(element);
+
+  if (!container.firstChild) {
+    const element = createElement(normalizeVNode(vNode));
+    container.innerHTML = "";
+    container.appendChild(element);
+  } else {
+    const currentElement = container.firstChild; // 기존 DOM 루트 노드
+    const newElement = createElement(normalizeVNode(vNode)); // 새로운 Virtual DOM
+    updateElement(container, newElement, currentElement);
+  }
+
   setupEventListeners(container);
 }
