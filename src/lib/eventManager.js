@@ -23,6 +23,7 @@ function handleEvent(e) {
       if (target === selector) {
         // 6. 핸들러 호출
         handler.call(target, e);
+        console.log(eventHandlers);
       }
     });
   }
@@ -33,18 +34,21 @@ export function addEvent(selector, eventType, handler) {
   if (!eventHandlers.has(eventType)) {
     eventHandlers.set(eventType, []);
   }
+
   const handlers = eventHandlers.get(eventType);
-  handlers.push({ selector, handler });
+
+  const isHandlerRegistered = handlers.some((eventObj) => {
+    eventObj.selector === selector && eventObj.handler === handler;
+    console.log(eventObj.selector, selector);
+  });
+
+  if (!isHandlerRegistered) {
+    handlers.push({ selector, handler });
+  }
 }
 
 // 1. 이벤트 핸들러를 제거: 이벤트 핸들러를 제거
 export function removeEvent(selector, eventType, handler) {
-  if (eventHandlers.has(eventType)) {
-    const handlers = eventHandlers.get(eventType);
-    const filterHandlers = handlers.filter(
-      (eventObj) =>
-        eventObj.selector !== selector || eventObj.handler !== handler,
-    );
-    eventHandlers.set(eventType, filterHandlers);
-  }
+  selector.removeEventListener(eventType, handler);
+  registeredEvents.clear();
 }
