@@ -1,7 +1,7 @@
 import { createElement } from "./createElement";
 import { normalizeVNode } from "./normalizeVNode";
 import { updateElement } from "./updateElement.js";
-import { listenToAllSupportedEvents } from "./eventManager.js";
+import { setupEventListeners } from "./eventManager.js";
 
 /*
  * Virtual DOM 기반 파이프라인
@@ -12,9 +12,8 @@ import { listenToAllSupportedEvents } from "./eventManager.js";
  */
 
 export function renderElement(vNode, container) {
-  // 최초 렌더링시에는 createElement로 DOM을 생성하고
-  // 이후에는 updateElement로 기존 DOM을 업데이트한다.
-  // 렌더링이 완료되면 container에 이벤트를 등록한다.
+  // root 엘리먼트에 합성 이벤트로 처리되는 리스너 등록
+  setupEventListeners(container);
 
   // 이전 가상 DOM 가져오기
   const oldVNode = container._vnode;
@@ -25,9 +24,7 @@ export function renderElement(vNode, container) {
   if (!oldVNode) {
     // 최초 렌더링
     container.appendChild(createElement(normalizedVNode));
-    listenToAllSupportedEvents(container);
   } else {
-    // 가상 DOM 변경사항에 대하여 실제 DOM에 반영
     updateElement(container, normalizedVNode, oldVNode, 0);
   }
 

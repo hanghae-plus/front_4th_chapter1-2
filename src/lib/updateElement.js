@@ -4,46 +4,41 @@ import { createElement } from "./createElement.js";
 /**
  * DOM 요소의 속성을 비교하며 업데이트
  */
-function updateAttributes(target, originNewProps, originOldProps) {
-  // 1. 제거된 속성 처리
-  Object.keys(originOldProps).forEach((prop) => {
+function updateAttributes(target, newProps, oldProps) {
+  const allProps = new Set([
+    ...Object.keys(newProps),
+    ...Object.keys(oldProps),
+  ]);
+
+  allProps.forEach((prop) => {
     if (prop === "key" || prop === "children") return;
 
-    if (!(prop in originNewProps)) {
-      if (prop.startsWith("on")) {
-        // 이벤트 리스너 제거
-        const eventType = prop.slice(2).toLowerCase();
-        removeEvent(target, eventType, originOldProps[prop]);
-      } else {
-        // 일반 속성 제거
-        target.removeAttribute(prop === "className" ? "class" : prop);
-      }
-    }
-  });
+    const newValue = newProps[prop];
+    const oldValue = oldProps[prop];
 
-  // 2. 새로운/변경된 속성 처리
-  Object.keys(originNewProps).forEach((prop) => {
-    if (prop === "key" || prop === "children") return;
+    // 값이 같으면 스킵
+    if (newValue === oldValue) return;
 
-    const newProp = originNewProps[prop];
-    const oldProp = originOldProps[prop];
-
-    if (newProp !== oldProp) {
-      console.log("not same", newProp, oldProp);
-      console.log(typeof newProp, typeof oldProp);
-    }
-
+    // 이벤트 핸들러 처리
     if (prop.startsWith("on")) {
-      // 이벤트 리스너 처리
       const eventType = prop.slice(2).toLowerCase();
-      if (newProp?.toString() !== oldProp?.toString()) {
-        oldProp && removeEvent(target, eventType, oldProp);
-        newProp && addEvent(target, eventType, newProp);
+
+      // 이전 핸들러 제거
+      if (oldValue) {
+        removeEvent(target, eventType, oldValue);
       }
-    } else if (newProp !== oldProp) {
-      // 일반 속성 업데이트
-      target.setAttribute(prop === "className" ? "class" : prop, newProp);
+
+      // 새 핸들러 등록
+      if (newValue) {
+        addEvent(target, eventType, newValue);
+      }
+
+      return;
     }
+
+    // 일반 속성 처리
+    const attrName = prop === "className" ? "class" : prop;
+    target.setAttribute(attrName, newValue);
   });
 }
 
@@ -51,8 +46,13 @@ function updateAttributes(target, originNewProps, originOldProps) {
  * Virtual DOM의 차이를 실제 DOM에 반영
  */
 export function updateElement(parentElement, newNode, oldNode, index = 0) {
-  // Case 1: 노드 삭제
+  if (!parentElement) {
+    console.warn("Invalid parent Element");
+    return;
+  }
+
   if (!newNode && oldNode) {
+    // Case 1: 노드 삭제
     parentElement.removeChild(parentElement.childNodes[index]);
     return;
   }

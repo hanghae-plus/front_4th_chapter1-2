@@ -8,10 +8,10 @@ export const eventStore = new WeakMap();
  * root 엘리먼트에 지원되는 모든 이벤트 리스너 등록
  * 중복 초기화 방지를 위한 flag 사용
  */
-export function listenToAllSupportedEvents(root) {
+export function setupEventListeners(root) {
   if (root._eventsInitialized) return;
-  supportedEventNames.forEach((domEventName) => {
-    listenToNativeEvent(root, domEventName);
+  supportedEventNames.forEach((eventName) => {
+    listenToNativeEvent(root, eventName);
   });
 
   root._eventsInitialized = true;

@@ -15,11 +15,6 @@ export function createElement(vNode) {
     return document.createTextNode("");
   }
 
-  // 함수형 컴포넌트 처리 (에러 발생 시 파이프라인 재점검 할 것)
-  if (typeof vNode.type === "function") {
-    throw new Error("Component should be normalized before createElement");
-  }
-
   // 배열(fragment) 처리
   if (Array.isArray(vNode)) {
     const fragment = document.createDocumentFragment();
@@ -56,5 +51,3 @@ export function createElement(vNode) {
 
   return element;
 }
-
-// function updateAttributes($el, props) {}
