@@ -3,6 +3,7 @@ import { createVNode } from "../lib";
 
 import { Footer, Header, Navigation, Post, PostForm } from "../components";
 import { globalStore } from "../stores";
+import { userStorage } from "../storages";
 
 /**
  * 심화과제
@@ -13,6 +14,12 @@ import { globalStore } from "../stores";
 export const HomePage = () => {
   const { posts } = globalStore.getState();
 
+  const isChecked = (likeUsers) => {
+    return likeUsers.find((postLike) =>
+      postLike.includes(userStorage.get("user")?.username),
+    );
+  };
+
   return (
     <div className="bg-gray-100 min-h-screen flex justify-center">
       <div className="max-w-md w-full">
@@ -20,12 +27,17 @@ export const HomePage = () => {
         <Navigation />
 
         <main className="p-4">
-          <PostForm />
+          {!!userStorage.get("user") && <PostForm />}
           <div id="posts-container" className="space-y-4">
             {[...posts]
               .sort((a, b) => b.time - a.time)
               .map((props) => {
-                return <Post {...props} activationLike={false} />;
+                return (
+                  <Post
+                    {...props}
+                    activationLike={!!isChecked(props.likeUsers)}
+                  />
+                );
               })}
           </div>
         </main>
