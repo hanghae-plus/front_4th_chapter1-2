@@ -12,10 +12,15 @@ export const PostForm = () => {
 
     if (!currentUser) return;
 
-    const content = document.getElementById("post-content").value as string;
+    const postContent = document.getElementById(
+      "post-content",
+    ) as HTMLTextAreaElement;
+
+    const contentValue = postContent ? postContent.value : "";
+
     addPost({
       author: currentUser.username,
-      content,
+      content: contentValue,
       time: getCurrentTime(),
     });
   };

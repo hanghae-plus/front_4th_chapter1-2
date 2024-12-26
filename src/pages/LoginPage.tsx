@@ -15,9 +15,12 @@ function login(username: string) {
 export const LoginPage = () => {
   const handleSubmit = (e: SubmitEvent) => {
     e.preventDefault();
-    const username = document.getElementById("username").value;
 
-    login(username);
+    const username = document.getElementById("username") as HTMLInputElement;
+
+    const userNameValue = username ? username.value : "";
+
+    login(userNameValue);
   };
 
   return (

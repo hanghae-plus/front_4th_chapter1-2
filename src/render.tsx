@@ -7,7 +7,11 @@ import { NotFoundPage } from "./pages";
 
 export function render() {
   const Page = router.get().getTarget() ?? NotFoundPage;
-  const $root = document.querySelector("#root");
+  const $root = document.querySelector("#root") as HTMLElement | null;
+
+  if ($root === null) {
+    return;
+  }
 
   try {
     renderElement(<Page />, $root);
