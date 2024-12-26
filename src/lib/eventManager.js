@@ -15,10 +15,9 @@ export function setupEventListeners(root) {
 
 // 4. 이벤트 핸들러 함수: 이벤트가 발생하면 호출
 function handleEvent(e) {
-  const { type, target } = e; // 발생한 이벤트 객체의 속성들을 파라미터 변수로 담음
+  const { type, target } = e;
   if (eventHandlers.has(type)) {
     const handlers = eventHandlers.get(type);
-    // 6. 핸들러 호출
     handlers.forEach(({ selector, handler }) => {
       // 5. 이벤트가 발생한 요소가 특정 조건을 만족하는지 췍
       if (target === selector) {
@@ -40,10 +39,12 @@ export function addEvent(selector, eventType, handler) {
 
 // 1. 이벤트 핸들러를 제거: 이벤트 핸들러를 제거
 export function removeEvent(selector, eventType, handler) {
-  if (eventHandlers[eventType]) {
-    eventHandlers[eventType] = eventHandlers[eventType].filter(
+  if (eventHandlers.has(eventType)) {
+    const handlers = eventHandlers.get(eventType);
+    const filterHandlers = handlers.filter(
       (eventObj) =>
         eventObj.selector !== selector || eventObj.handler !== handler,
     );
+    eventHandlers.set(eventType, filterHandlers);
   }
 }

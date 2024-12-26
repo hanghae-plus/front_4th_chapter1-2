@@ -45,16 +45,20 @@ export function createElement(vNode) {
         if (k === "className") {
           // setAttribute : 속성을 설정하는 메서드, k : 속성 이름, v : 속성 값
           $el.setAttribute("class", v);
+          // updateAttributes($el, props)
         } else {
           $el.setAttribute(k, v); // 일반 속성 처리
+          // updateAttributes($el, props)
         }
       }
     }
   });
 
+  // updateAttributes($el, props)
+
   return $el;
 }
 
 // function updateAttributes($el, props) {
-//   console.log($el, props)
+//   console.log($el)
 // }

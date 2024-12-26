@@ -475,10 +475,15 @@ describe("Chapter1-2 > 기본과제 > 가상돔 만들기 > ", () => {
       addEvent(button, "click", clickHandler);
       setupEventListeners(container);
       button.click();
+
+      console.log(container.innerHTML);
+
       expect(clickHandler).toHaveBeenCalledTimes(1);
 
       removeEvent(button, "click", clickHandler);
       button.click();
+
+      console.log(container.innerHTML);
 
       expect(clickHandler).toHaveBeenCalledTimes(1);
     });
