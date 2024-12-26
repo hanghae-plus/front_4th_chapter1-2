@@ -3,15 +3,16 @@ import { createElement } from "./createElement";
 import { normalizeVNode } from "./normalizeVNode";
 import { updateElement } from "./updateElement";
 
+const nodeToContainerMap = new WeakMap();
+
 export function renderElement(vNode, container) {
   vNode = normalizeVNode(vNode);
-  const isInitialRender = !container.childNodes[0];
-
-  if (isInitialRender) {
+  if (!nodeToContainerMap.has(container)) {
     container.append(createElement(vNode));
   } else {
-    updateElement(container, vNode, container.childNodes[0]);
+    const oldNode = nodeToContainerMap.get(container);
+    updateElement(container, vNode, oldNode);
   }
-
   setupEventListeners(container);
+  nodeToContainerMap.set(container, vNode);
 }
