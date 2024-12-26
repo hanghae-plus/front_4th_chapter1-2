@@ -66,12 +66,7 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
   }
 
   //텍스트 업데이트
-  if (
-    typeof newNode === "string" &&
-    typeof newNode === "number" &&
-    typeof oldNode === "string" &&
-    typeof oldNode === "number"
-  ) {
+  if (typeof newNode === "string" && typeof oldNode === "string") {
     if (newNode !== oldNode) {
       parentElement.replaceChild(
         document.createTextNode(newNode),
