@@ -1,7 +1,7 @@
 /** @jsx createVNode */
 import { createVNode } from "../../lib";
 
-export const PostForm = () => {
+export const PostForm = ({ handlePostSubmit }) => {
   return (
     <div className="mb-4 bg-white rounded-lg shadow p-4">
       <textarea
@@ -12,6 +12,7 @@ export const PostForm = () => {
       <button
         id="post-submit"
         className="mt-2 bg-blue-600 text-white px-4 py-2 rounded"
+        onClick={handlePostSubmit}
       >
         게시
       </button>
