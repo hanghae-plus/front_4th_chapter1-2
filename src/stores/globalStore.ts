@@ -5,7 +5,34 @@ const 초 = 1000;
 const 분 = 초 * 60;
 const 시간 = 분 * 60;
 
-export const globalStore = createStore(
+interface User {
+  username: string;
+  email: string;
+  bio: string;
+}
+
+interface PostType {
+  id?: number;
+  author: string;
+  time: number;
+  content: string;
+  likeUsers?: string[];
+}
+
+interface StateType {
+  currentUser: User | null;
+  loggedIn: boolean;
+  posts: PostType[];
+  error: Error | null;
+}
+
+interface ActionsType {
+  logout: () => StateType;
+  toggleLike: (postId: number) => StateType;
+  addPost: (post: PostType) => StateType;
+}
+
+export const globalStore = createStore<StateType, ActionsType>(
   {
     currentUser: userStorage.get(),
     loggedIn: Boolean(userStorage.get()),
@@ -49,9 +76,24 @@ export const globalStore = createStore(
     error: null,
   },
   {
-    logout(state) {
+    logout(state: StateType) {
       userStorage.reset();
       return { ...state, currentUser: null, loggedIn: false };
+    },
+    toggleLike(state: StateType, postId: number) {},
+    addPost(state: StateType, post: PostType) {
+      console.log(post);
+      return {
+        ...state,
+        posts: [
+          ...state.posts,
+          {
+            ...post,
+            id: state.posts.length + 1,
+            likeUsers: [],
+          },
+        ],
+      };
     },
   },
 );

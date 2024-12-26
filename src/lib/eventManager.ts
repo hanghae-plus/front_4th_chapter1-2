@@ -22,9 +22,7 @@ export function addEvent(
 }
 
 export function removeEvent(element: HTMLElement, eventType: string) {
-  console.log("!@@@@@@");
   if (handlers[eventType] && handlers[eventType].has(element)) {
-    console.log(handlers[eventType]);
     handlers[eventType].delete(element);
   }
 }

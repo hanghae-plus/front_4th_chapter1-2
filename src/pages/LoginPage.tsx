@@ -3,7 +3,7 @@ import { createVNode } from "../lib";
 import { globalStore } from "../stores";
 import { userStorage } from "../storages";
 
-function login(username) {
+function login(username: string) {
   const user = { username, email: "", bio: "" };
   globalStore.setState({
     currentUser: user,
