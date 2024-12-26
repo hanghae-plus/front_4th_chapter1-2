@@ -2,7 +2,7 @@ const eventManager = () => {
   let events = [];
   let rootElement = null;
 
-  const eventWrapper = (addEvent) => {
+  const createScopedEventHandler = (addEvent) => {
     return (e) => {
       const target = e.target;
       if (target !== addEvent.element) return;
@@ -22,18 +22,23 @@ const eventManager = () => {
   };
 
   const addEvent = (element, eventType, handler) => {
-    const existingEvent = events.find(
+    const isExistingEvent = events.some(
       (event) =>
         event.element == element &&
         event.eventType == eventType &&
         event.originalHandler == handler,
     );
-    if (existingEvent) return;
-    const convertEventHandler = eventWrapper({ element, eventType, handler });
+    if (isExistingEvent) return;
+
+    const scopedEventHandler = createScopedEventHandler({
+      element,
+      eventType,
+      handler,
+    });
     events.push({
       element,
       eventType,
-      handler: convertEventHandler,
+      handler: scopedEventHandler,
       originalHandler: handler,
     });
   };
