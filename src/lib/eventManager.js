@@ -1,12 +1,39 @@
 const eventManager = new Map();
 
+function createSyntheticEvent(event) {
+  let propagated = false;
+  return {
+    type: event.type,
+    target: event.target,
+    currentTarget: event.target,
+    preventDefault() {
+      event.preventDefault();
+    },
+    stopPropagation() {
+      propagated = true;
+      event.stopPropagation();
+    },
+    isPropatation() {
+      return propagated;
+    },
+    nativeEvent: event,
+  };
+}
+
 function eventHandler(event) {
+  event = createSyntheticEvent(event);
+  console.log(event);
   const eventType = event.type;
   const handlers = eventManager.get(eventType);
 
-  if (handlers.has(event.target)) {
-    const handler = handlers.get(event.target);
-    handler(event);
+  let currentElement = event.target;
+
+  while (currentElement && !event.isPropatation()) {
+    if (handlers.has(currentElement)) {
+      const handler = handlers.get(currentElement);
+      handler(event);
+    }
+    currentElement = currentElement.parentElement;
   }
 }
 
