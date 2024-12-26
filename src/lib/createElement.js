@@ -23,16 +23,10 @@ export function createElement(vNode) {
 
   // 4. 함수형 컴포넌트 처리
   if (typeof vNode.type === "function") {
-    const componentVNode = vNode.type({
-      ...(vNode.props || {}),
-      children: vNode.children,
-    });
-    return createElement(componentVNode); // 반환된 VNode를 재귀적으로 처리
-    // throw new Error("Unsupported component type"); // 주석해제하면 chapter1-2 basic 테스트는 통과 chater1-1 basic 테스트는 실패
+    throw new Error("Unsupported component type");
   }
 
   // 5. DOM 요소 처리
-  // if (typeof vNode === "object" && vNode.type) {
   const { type, props = {}, children = [] } = vNode;
   const $el = document.createElement(type);
 
@@ -47,7 +41,6 @@ export function createElement(vNode) {
   });
 
   return $el;
-  // }
 }
 
 //
