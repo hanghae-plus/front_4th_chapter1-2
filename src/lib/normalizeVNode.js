@@ -1,5 +1,5 @@
 export function normalizeVNode(vNode) {
-  // null, undefined, boolean 값은 빈 문자열로 변환
+  // 1. null, undefined, boolean 값은 빈 문자열로 변환
   if (
     vNode === null ||
     vNode === undefined ||
@@ -9,12 +9,12 @@ export function normalizeVNode(vNode) {
     return "";
   }
 
-  // 문자열과 숫자는 문자열로 변환
+  // 2. 문자열과 숫자는 문자열로 변환
   if (typeof vNode === "string" || typeof vNode === "number") {
     return String(vNode);
   }
 
-  // 컴포넌트를 정규화
+  // 3. 컴포넌트를 정규화
   // 배열처리 중첩 배열을 평탄화하고, 모든 요소를 재귀적으로 정규화
   if (Array.isArray(vNode)) {
     return vNode.flat(Infinity).map(normalizeVNode);
