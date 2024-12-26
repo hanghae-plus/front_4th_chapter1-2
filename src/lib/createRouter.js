@@ -8,6 +8,7 @@ export const createRouter = (routes) => {
   const getTarget = () => routes[getPath()];
 
   const push = (path) => {
+    console.log("push", path);
     window.history.pushState(null, null, path);
     notify();
   };

@@ -7,12 +7,14 @@ import { NotFoundPage } from "./pages";
 
 export function render() {
   const Page = router.get().getTarget() ?? NotFoundPage;
-  const $root = document.querySelector("#root");
+  // const Page = (<div></div>);
+  const $root = document.querySelector("div");
   if ($root) {
     try {
       // <Page /> 자체가 vNode 입니다
       // $root가 진짜 컴포넌트
       // console.log("Page", typeof <Page />)
+      console.log("렌더함수 실행 원리");
       renderElement(<Page />, $root);
     } catch (error) {
       if (error instanceof ForbiddenError) {

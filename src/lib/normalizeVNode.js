@@ -6,7 +6,7 @@ export function normalizeVNode(vNode) {
 
   // 스프링이거나 숫자인 경우는 string으로
   if (typeof vNode === "string" || typeof vNode === "number") {
-    return String(vNode);
+    return vNode.toString();
   }
 
   // 함수형으로 들어온다면. HomePage.jsx 같은 값은 함수이다. 함수인 경우는 type에 함수가 있음
