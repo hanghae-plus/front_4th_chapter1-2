@@ -22,11 +22,11 @@ export function normalizeVNode(vNode) {
 
   // 사용자 정의 컴포넌트 처리 (컴포넌트 정규화)
   if (typeof vNode.type === "function") {
-    const result = vNode.type({
-      ...vNode.props,
-      children: normalizeVNode(vNode.children),
+    const componentVNode = vNode.type({
+      ...(vNode.props || {}),
+      children: vNode.children,
     });
-    return normalizeVNode(result);
+    return normalizeVNode(componentVNode); // 반환된 VNode를 재귀적으로 처리
   }
 
   // 기본 노드 처리
@@ -34,7 +34,7 @@ export function normalizeVNode(vNode) {
     return {
       type: vNode.type,
       props: vNode.props,
-      children: vNode.children.flat(Infinity).filter(normalizeVNode),
+      children: vNode.children.map(normalizeVNode).filter(normalizeVNode),
     };
   }
 
