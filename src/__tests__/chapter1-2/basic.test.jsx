@@ -482,6 +482,38 @@ describe("Chapter1-2 > 기본과제 > 가상돔 만들기 > ", () => {
 
       expect(clickHandler).toHaveBeenCalledTimes(1);
     });
+
+    it("이벤트가 버블링 되는 것 처럼 동작해야한다.", () => {
+      const clickHandler1 = vi.fn();
+      const clickHandler2 = vi.fn();
+
+      const Component = () => (
+        <div id="parent" onClick={clickHandler1}>
+          <div id="child" onClick={clickHandler2}></div>
+        </div>
+      );
+      renderElement(<Component />, container);
+
+      const child = container.querySelector("#child");
+      child.click();
+      expect(clickHandler1).toHaveBeenCalledTimes(1);
+      expect(clickHandler2).toHaveBeenCalledTimes(1);
+    });
+
+    it("stopPropagation이 버블링 동작을 멈출 수 있어야한다.", () => {
+      const clickHandler1 = vi.fn();
+
+      const Component = () => (
+        <div id="parent" onClick={clickHandler1}>
+          <div id="child" onClick={(event) => event.stopPropagation()}></div>
+        </div>
+      );
+      renderElement(<Component />, container);
+
+      const child = container.querySelector("#child");
+      child.click();
+      expect(clickHandler1).toHaveBeenCalledTimes(0);
+    });
   });
 
   describe("renderElement", () => {
