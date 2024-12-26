@@ -9,20 +9,29 @@ function updateAttributes(target, originNewProps, originOldProps) {
     } else if (typeof value === "function" && key.startsWith("on")) {
       const eventType = key.slice(2).toLowerCase();
       addEvent(target, eventType, value);
+    } else {
+      target.setAttribute(key, value);
     }
   });
 
   // props remove
-  Object.entries(originOldProps).forEach(([key, value]) => {
-    removeEvent(target, key, value);
-  });
+  if (originOldProps) {
+    Object.entries(originOldProps).forEach(([key, value]) => {
+      if (typeof value === "function" && key.startsWith("on")) {
+        const eventType = key.slice(2).toLowerCase();
+        removeEvent(target, eventType, value);
+      } else {
+        removeEvent(target, key, value);
+      }
+    });
+  }
 }
 
 export function updateElement(parentElement, newNode, oldNode, index = 0) {
   // 1. 노드 제거 (newNode가 없고 oldNode가 있는 경우)
   if (!newNode && oldNode) {
     // oldNode를 parent에서 제거
-    return parentElement.removeChild(parentElement.childNode[index]);
+    return parentElement.removeChild(parentElement.childNodes[index]);
   }
   // 2. 새 노드 추가 (newNode가 있고 oldNode가 없는 경우)
   if (newNode && !oldNode) {
@@ -47,6 +56,7 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
       parentElement.childNodes[index],
     );
   }
+
   // 5. 같은 타입의 노드 업데이트
   updateAttributes(
     parentElement.childNodes[index],
