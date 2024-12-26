@@ -50,14 +50,13 @@ export const HomePage = () => {
 
   const handlePostSubmit = (e) => {
     e.preventDefault();
-    console.log("게시!");
     const textareaValue = document.body.querySelector("#post-content").value;
 
     globalStore.setState({
       posts: [
         ...posts,
         {
-          id: 231321,
+          id: posts.at(-1).id || 1,
           author: username,
           time: Date.now(),
           content: textareaValue,
@@ -83,7 +82,7 @@ export const HomePage = () => {
                   <Post
                     {...props}
                     activationLike={myLikePost(props)}
-                    onClick={(e) => handlePostLike(e, props)} // props를 전달
+                    onClick={(e) => handlePostLike(e, props)}
                   />
                 );
               })}
