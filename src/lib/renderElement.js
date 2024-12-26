@@ -25,10 +25,9 @@ export function renderElement(vNode, container) {
   if (!oldVNode) {
     // 최초 렌더링
     container.appendChild(createElement(normalizedVNode));
-    // setupEventListeners(container);
     listenToAllSupportedEvents(container);
   } else {
-    // diff 기반 리렌더링
+    // 가상 DOM 변경사항에 대하여 실제 DOM에 반영
     updateElement(container, normalizedVNode, oldVNode, 0);
   }
 

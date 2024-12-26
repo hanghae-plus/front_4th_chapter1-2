@@ -1,14 +1,11 @@
 import { addEvent, removeEvent } from "./eventManager.js";
 import { createElement } from "./createElement.js";
 
-/*
- * 요소의 속성을 업데이트한다.
+/**
+ * DOM 요소의 속성을 비교하며 업데이트
  */
 function updateAttributes(target, originNewProps, originOldProps) {
-  originNewProps = originNewProps || {};
-  originOldProps = originOldProps || {};
-
-  // 이전 속성 중 새로운 속성에 없는 것들을 제거
+  // 1. 제거된 속성 처리
   Object.keys(originOldProps).forEach((prop) => {
     if (prop === "key" || prop === "children") return;
 
@@ -24,47 +21,49 @@ function updateAttributes(target, originNewProps, originOldProps) {
     }
   });
 
+  // 2. 새로운/변경된 속성 처리
   Object.keys(originNewProps).forEach((prop) => {
     if (prop === "key" || prop === "children") return;
 
     const newProp = originNewProps[prop];
     const oldProp = originOldProps[prop];
 
+    if (newProp !== oldProp) {
+      console.log("not same", newProp, oldProp);
+      console.log(typeof newProp, typeof oldProp);
+    }
+
     if (prop.startsWith("on")) {
+      // 이벤트 리스너 처리
       const eventType = prop.slice(2).toLowerCase();
       if (newProp?.toString() !== oldProp?.toString()) {
-        if (oldProp) {
-          console.log(`listener 제거 : ${oldProp}`);
-          removeEvent(target, eventType, oldProp);
-        }
-        if (newProp) {
-          console.log(`listener 추가 : ${newProp}`);
-          addEvent(target, eventType, newProp);
-        }
+        oldProp && removeEvent(target, eventType, oldProp);
+        newProp && addEvent(target, eventType, newProp);
       }
     } else if (newProp !== oldProp) {
+      // 일반 속성 업데이트
       target.setAttribute(prop === "className" ? "class" : prop, newProp);
     }
   });
 }
 
-/*
- * Virtual DOM의 변경사항을 Diff 알고리즘에 기반하여 업데이트한다.
+/**
+ * Virtual DOM의 차이를 실제 DOM에 반영
  */
 export function updateElement(parentElement, newNode, oldNode, index = 0) {
-  // 1) 새 노드가 없고 이전 노드만 있는 경우 → 노드 제거
+  // Case 1: 노드 삭제
   if (!newNode && oldNode) {
     parentElement.removeChild(parentElement.childNodes[index]);
     return;
   }
 
-  // 2) 새 노드만 있는 경우 → 노드 추가
+  // Case 2: 노드 추가
   if (newNode && !oldNode) {
     parentElement.append(createElement(newNode));
     return;
   }
 
-  // 3) 두 노드 모두 텍스트인 경우 → 텍스트 변경
+  // Case 3: 텍스트 노드 업데이트
   if (typeof newNode === "string" && typeof oldNode === "string") {
     if (newNode !== oldNode) {
       parentElement.childNodes[index].textContent = newNode;
@@ -72,7 +71,7 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
     return;
   }
 
-  // 4) 노드 타입이 다른 경우 → 요소 교체
+  // Case 4: 노드 타입 변경
   if (newNode.type !== oldNode.type) {
     parentElement.replaceChild(
       createElement(newNode),
@@ -82,11 +81,11 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
   }
 
   const element = parentElement.childNodes[index];
-  updateAttributes(element, newNode.props, oldNode.props);
+  updateAttributes(element, newNode.props || {}, oldNode.props || {});
 
+  // 자식 노드들을 재귀적으로 업데이트
   const newChildren = newNode.children || [];
   const oldChildren = oldNode.children || [];
-
   const maxLength = Math.max(newChildren.length, oldChildren.length);
 
   for (let i = 0; i < maxLength; i++) {

@@ -1,6 +1,6 @@
-/*
- * Virtual DOM 노드를 생성한다.
- * 자식 요소는 모두 평탄화하며, 유효하지 않은 자식 요소는 제거한다.
+/**
+ * Virtual DOM 노드를 생성
+ * 자식 요소는 모두 평탄화하며, 유효하지 않은 자식 요소는 제거
  */
 export function createVNode(type, props, ...children) {
   return {

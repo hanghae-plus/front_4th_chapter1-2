@@ -1,5 +1,5 @@
-/*
-다양한 형태의 입력 값을 일관된 형식의 Virtual DOM 노드로 변환한다.
+/**
+ * 함수 형태의 엘리먼트를 Virtual DOM 노드로 변환
  */
 export function normalizeVNode(vNode) {
   // null, undefined, boolean 처리

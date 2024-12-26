@@ -25,9 +25,12 @@ export const supportedEventNames = new Set([
   "blur",
 ]);
 
+/**
+ * DOM 이벤트에 대해 합성 이벤트로 변경하여 추출
+ */
 export function extractEvent(domEventName, nativeEvent, nativeEventTarget) {
   if (!supportedEventNames.has(domEventName)) {
-    console.error("지원하지 않는 이벤트 형식입니다.", domEventName);
+    console.error("Unsupported Event :", domEventName);
     return;
   }
   let SyntheticEventConstructor = SyntheticEvent;
