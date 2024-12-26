@@ -1,3 +1,8 @@
+/**
+ * 주어진 vNode를 표준화하여 처리
+ * @param {VNode} vNode - 표준화할 가상 DOM 노드
+ * @returns {string|VNode} - 표준화된 가상 DOM 노드 또는 빈 문자열
+ */
 export function normalizeVNode(vNode) {
   // null, undefined, boolean → 빈 문자열 처리
   if (vNode == null || typeof vNode === "boolean") {

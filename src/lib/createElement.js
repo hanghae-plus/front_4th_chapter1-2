@@ -1,5 +1,10 @@
 import { addEvent } from "./eventManager";
 
+/**
+ * 주어진 속성(props)을 요소($el)에 적용하는 함수
+ * @param {Element} $el - 속성을 적용할 DOM 요소
+ * @param {Object} props - 적용할 속성들
+ */
 function updateAttributes($el, props) {
   for (const key in props) {
     const value = props[key];
@@ -20,6 +25,11 @@ function updateAttributes($el, props) {
   }
 }
 
+/**
+ * 주어진 가상 DOM 노드(vNode)를 실제 DOM 요소로 변환하는 함수
+ * @param {VNode} vNode - 변환할 가상 DOM 노드
+ * @returns {Element|Text} - 생성된 DOM 요소 또는 텍스트 노드
+ */
 export function createElement(vNode) {
   // null, undefined, boolean 처리 → 빈 텍스트 노드 반환
   if (vNode === null || vNode === undefined || typeof vNode === "boolean") {
@@ -62,5 +72,6 @@ export function createElement(vNode) {
     return $el;
   }
 
+  // 잘못된 vNode 타입 처리
   throw new Error(`Invalid vNode type: ${typeof vNode}`);
 }
