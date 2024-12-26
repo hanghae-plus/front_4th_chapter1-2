@@ -6,12 +6,18 @@
 
 // 이벤트 저장
 const eventStorage = {};
+// const eventStorage = new Map();
 
 export function setupEventListeners(root) {
   Object.keys(eventStorage).forEach((eventType) => {
     root.addEventListener(eventType, eventHandlers);
   });
 }
+// export function setupEventListeners(root) {
+//   eventStorage.forEach((handlerMap, eventType) => {
+//     root.addEventListener(eventType, eventHandlers);
+//   });
+// }
 
 export function addEvent(element, eventType, handler) {
   if (!eventStorage[eventType]) {
@@ -20,23 +26,56 @@ export function addEvent(element, eventType, handler) {
 
   const eventsMap = eventStorage[eventType];
   eventsMap.set(element, handler);
+
+  // if (!eventStorage.has(eventType)) {
+  //   eventStorage.set(eventType, new Map());
+  // }
+
+  // const handlerMap = eventStorage.get(eventType);
+  // handlerMap.set(element, handler);
 }
 
 export function removeEvent(element, eventType) {
-  // 요소에 대한 이벤트 배열 가져오기
-  if (eventStorage[eventType] && eventStorage[eventType].has(element)) {
-    eventStorage[eventType].delete(element);
+  if (eventStorage[eventType]) {
+    const eventsMap = eventStorage[eventType];
+    eventsMap.delete(element);
+
+    if (eventsMap.size === 0) {
+      delete eventStorage[eventType];
+    }
   }
 }
+// export function removeEvent(element, eventType) {
+//   if (eventStorage[eventType]) {
+//     const handlerMap = eventStorage[eventType];
+//     handlerMap.delete(element);
+
+//     if (handlerMap.size === 0) {
+//       delete eventStorage[eventType];
+//     }
+//   }
+// }
 
 const eventHandlers = (e) => {
+  if (!eventStorage[e.type]) {
+    return;
+  }
   const handlerGroup = eventStorage[e.type];
-  if (!handlerGroup) {
-    return;
-  }
   const handler = handlerGroup.get(e.target);
-  if (!handler) {
-    return;
+
+  if (handler) {
+    handler(e);
   }
-  handler(e);
 };
+
+// const eventHandlers = (e) => {
+//   if (!eventStorage[e.type]) {
+//     return;
+//   }
+//   const handlerMap = eventStorage[e.type];
+//   const handler = handlerMap.get(e.target);
+
+//   if (handler) {
+//     handler(e);
+//   }
+// };

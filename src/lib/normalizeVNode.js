@@ -22,7 +22,8 @@ export function normalizeVNode(vNode) {
   //   }
 
   //   return normalizeVNode(result);
-  // }
+  // } 헛수고였다
+
   // 컴포넌트 렌더링
   if (typeof vNode.type === "function") {
     const { type, props, children } = vNode;
@@ -42,11 +43,17 @@ export function normalizeVNode(vNode) {
   //   // props = null -> return
   //   const normalizedProps = props === null ? null : { ...props };
   //   return { type, props: normalizedProps, children: normalizedChildren };
-  // }
+  // } 헛수고였다
 
-  vNode.children = [...vNode.children] // 자식 노드 반복호출
-    .map(normalizeVNode)
-    .filter((child) => !!child); // 모든 falsy값 제거
+  const children = [...vNode.children]; // 자식 노드 반복호출
+  const normalizedChildren = children.map((child) => {
+    return normalizeVNode(child);
+  });
+  const filteredChild = normalizedChildren.filter((child) => {
+    return !!child; // 모든 falsy값 제거
+  });
+
+  vNode.children = filteredChild;
 
   return vNode;
 }
