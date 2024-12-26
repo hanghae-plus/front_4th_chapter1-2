@@ -42,7 +42,11 @@ export function removeEvent(element, eventType, handler) {
     }
   });
 
-  if (!matchingEvent) return; //값이 없으면 그대로 종료
+  if (!matchingEvent) return;
+
+  // eventRegistry에서  matchingEvent를 제거 제거
+  const index = eventRegistry.indexOf(matchingEvent);
+  eventRegistry.splice(index, 1);
 
   if (matchingEvent !== null) {
     rootElement.removeEventListener(eventType, matchingEvent.handler);
