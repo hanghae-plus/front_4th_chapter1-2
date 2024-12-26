@@ -4,11 +4,11 @@ import { createElement } from "./createElement.js";
 function updateAttributes(target, originNewProps, originOldProps) {}
 
 export function updateElement(parentElement, newVNode, oldVNode, index = 0) {
-  const targetNode = parentElement.children[index];
+  const targetElement = parentElement.children[index];
 
   // 노드 제거 (newNode가 없고 oldNode가 있는 경우)
   if (!newVNode && oldVNode) {
-    targetNode?.remove();
+    targetElement?.remove();
     return;
   }
   // 새 노드 추가 (newNode가 있고 oldNode가 없는 경우)
@@ -22,9 +22,12 @@ export function updateElement(parentElement, newVNode, oldVNode, index = 0) {
     return;
   }
   // 노드 교체 (newNode와 oldNode의 타입이 다른 경우)
-
+  if (newVNode.type !== oldVNode.type) {
+    parentElement.replaceChild(createElement(newVNode), targetElement);
+    return;
+  }
   // 같은 타입의 노드 업데이트
-  if (targetNode && newVNode.type === oldVNode.type) {
+  if (targetElement && newVNode.type === oldVNode.type) {
     const newVNodeChildren = newVNode.children ?? [];
     const oldVNodeChildren = oldVNode.children ?? [];
 
@@ -34,7 +37,7 @@ export function updateElement(parentElement, newVNode, oldVNode, index = 0) {
     );
 
     for (let i = 0; i < maxLength; i++) {
-      updateElement(targetNode, newVNodeChildren[i], oldVNodeChildren[i], i);
+      updateElement(targetElement, newVNodeChildren[i], oldVNodeChildren[i], i);
     }
   }
 }
