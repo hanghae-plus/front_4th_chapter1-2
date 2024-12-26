@@ -4,7 +4,6 @@
  */
 
 export function createVNode(type, props, ...children) {
-  console.log("pe, props, ...children", type, props, ...children);
   return {
     type,
     props: props || null,

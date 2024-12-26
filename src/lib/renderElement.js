@@ -1,7 +1,7 @@
-// import { setupEventListeners } from "./eventManager";
 import { createElement } from "./createElement";
+import { setupEventListeners } from "./eventManager";
 import { normalizeVNode } from "./normalizeVNode";
-// import { updateElement } from "./updateElement";
+import { updateElement } from "./updateElement";
 
 /*
  * 가상돔 시나리오 정리
@@ -12,6 +12,7 @@ import { normalizeVNode } from "./normalizeVNode";
  */
 
 export function renderElement(vNode, container) {
+  setupEventListeners(container);
   const oldVNode = container._vnode;
 
   // 새로운 가상 DOM 정규화
@@ -22,8 +23,7 @@ export function renderElement(vNode, container) {
     container.appendChild(createElement(normalizedVNode));
   } else {
     // 이전 HTML 초기화
-    container.innerHTML = "";
-    container.appendChild(createElement(normalizedVNode));
+    updateElement(container, normalizedVNode, oldVNode, 0);
   }
 
   // 현재 가상 DOM 저장
