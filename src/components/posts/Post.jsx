@@ -11,8 +11,10 @@ export const Post = ({
   content,
   likeUsers,
   activationLike = false,
+  posts,
+  setPosts,
 }) => {
-  const { loggedIn, posts } = globalStore.getState();
+  const { loggedIn } = globalStore.getState();
 
   const handleLike = () => {
     if (!loggedIn) {
@@ -30,7 +32,7 @@ export const Post = ({
       }
       return post;
     });
-    globalStore.setState({ posts: updatedPosts });
+    setPosts(updatedPosts);
   };
 
   return (

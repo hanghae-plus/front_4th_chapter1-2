@@ -1,5 +1,6 @@
 /** @jsx createVNode */
 import { createRouter, createVNode } from "@lib";
+import { createHooks, hooks } from "@core";
 import { HomePage, LoginPage, ProfilePage } from "@pages";
 import { globalStore } from "@stores";
 import { ForbiddenError, UnauthorizedError } from "@errors";
@@ -25,9 +26,11 @@ router.set(
     },
   }),
 );
+hooks.set(createHooks());
 
 function main() {
   router.get().subscribe(render);
+  hooks.get().subscribe(render);
   globalStore.subscribe(render);
 
   render();

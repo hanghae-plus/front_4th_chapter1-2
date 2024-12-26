@@ -2,7 +2,7 @@
 import { createVNode } from "@lib";
 import { globalStore } from "@stores";
 
-export const PostForm = () => {
+export const PostForm = ({ posts, setPosts }) => {
   const postPost = () => {
     const content = document.querySelector("#post-content").value;
     if (!content) {
@@ -10,18 +10,16 @@ export const PostForm = () => {
       return;
     }
 
-    globalStore.setState({
-      posts: [
-        ...globalStore.getState().posts,
-        {
-          id: globalStore.getState().posts.length + 1,
-          author: globalStore.getState().currentUser.username,
-          content,
-          time: Date.now(),
-          likeUsers: [],
-        },
-      ],
-    });
+    setPosts([
+      ...posts,
+      {
+        id: posts.length + 1,
+        author: globalStore.getState().currentUser.username,
+        content,
+        time: Date.now(),
+        likeUsers: [],
+      },
+    ]);
   };
 
   return (

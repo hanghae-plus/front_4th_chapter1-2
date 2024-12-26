@@ -25,6 +25,8 @@ export default mergeConfig(
         "@storages": path.resolve(__dirname, "./src/storages"),
         "@stores": path.resolve(__dirname, "./src/stores"),
         "@utils": path.resolve(__dirname, "./src/utils"),
+        "@core": path.resolve(__dirname, "./src/core"),
+        "@mock": path.resolve(__dirname, "./src/mock"),
         "@errors": path.resolve(__dirname, "./src/errors"),
       },
     },

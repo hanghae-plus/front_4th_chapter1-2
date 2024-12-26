@@ -1,3 +1,4 @@
+import { hooks } from "@core";
 import { createObserver } from "./createObserver";
 
 export const createRouter = (routes) => {
@@ -9,6 +10,7 @@ export const createRouter = (routes) => {
 
   const push = (path) => {
     window.history.pushState(null, null, path);
+    hooks.get().resetStateAndIndex();
     notify();
   };
 

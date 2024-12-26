@@ -1,4 +1,5 @@
 /** @jsx createVNode */
+import { createHooks, hooks } from "@core";
 import { createHashRouter, createVNode } from "@lib";
 import { HomePage, LoginPage, ProfilePage } from "@pages";
 import { globalStore } from "@stores";
@@ -25,9 +26,11 @@ router.set(
     },
   }),
 );
+hooks.set(createHooks());
 
 function main() {
   router.get().subscribe(render);
+  hooks.get().subscribe(render);
   globalStore.subscribe(render);
 
   render();

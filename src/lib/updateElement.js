@@ -6,6 +6,8 @@ import { createElement } from "./createElement.js";
  * 따라서 render함수가 호출될 때마다 newNode와 oldNode를 비교 후 업데이트 해주어야 함
  * */
 export function updateElement(parentElement, newNode, oldNode, index = 0) {
+  if (!parentElement || index < 0) return;
+
   // 노드 삭제
   if (!newNode && oldNode) {
     parentElement.removeChild(parentElement.childNodes[index]);
