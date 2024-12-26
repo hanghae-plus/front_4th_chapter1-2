@@ -3,8 +3,9 @@ import { createVNode } from "../lib";
 import { Footer, Header, Navigation } from "../components";
 import { globalStore } from "../stores";
 import { userStorage } from "../storages";
+import { UserProfile } from "../stores/type";
 
-function updateProfile(profile) {
+function updateProfile(profile: UserProfile) {
   const user = { ...globalStore.getState().currentUser, ...profile };
   globalStore.setState({ currentUser: user });
   userStorage.set(user);
