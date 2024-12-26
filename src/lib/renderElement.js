@@ -13,5 +13,5 @@ export function renderElement(vNode, container) {
     container.appendChild(newNode);
   }
   setupEventListeners(container);
-  container.oldVNode = vNode;
+  container.oldVNode = normalizedNode;
 }
