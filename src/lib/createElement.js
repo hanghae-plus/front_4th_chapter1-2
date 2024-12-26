@@ -1,4 +1,4 @@
-// import { addEvent } from "./eventManager";
+import { addEvent } from "./eventManager";
 
 //실제 DOM 요소로 변환하는 함수
 export function createElement(node) {
@@ -39,8 +39,9 @@ export function createElement(node) {
 
 function updateAttributes(element, props) {
   Object.entries(props || {}).forEach(([attr, value]) => {
-    //className을 class 속성으로 변환
-    if (attr === "className") {
+    if (attr.startsWith("on") || typeof value === "function") {
+      addEvent(element, attr.slice(2).toLowerCase(), value);
+    } else if (attr === "className") {
       element.setAttribute("class", value);
     } else {
       element.setAttribute(attr, value);
