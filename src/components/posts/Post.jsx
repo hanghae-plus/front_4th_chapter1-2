@@ -12,7 +12,7 @@ export const Post = ({
   activationLike,
 }) => {
   const handleLikeToggle = () => {
-    const state = globalStore.getState(); // 상태 객체 전체를 복사(최신 상태 유지 위해)
+    const state = globalStore.getState(); // 상태 객체 전체를 복사. (최신 상태 유지 위해)
     const { posts, loggedIn, currentUser } = state;
 
     if (!loggedIn) {
@@ -28,14 +28,14 @@ export const Post = ({
         return {
           ...post,
           likeUsers: isActiveLike
-            ? post.likeUsers.filter((user) => user !== username) // 좋아요 취소
-            : [...post.likeUsers, username], // 좋아요 추가
+            ? post.likeUsers.filter((user) => user !== username) // 좋아요 취소.
+            : [...post.likeUsers, username], // 좋아요 추가.
         };
       }
       return post;
     });
 
-    // posts만 설정할 경우 다른 상태(currentUser, loggedIn 등)가 손실될(undefined 등) 위험
+    // posts만 설정할 경우 다른 상태(currentUser 등)가 손실 될(undefined 등) 위험 있으므로 다른 state와 함께 설정.
     globalStore.setState({ ...state, posts: updatedPosts });
   };
 

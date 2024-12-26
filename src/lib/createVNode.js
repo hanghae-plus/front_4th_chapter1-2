@@ -4,8 +4,8 @@ export function createVNode(type, props, ...children) {
   // 2. children은 평탄화(flat)되어야 하며, 0을 제외한 falsy 값은 필터링되어야 합니다.
 
   return {
-    type, // 태그명
-    props, // id, className 등 속성. 없을 수도 있음!
+    type,
+    props,
     children: children.flat(Infinity).filter((child) => child || child === 0),
   };
 }
