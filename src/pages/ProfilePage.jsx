@@ -1,8 +1,8 @@
 /** @jsx createVNode */
-import { createVNode } from "../lib";
-import { Footer, Header, Navigation } from "../components";
-import { globalStore } from "../stores";
-import { userStorage } from "../storages";
+import { createVNode } from "@lib";
+import { Footer, Header, Navigation } from "@components";
+import { globalStore } from "@stores";
+import { userStorage } from "@storages";
 
 function updateProfile(profile) {
   const user = { ...globalStore.getState().currentUser, ...profile };

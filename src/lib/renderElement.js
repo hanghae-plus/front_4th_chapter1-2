@@ -1,10 +1,26 @@
-import { setupEventListeners } from "./eventManager";
-import { createElement } from "./createElement";
-import { normalizeVNode } from "./normalizeVNode";
-import { updateElement } from "./updateElement";
+import {
+  setupEventListeners,
+  createElement,
+  normalizeVNode,
+  updateElement,
+} from "@/lib";
+
+/**
+ * 최초 렌더링 구분은 컨테이너에 previousVirtualDOM이 없는지 여부로 판단
+ * rendering flow 이 후 다시 previousVirtualDOM 갱신
+ */
 
 export function renderElement(vNode, container) {
-  // 최초 렌더링시에는 createElement로 DOM을 생성하고
-  // 이후에는 updateElement로 기존 DOM을 업데이트한다.
-  // 렌더링이 완료되면 container에 이벤트를 등록한다.
+  setupEventListeners(container);
+  const oldVNode = container.previousVirtualDOM;
+  const normalizedNode = normalizeVNode(vNode);
+
+  if (oldVNode) {
+    updateElement(container, normalizedNode, oldVNode, 0);
+  } else {
+    const newElement = createElement(normalizedNode);
+    container.appendChild(newElement);
+  }
+
+  container.previousVirtualDOM = normalizedNode;
 }

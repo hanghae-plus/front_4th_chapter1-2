@@ -33,3 +33,35 @@ export const addEvent = (eventType, selector, handler) => {
   }
   eventHandlers[eventType][selector] = handler;
 };
+
+/**
+ * 합성이벤트(SyntheticEvent) 정의
+ * https://ko.legacy.reactjs.org/docs/events.html#overview
+ */
+export const createBaseSyntheticEvent = (nativeEvent) => {
+  const synthetic = {
+    nativeEvent,
+    target: nativeEvent.target,
+    currentTarget: nativeEvent.currentTarget,
+    type: nativeEvent.type,
+    bubbles: nativeEvent.bubbles,
+    defaultPrevented: false,
+    propagationStopped: false,
+
+    preventDefault: () => {
+      synthetic.defaultPrevented = true;
+      nativeEvent.preventDefault();
+    },
+
+    stopPropagation: () => {
+      synthetic.propagationStopped = true;
+      nativeEvent.stopPropagation();
+    },
+
+    persist: () => {
+      Object.freeze(synthetic);
+    },
+  };
+
+  return synthetic;
+};

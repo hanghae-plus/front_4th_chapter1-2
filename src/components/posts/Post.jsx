@@ -1,12 +1,14 @@
 /** @jsx createVNode */
-import { createVNode } from "../../lib";
-import { toTimeFormat } from "../../utils/index.js";
+import { createVNode } from "@lib";
+import { toTimeFormat } from "@utils";
 
 export const Post = ({
+  id,
   author,
   time,
   content,
   likeUsers,
+  handleLikeButtonClick,
   activationLike = false,
 }) => {
   return (
@@ -21,6 +23,9 @@ export const Post = ({
       <div className="mt-2 flex justify-between text-gray-500">
         <span
           className={`like-button cursor-pointer${activationLike ? " text-blue-500" : ""}`}
+          onClick={() => {
+            handleLikeButtonClick(id);
+          }}
         >
           좋아요 {likeUsers.length}
         </span>
