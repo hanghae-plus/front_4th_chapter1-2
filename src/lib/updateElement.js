@@ -78,23 +78,16 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
     );
     return;
   }
-
   // 속성 업데이트
   const element = parentElement.childNodes[index];
   updateAttributes(element, newNode.props, oldNode.props);
 
   // 자식 노드 비교 및 업데이트
-  const maxLength = Math.max(
-    newNode.children ? newNode.children.length : 0,
-    oldNode.children ? oldNode.children.length : 0,
-  );
+  const newChildren = newNode.children || [];
+  const oldChildren = oldNode.children || [];
+  const maxLength = Math.max(newChildren.length, oldChildren.length);
 
-  for (let i = 0; i < maxLength; i++) {
-    updateElement(
-      element,
-      newNode.children ? newNode.children[i] : null,
-      oldNode.children ? oldNode.children[i] : null,
-      i,
-    );
-  }
+  Array.from({ length: maxLength }).forEach((_, i) => {
+    updateElement(element, newChildren[i] || null, oldChildren[i] || null, i);
+  });
 }
