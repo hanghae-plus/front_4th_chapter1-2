@@ -1,6 +1,5 @@
 /** @jsx createVNode */
 import { createVNode } from "../../lib";
-import { userStorage } from "../../storages/userStorage.js";
 import { globalStore } from "../../stores/globalStore.js";
 import { toTimeFormat } from "../../utils/index.js";
 
@@ -13,27 +12,29 @@ export const Post = ({
   activationLike = false,
 }) => {
   const addLike = () => {
-    const { posts } = globalStore.getState();
-    const username = userStorage.get("user")?.username;
+    const { posts, loggedIn, currentUser } = globalStore.getState();
 
-    if (!username) return;
+    if (!loggedIn) {
+      alert("로그인 후 이용해주세요");
+      return;
+    }
 
     globalStore.setState({
       posts: posts.map((post) => {
         if (post.id !== id) return post;
 
-        if (post.likeUsers.includes(username)) {
+        if (post.likeUsers.includes(currentUser.username)) {
           return {
             ...post,
             likeUsers: post.likeUsers.filter(
-              (likeUser) => likeUser !== username,
+              (likeUser) => likeUser !== currentUser.username,
             ),
           };
         }
 
         return {
           ...post,
-          likeUsers: [username, ...post.likeUsers],
+          likeUsers: [currentUser.username, ...post.likeUsers],
         };
       }),
     });
@@ -51,13 +52,7 @@ export const Post = ({
       <div className="mt-2 flex justify-between text-gray-500">
         <span
           className={`like-button cursor-pointer${activationLike ? " text-blue-500" : ""}`}
-          onClick={() => {
-            if (!userStorage.get("user")) {
-              alert("로그인 후 이용해주세요");
-            } else {
-              addLike();
-            }
-          }}
+          onClick={addLike}
         >
           좋아요 {likeUsers.length}
         </span>
