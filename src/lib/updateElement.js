@@ -1,97 +1,76 @@
-// import { addEvent, removeEvent } from "./eventManager";
-// import { createElement } from "./createElement.js";
+import { addEvent, removeEvent } from "./eventManager";
+import { createElement } from "./createElement.js";
 
-function updateAttributes(target, newAttr, oldAttr) {
-  for (let key in oldAttr) {
-    if (!(key in newAttr)) {
-      target.removeAttribute(key); // 더 이상 존재하지 않는 속성 제거
+function updateAttributes(target, originNewProps, originOldProps) {
+  // 속성 제거
+  for (const key in originOldProps) {
+    if (!(key in originNewProps)) {
+      if (key.startsWith("on")) {
+        const eventType = key.toLowerCase().slice(2);
+        removeEvent(target, eventType);
+      }
     }
   }
-
-  for (let key in newAttr) {
-    if (newAttr[key] !== oldAttr[key]) {
-      target.setAttribute(key, newAttr[key]); // 새로운 값으로 속성 업데이트
+  // 속성 추가
+  for (const key in originNewProps) {
+    if (originNewProps[key] !== originOldProps[key]) {
+      if (key.startsWith("on")) {
+        const eventType = key.toLowerCase().slice(2);
+        addEvent(target, eventType, originNewProps[key]);
+      } else if (key === "className") {
+        target.classList = originNewProps[key]; // className = classList로 설정
+      } else {
+        target.setAttribute(key, originNewProps[key]);
+      }
     }
   }
 }
 
-function namedNodeMapToObject(attributes) {
-  const obj = {};
-  for (let attr of attributes) {
-    obj[attr.name] = attr.value; // 속성 이름과 값을 객체로 변환
-  }
-  return obj;
-}
+export function updateElement(parentElement, newNode, oldNode, index = 0) {
+  // 현재 인덱스에 해당하는 자식 노드 참조
+  const currentChild = parentElement.childNodes[index];
 
-function isAttrChanged(node1, node2) {
-  const n1Attributes = node1.attributes;
-  const n2Attributes = node2.attributes;
-
-  if (n1Attributes.length !== n2Attributes.length) {
-    return true;
-  }
-
-  const differentAttribute = Array.from(n1Attributes).find((attribute) => {
-    const { name } = attribute;
-    const attribute1 = node1.getAttribute(name);
-    const attribute2 = node2.getAttribute(name);
-
-    return attribute1 !== attribute2;
-  });
-
-  if (differentAttribute) {
-    return true;
-  }
-}
-
-function isTypeChanged(node1, node2) {
-  if (node1.tagName !== node2.tagName) {
-    return true;
-  }
-
-  return false;
-}
-
-export function updateElement(parentElement, newNode, oldNode) {
-  if (!newNode && oldNode) {
-    oldNode.remove();
-    return;
-  }
-
-  if (newNode && !oldNode) {
-    parentElement.appendChild(newNode);
-    return;
-  }
-
-  if (
-    oldNode.nodeType === Node.TEXT_NODE &&
-    newNode.nodeType === Node.TEXT_NODE
-  ) {
-    if (oldNode.textContent !== newNode.textContent) {
-      oldNode.replaceWith(newNode);
+  // 노드 제거 or 추가
+  if (!newNode || !oldNode) {
+    if (!newNode && oldNode) {
+      parentElement.removeChild(currentChild);
+    } else if (newNode && !oldNode) {
+      const newChild = createElement(newNode);
+      parentElement.appendChild(newChild);
     }
     return;
   }
 
-  if (isTypeChanged(newNode, oldNode)) {
-    oldNode.replaceWith(newNode);
+  // 텍스트 노드 업데이트
+  if (typeof newNode === "string" || typeof newNode === "number") {
+    const newText = String(newNode);
+    if (currentChild?.nodeType === Node.TEXT_NODE) {
+      if (currentChild.textContent !== newText) {
+        currentChild.textContent = newText;
+      }
+    } else {
+      const newChild = createElement(newText);
+      parentElement.replaceChild(newChild, currentChild);
+    }
     return;
   }
 
-  if (isAttrChanged(newNode, oldNode)) {
-    updateAttributes(
-      oldNode,
-      namedNodeMapToObject(newNode.attributes),
-      namedNodeMapToObject(oldNode.attributes),
-    );
+  // 노드 교체 (newNode와 oldNode의 타입이 다른 경우)
+  if (newNode.type !== oldNode.type) {
+    const newChild = createElement(newNode);
+    parentElement.replaceChild(newChild, currentChild);
     return;
   }
 
-  const oldChildren = Array.from(oldNode.childNodes);
-  const newChildren = Array.from(newNode.childNodes);
+  // 같은 타입의 노드 업데이트
+  if (newNode.type === oldNode.type) {
+    updateAttributes(currentChild, newNode.props || {}, oldNode.props || {});
 
-  const max = Math.max(oldChildren.length, newChildren.length);
-  for (let i = 0; i < max; i++) {
-    updateElement(oldNode, newChildren[i], oldChildren[i], i);
+    const newLength = newNode.children.length || 0;
+    const oldLength = oldNode.children.length || 0;
+
+    for (let i = 0; i < Math.max(newLength, oldLength); i++) {
+      updateElement(currentChild, newNode.children[i], oldNode.children[i], i);
+    }
   }
 }
