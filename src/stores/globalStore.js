@@ -49,9 +49,53 @@ export const globalStore = createStore(
     error: null,
   },
   {
+    // 로그아웃
     logout(state) {
       userStorage.reset();
       return { ...state, currentUser: null, loggedIn: false };
+    },
+    // 좋아요 토글
+    toggleLike(state, postId) {
+      const { currentUser, posts } = state;
+
+      // 로그인하지 않았을 경우 알림
+      if (!currentUser) {
+        alert("로그인 후 이용해주세요");
+        return;
+      }
+
+      const updatedPosts = posts.map((post) => {
+        if (post.id === postId) {
+          return {
+            ...post,
+            likeUsers: post.likeUsers.includes(currentUser.username)
+              ? post.likeUsers.filter((user) => user !== currentUser.username)
+              : [...post.likeUsers, state.currentUser.username],
+          };
+        }
+        return post;
+      });
+
+      return { ...state, posts: updatedPosts };
+    },
+    // 게시물 추가
+    addPost(state, content) {
+      const { currentUser, posts } = state;
+
+      if (!currentUser) {
+        alert("로그인 후 이용해주세요");
+        return state;
+      }
+
+      const newPost = {
+        id: posts.length + 1,
+        author: currentUser.username,
+        time: Date.now(),
+        content,
+        likeUsers: [],
+      };
+
+      return { ...state, posts: [newPost, ...posts] };
     },
   },
 );
