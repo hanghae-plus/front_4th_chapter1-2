@@ -101,5 +101,9 @@ export function updateElement(parentElement, newVNode, oldVNode, index = 0) {
     for (let i = 0; i < maxLength; i++) {
       updateElement(targetElement, newVNodeChildren[i], oldVNodeChildren[i], i);
     }
+
+    while (targetElement.childNodes.length > newVNodeChildren.length) {
+      targetElement.removeChild(targetElement.lastChild);
+    }
   }
 }
