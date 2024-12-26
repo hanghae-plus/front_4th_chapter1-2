@@ -47,6 +47,22 @@ function updateAttributes(target, originNewProps, originOldProps) {
   });
 }
 
+function mergeConsecutiveStrings(arr) {
+  return arr.reduce((acc, curr, i) => {
+    if (typeof curr !== "string") {
+      acc.push(curr);
+      return acc;
+    }
+
+    if (i > 0 && typeof acc[acc.length - 1] === "string") {
+      acc[acc.length - 1] += curr;
+    } else {
+      acc.push(curr);
+    }
+    return acc;
+  }, []);
+}
+
 export function updateElement(parentElement, newVNode, oldVNode, index = 0) {
   const targetElement = parentElement.children[index];
 
@@ -74,8 +90,8 @@ export function updateElement(parentElement, newVNode, oldVNode, index = 0) {
   if (targetElement && newVNode.type === oldVNode.type) {
     updateAttributes(targetElement, newVNode.props ?? {}, oldVNode.props ?? {});
 
-    const newVNodeChildren = newVNode.children ?? [];
-    const oldVNodeChildren = oldVNode.children ?? [];
+    const newVNodeChildren = mergeConsecutiveStrings(newVNode.children ?? []);
+    const oldVNodeChildren = mergeConsecutiveStrings(oldVNode.children ?? []);
 
     const maxLength = Math.max(
       newVNodeChildren.length,
@@ -84,6 +100,10 @@ export function updateElement(parentElement, newVNode, oldVNode, index = 0) {
 
     for (let i = 0; i < maxLength; i++) {
       updateElement(targetElement, newVNodeChildren[i], oldVNodeChildren[i], i);
+    }
+
+    while (targetElement.childNodes.length > newVNodeChildren.length) {
+      targetElement.removeChild(targetElement.lastChild);
     }
   }
 }
