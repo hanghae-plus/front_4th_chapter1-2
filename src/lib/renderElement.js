@@ -23,6 +23,7 @@ export function renderElement(vNode, container) {
     const element = createElement(newVNode);
     container.append(element); // 첫 렌더링 때만 container에 DOM 추가
   } else {
+    // step3-diff. DOM 업데이트
     if (container.firstChild) {
       updateElement(container, newVNode, oldVNode);
     } else {
