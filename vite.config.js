@@ -1,5 +1,5 @@
-import { defineConfig as defineTestConfig, mergeConfig } from "vitest/config";
 import { defineConfig } from "vite";
+import { defineConfig as defineTestConfig, mergeConfig } from "vitest/config";
 
 export default mergeConfig(
   defineConfig({
