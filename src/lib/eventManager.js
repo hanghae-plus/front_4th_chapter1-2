@@ -2,17 +2,18 @@ const eventHandlers = {};
 
 export function setupEventListeners(root) {
   Object.keys(eventHandlers).forEach((eventType) => {
-    root.addEventListener(eventType, (event) => {
-      const handler = eventHandlers[event.type].get(event.target);
-      if (!handler) {
-        return;
-      }
-      handler(event);
-    });
+    root.addEventListener(eventType, handleEvent);
   });
 }
 
-// addEvent와 removeEvent는 동일하게 유지
+function handleEvent(event) {
+  const handler = eventHandlers[event.type].get(event.target);
+
+  if (!handler) return;
+
+  handler(event);
+}
+
 export function addEvent(element, eventType, handler) {
   let elementHandlers = eventHandlers[eventType];
   if (!elementHandlers) {
