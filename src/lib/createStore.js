@@ -5,6 +5,7 @@ export const createStore = (initialState, initialActions) => {
 
   let state = { ...initialState };
 
+  // 상태 추가함수
   const setState = (newState) => {
     state = { ...state, ...newState };
     notify();
@@ -18,6 +19,5 @@ export const createStore = (initialState, initialActions) => {
       (...args) => setState(value(getState(), ...args)),
     ]),
   );
-
   return { getState, setState, subscribe, actions };
 };
