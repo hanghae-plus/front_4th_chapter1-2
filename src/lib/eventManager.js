@@ -47,11 +47,14 @@ export function addEvent(element, eventType, handler) {
     elementEvents.set(eventType, new Map());
   }
 
-  const wrappedHandler = (e) => {
-    if (e.target === element) {
-      handler(e);
-    }
-  };
+  const wrappedHandler =
+    typeof handler === "function"
+      ? (e) => {
+          if (e.target === element) {
+            handler(e);
+          }
+        }
+      : undefined;
 
   elementEvents.get(eventType).set(handler, wrappedHandler);
 }
