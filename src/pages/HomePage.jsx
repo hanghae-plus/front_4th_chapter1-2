@@ -43,5 +43,3 @@ export const HomePage = () => {
     </div>
   );
 };
-
-globalStore.subscribe(HomePage);
