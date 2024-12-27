@@ -14,7 +14,7 @@ function updateAttributes(target, originNewProps, originOldProps) {
         const eventType = attr.slice(2).toLowerCase();
         removeEvent(target, eventType, value);
       } else {
-        target.removeAttribute(attr);
+        target?.removeAttribute(attr);
       }
     }
   });
