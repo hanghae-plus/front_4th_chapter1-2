@@ -10,6 +10,8 @@ function login(username) {
     loggedIn: true,
   });
   userStorage.set(user);
+
+  console.log(globalStore);
 }
 
 export const LoginPage = () => {
