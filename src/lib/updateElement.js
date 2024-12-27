@@ -1,42 +1,5 @@
-import { addEvent, removeEvent } from "./eventManager";
 import { createElement } from "./createElement.js";
-
-function updateAttributes(target, originNewProps, originOldProps) {
-  if (!originOldProps && !originNewProps) return;
-
-  const newProps = originNewProps || {};
-  const oldProps = originOldProps || {};
-
-  // 속성 제거 처리
-  Object.entries(oldProps).forEach(([attr, value]) => {
-    if (!newProps[attr]) {
-      if (attr.startsWith("on")) {
-        const eventType = attr.slice(2).toLowerCase();
-        removeEvent(target, eventType, value);
-      } else {
-        target?.removeAttribute(attr);
-      }
-    }
-  });
-
-  // 속성 추가/갱신 처리
-  Object.entries(newProps).forEach(([attr, value]) => {
-    if (oldProps[attr] !== value) {
-      if (attr.startsWith("on")) {
-        const eventType = attr.slice(2).toLowerCase();
-        //
-        if (typeof oldProps[attr] === "function") {
-          removeEvent(target, eventType, oldProps[attr]);
-        }
-        addEvent(target, eventType, value);
-      } else if (attr === "className") {
-        target.setAttribute("class", value);
-      } else {
-        target.setAttribute(attr, value);
-      }
-    }
-  });
-}
+import { handleUpdateAttr } from "../utils";
 
 export function updateElement(parentElement, newNode, oldNode, index = 0) {
   const currentNode = parentElement?.childNodes[index];
@@ -67,7 +30,7 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
   } else {
     // 같은 타입의 노드 업데이트.
     // 속성 업데이트.
-    updateAttributes(currentNode, newNode.props, oldNode.props);
+    handleUpdateAttr(currentNode, newNode.props, oldNode.props);
 
     const oldChildren = oldNode.children?.length;
     const newChildren = newNode.children?.length;
