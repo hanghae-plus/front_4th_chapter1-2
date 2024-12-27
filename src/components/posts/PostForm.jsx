@@ -13,7 +13,7 @@ export const PostForm = () => {
     globalStore.setState({
       posts: [
         {
-          id: posts[0].id + 1,
+          id: posts ? posts.length + 1 : 1,
           author: currentUser.username,
           time: Date.now(),
           content: document.getElementById("post-content").value,

@@ -14,7 +14,9 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
 
   // newNode가 없는 경우 oldNode 제거
   if (oldNode && !newNode) {
-    parentElement.removeChild(parentElement.childNodes[index]);
+    // 실제로 있는 노드인 경우에만 제거
+    if (parentElement.childNodes[index])
+      parentElement.removeChild(parentElement.childNodes[index]);
     return;
   }
 
