@@ -74,9 +74,9 @@ function updateDomAttribute(
 
 type Operation =
   | { type: "REMOVE" }
-  | { type: "CREATE"; payload: VNode }
-  | { type: "REPLACE"; payload: VNode }
-  | { type: "UPDATE_CHILDREN"; payload: NormalizedVNode | string }
+  | { type: "CREATE"; newNode: VNode }
+  | { type: "REPLACE"; newNode: VNode }
+  | { type: "UPDATE_CHILDREN"; newNode: NormalizedVNode | string }
   | { type: "NOOP" };
 
 function calculateUpdateOperation(newNode: VNode, oldNode: VNode): Operation {
@@ -85,7 +85,7 @@ function calculateUpdateOperation(newNode: VNode, oldNode: VNode): Operation {
   }
 
   if (newNode && !oldNode) {
-    return { type: "CREATE", payload: newNode };
+    return { type: "CREATE", newNode: newNode };
   }
 
   const nextNode = normalizeVNode(newNode);
@@ -96,19 +96,19 @@ function calculateUpdateOperation(newNode: VNode, oldNode: VNode): Operation {
 
   if (isStringNext && isStringPrev) {
     if (nextNode !== prevNode) {
-      return { type: "REPLACE", payload: nextNode };
+      return { type: "REPLACE", newNode: nextNode };
     }
     return { type: "NOOP" };
   }
 
   if (!isStringNext && !isStringPrev) {
     if (nextNode.type !== prevNode.type) {
-      return { type: "REPLACE", payload: nextNode };
+      return { type: "REPLACE", newNode: nextNode };
     }
-    return { type: "UPDATE_CHILDREN", payload: nextNode };
+    return { type: "UPDATE_CHILDREN", newNode: nextNode };
   }
 
-  return { type: "REPLACE", payload: newNode };
+  return { type: "REPLACE", newNode: newNode };
 }
 
 export function updateElement(
@@ -129,7 +129,7 @@ export function updateElement(
     }
 
     case "CREATE": {
-      const newDomNode = createElement(normalizeVNode(operation.payload));
+      const newDomNode = createElement(normalizeVNode(operation.newNode));
       // FIXME: 자식노드 배열의 돔 추가되는 방식을 좀 더 유연한 방식으로 추가할 수 있도록 고쳐야함
       if (
         "getAttribute" in newDomNode &&
@@ -143,7 +143,7 @@ export function updateElement(
     }
 
     case "REPLACE": {
-      const newDomNode = createElement(normalizeVNode(operation.payload));
+      const newDomNode = createElement(normalizeVNode(operation.newNode));
       const prevDomNode = parent.childNodes[index];
       if (prevDomNode) {
         parent.replaceChild(newDomNode, prevDomNode);
@@ -155,7 +155,7 @@ export function updateElement(
 
     case "UPDATE_CHILDREN": {
       const prevNode = normalizeVNode(oldNode);
-      const nextNode = operation.payload;
+      const nextNode = operation.newNode;
 
       const parentChild = parent.childNodes[index] as HTMLElement | null;
       if (!parentChild) return;
