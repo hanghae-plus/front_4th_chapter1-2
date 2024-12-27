@@ -21,8 +21,13 @@ export function setupEventListeners(root) {
 }
 
 export function handleGlobalEvents(e) {
-  if (globalEvents[e.type].has(e.target)) {
-    globalEvents[e.type].get(e.target)(e);
+  let target = e.target;
+  // 버블링 처리
+  while (target) {
+    if (globalEvents[e.type].has(target)) {
+      globalEvents[e.type].get(target)(e);
+    }
+    target = target.parentElement;
   }
 }
 
