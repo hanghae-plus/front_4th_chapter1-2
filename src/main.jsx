@@ -1,6 +1,6 @@
 /** @jsx createVNode */
 import { createRouter, createVNode } from "./lib";
-import { HomePage, LoginPage, ProfilePage } from "./pages";
+import { HomePage, LoginPage, ProfilePage, TestPage } from "./pages";
 import { globalStore } from "./stores";
 import { ForbiddenError, UnauthorizedError } from "./errors";
 import { router } from "./router";
@@ -23,12 +23,15 @@ router.set(
       }
       return <ProfilePage />;
     },
+    "/test": () => {
+      return <TestPage />;
+    },
   }),
 );
 
 function main() {
-  router.get().subscribe(render);
-  globalStore.subscribe(render);
+  router.get().subscribe(render); // 경로가 변경될 때마다 render함수를 실행하라고 등록
+  globalStore.subscribe(render); // 전역상태(globalState)가 변경될 때마다 render함수를 실행하라고 등록
 
   render();
 }
