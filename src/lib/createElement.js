@@ -1,5 +1,7 @@
 //import { addEvent } from "./eventManager";
 
+import { addEvent } from "./eventManager";
+
 export function createElement(vNode) {
   // undifined, null, boolean은 빈텍스트 노드로 변환
   if (
@@ -47,6 +49,12 @@ function updateAttributes($el, props) {
   Object.entries(props || {}).forEach(([key, value]) => {
     if (key === "className") {
       $el.classList = value;
+      return;
+    }
+    if (key.startsWith("on")) {
+      const eventType = key.slice(2).toLowerCase();
+      const handler = props[key];
+      addEvent($el, eventType, handler);
       return;
     }
     $el.setAttribute(key, value);
