@@ -11,14 +11,14 @@ export const globalStore = createStore(
     loggedIn: Boolean(userStorage.get()),
     posts: [
       {
-        id: 1,
+        id: 5,
         author: "홍길동",
         time: Date.now() - 5 * 분,
         content: "오늘 날씨가 정말 좋네요. 다들 좋은 하루 보내세요!",
         likeUsers: [],
       },
       {
-        id: 2,
+        id: 4,
         author: "김철수",
         time: Date.now() - 15 * 분,
         content: "새로운 프로젝트를 시작했어요. 열심히 코딩 중입니다!",
@@ -32,14 +32,14 @@ export const globalStore = createStore(
         likeUsers: [],
       },
       {
-        id: 4,
+        id: 2,
         author: "박민수",
         time: Date.now() - 30 * 분,
         content: "주말에 등산 가실 분 계신가요? 함께 가요!",
         likeUsers: [],
       },
       {
-        id: 5,
+        id: 1,
         author: "정수연",
         time: Date.now() - 2 * 시간,
         content: "새로 나온 영화 재미있대요. 같이 보러 갈 사람?",
@@ -52,6 +52,22 @@ export const globalStore = createStore(
     logout(state) {
       userStorage.reset();
       return { ...state, currentUser: null, loggedIn: false };
+    },
+    like(state, id) {
+      if (!state.loggedIn) {
+        alert("로그인 후 이용해주세요");
+        return;
+      }
+
+      const post = state.posts.find((post) => post.id === id);
+
+      if (post.likeUsers.includes(state.currentUser.username)) {
+        post.likeUsers = post.likeUsers.filter(
+          (username) => username !== state.currentUser.username,
+        );
+      } else {
+        post.likeUsers.push(state.currentUser.username);
+      }
     },
   },
 );
