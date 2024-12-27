@@ -1,18 +1,27 @@
 let events = new Map();
 
+let oldRoot = null;
+
 export function setupEventListeners(root) {
-  if (events.size > 0) {
-    events.forEach((element) => {
-      element.forEach((eventType, handler) => {
-        root.removeEventListener(handler, eventType);
-      });
-    });
-  }
-  events.forEach((element) => {
-    element.forEach((eventType, handler) => {
-      root.addEventListener(handler, eventType);
-    });
-  });
+    if (oldRoot !== root) {
+        oldRoot = root;
+        events.forEach((element) => {
+            element.forEach((eventType, handler) => {
+                root.addEventListener(handler, eventType);
+            });
+        });
+    } else {
+        events.forEach((element) => {
+            element.forEach((eventType, handler) => {
+                oldRoot.addEventListener(handler, eventType);
+            });
+        });
+        events.forEach((element) => {
+            element.forEach((eventType, handler) => {
+                root.addEventListener(handler, eventType);
+            });
+        });
+    }
 }
 
 //createElement("button") === createElement("button") 인가?
@@ -24,23 +33,35 @@ export function setupEventListeners(root) {
 // 각각 처리되도록 해야하나...?
 
 export function addEvent(element, eventType, handler) {
-  if (!events.has(element)) {
-    events.set(element, new Map());
-  }
+    if (!events.has(element)) {
+        events.set(element, new Map());
+    }
 
-  if (!events.get(element).has(eventType)) {
-    events.get(element).set(eventType, handler);
-  }
+    if (!events.get(element).has(eventType)) {
+        events.get(element).set(eventType, handler);
+    }
 }
 
 export function removeEvent(element, eventType, handler) {
-  if (events.has(element) && events.get(element).has(eventType)) {
-    events.get(element).delete(eventType);
-    console.log("====================================");
-    console.log("events: ", events.get(handler));
-    console.log("====================================");
-    if (events.get(element).size === 0) {
-      events.delete(element);
+    console.log(handler);
+    events.forEach((element) => {
+        element.forEach((eventType, handler) => {
+            oldRoot.removeEventListener(handler, eventType);
+        });
+    });
+
+    if (events.has(element) && events.get(element).has(eventType)) {
+        events.get(element).delete(eventType);
+
+        if (events.get(element).size === 0) {
+            events.delete(element);
+        }
+
+        // 이벤트 다시 등록
+        events.forEach((element) => {
+            element.forEach((eventType, handler) => {
+                oldRoot.addEventListener(handler, eventType);
+            });
+        });
     }
-  }
 }
