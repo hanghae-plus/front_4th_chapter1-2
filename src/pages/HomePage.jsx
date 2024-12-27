@@ -14,15 +14,12 @@ export const HomePage = () => {
   let { posts } = globalStore.getState();
   const { loggedIn } = globalStore.getState();
 
-  const pageUpdate = () => {
-    const { posts: updatedPosts } = globalStore.getState();
-    posts = updatedPosts;
-    render();
+  const isLikedByCurrentUser = (post) => {
+    const { currentUser } = globalStore.getState();
+    return post.likeUsers.some((user) => user === currentUser.username);
   };
 
-  globalStore.subscribe(pageUpdate);
-
-  const render = () => (
+  return (
     <div className="bg-gray-100 min-h-screen flex justify-center">
       <div className="max-w-md w-full">
         <Header />
@@ -45,11 +42,6 @@ export const HomePage = () => {
       </div>
     </div>
   );
-
-  return render();
 };
 
-const isLikedByCurrentUser = (post) => {
-  const { currentUser } = globalStore.getState();
-  return post.likeUsers.some((user) => user === currentUser.username);
-};
+globalStore.subscribe(HomePage);
