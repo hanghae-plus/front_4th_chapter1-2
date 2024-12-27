@@ -25,6 +25,8 @@ export const PostForm = () => {
     globalStore.setState({
       posts: [post, ...globalStore.getState().posts],
     });
+
+    (document.getElementById("post-content") as HTMLTextAreaElement).value = "";
   };
 
   return (

@@ -28,8 +28,8 @@ export const HomePage = () => {
                 return (
                   <Post
                     {...props}
+                    key={props.id}
                     activationLike={
-                      // post 의 likeUsers 에 현재 로그인한 사용자가 포함되어 있는지 확인
                       loggedIn && props.likeUsers.includes(currentUser.username)
                     }
                   />

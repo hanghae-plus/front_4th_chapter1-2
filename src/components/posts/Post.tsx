@@ -4,6 +4,7 @@ import { globalStore } from "../../stores/globalStore.js";
 import { toTimeFormat } from "../../utils/index.js";
 
 export const Post = ({
+  key,
   author,
   time,
   content,
@@ -13,7 +14,12 @@ export const Post = ({
   const { posts, loggedIn, currentUser } = globalStore.getState();
 
   return (
-    <div className="bg-white rounded-lg shadow p-4 mb-4">
+    <div
+      className="bg-white rounded-lg shadow p-4 mb-4"
+      key={key}
+      data-add-type={key ? "prepend" : null}
+      data-component-name="post"
+    >
       <div className="flex items-center mb-2">
         <div>
           <div className="font-bold">{author}</div>

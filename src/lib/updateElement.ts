@@ -2,6 +2,7 @@ import { addEvent, removeEvent } from "./eventManager";
 import { createElement } from "./createElement";
 import { NormalizedVNode, VNode } from "./types";
 import { normalizeVNode } from "./normalizeVNode";
+import { deepEqual } from "../utils/deepEqual";
 
 const max = Math.max;
 
@@ -75,7 +76,7 @@ type Operation =
   | { type: "REMOVE" }
   | { type: "CREATE"; payload: VNode }
   | { type: "REPLACE"; payload: VNode }
-  | { type: "UPDATE_CHILDREN"; payload: NormalizedVNode }
+  | { type: "UPDATE_CHILDREN"; payload: NormalizedVNode | string }
   | { type: "NOOP" };
 
 function calculateUpdateOperation(newNode: VNode, oldNode: VNode): Operation {
@@ -128,13 +129,21 @@ export function updateElement(
     }
 
     case "CREATE": {
-      const newDomNode = createElement(operation.payload);
-      parent.appendChild(newDomNode);
+      const newDomNode = createElement(normalizeVNode(operation.payload));
+      // FIXME: 자식노드 배열의 돔 추가되는 방식을 좀 더 유연한 방식으로 추가할 수 있도록 고쳐야함
+      if (
+        "getAttribute" in newDomNode &&
+        newDomNode.getAttribute?.("data-add-type") === "prepend"
+      ) {
+        (parent as HTMLElement).prepend(newDomNode);
+      } else {
+        parent.appendChild(newDomNode);
+      }
       return;
     }
 
     case "REPLACE": {
-      const newDomNode = createElement(operation.payload);
+      const newDomNode = createElement(normalizeVNode(operation.payload));
       const prevDomNode = parent.childNodes[index];
       if (prevDomNode) {
         parent.replaceChild(newDomNode, prevDomNode);
@@ -159,8 +168,82 @@ export function updateElement(
 
       const nnChildren = nextNode.children;
       const pnChildren = prevNode.children;
-      for (let i = 0; i < max(nnChildren.length, pnChildren.length); i++) {
-        updateElement(parentChild, nnChildren[i], pnChildren[i], i);
+      if (
+        nnChildren.every(
+          (c, i) => typeof c !== "string" && c.props?.key != null,
+        ) &&
+        pnChildren.every(
+          (c, i) => typeof c !== "string" && c.props?.key != null,
+        )
+      ) {
+        const keys = new Set<string>([
+          ...nnChildren.map((c) => typeof c !== "string" && c.props?.key),
+          ...pnChildren.map((p) => typeof p !== "string" && p.props?.key),
+        ]);
+
+        if (keys.size > 0) {
+          console.log(`최적화된 리스트 업데이트: ${keys.size}개의 키`);
+        }
+
+        for (const key of keys) {
+          const nnChild = nnChildren.find(
+            (c) => typeof c !== "string" && c.props?.key === key,
+          ) as NormalizedVNode | null;
+          const pnChild = pnChildren.find(
+            (c) => typeof c !== "string" && c.props?.key === key,
+          ) as NormalizedVNode | null;
+
+          if (
+            nnChild == null ||
+            pnChild == null ||
+            nnChild.type !== pnChild.type
+          ) {
+            updateElement(parentChild, nnChild, pnChild);
+            return;
+          } else {
+            if (
+              nnChild != null &&
+              typeof nnChild !== "boolean" &&
+              typeof nnChild !== "number" &&
+              typeof nnChild !== "string" &&
+              "props" in nnChild &&
+              nnChild?.props?.["data-component-name"] === "post"
+            ) {
+              console.log(
+                "[최적화] 변경된 내용이 없는 Post 는 리렌더링을 스킵합니다. 😎",
+              );
+            }
+          }
+
+          if (
+            nnChild != null &&
+            pnChild != null &&
+            nnChild.type === pnChild.type &&
+            (!deepEqual(nnChild.props, pnChild.props) ||
+              !deepEqual(nnChild.children, pnChild.children))
+          ) {
+            updateElement(parentChild, nnChild, pnChild);
+            return;
+          }
+        }
+      } else {
+        for (let i = 0; i < max(nnChildren.length, pnChildren.length); i++) {
+          const nnChild = nnChildren[i];
+          if (
+            nnChild != null &&
+            typeof nnChild !== "boolean" &&
+            typeof nnChild !== "number" &&
+            typeof nnChild !== "string" &&
+            "props" in nnChild &&
+            nnChild?.props?.["data-component-name"] === "post"
+          ) {
+            console.log(
+              "[최적화] key 가 쓰이지 않아 매번 새롭게 리렌더링합니다. 😢",
+            );
+          }
+
+          updateElement(parentChild, nnChildren[i], pnChildren[i], i);
+        }
       }
 
       return;

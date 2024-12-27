@@ -18,10 +18,8 @@ export type VNode =
   | number;
 
 // 4. 그 외의 경우, vNode의 자식 요소들을 재귀적으로 표준화하고, null 또는 undefined 값을 필터링하여 반환합니다.
-export type NormalizedVNode =
-  | {
-      type: VNodeType;
-      props: VNodeProps;
-      children: NormalizedVNode[];
-    }
-  | string;
+export type NormalizedVNode = {
+  type: VNodeType;
+  props: VNodeProps;
+  children: Array<NormalizedVNode | string>;
+};

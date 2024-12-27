@@ -1,6 +1,6 @@
 import { NormalizedVNode, VNode } from "./types";
 
-export function normalizeVNode(vNode: VNode): NormalizedVNode {
+export function normalizeVNode(vNode: VNode): NormalizedVNode | string {
   if (vNode == null || typeof vNode === "boolean") {
     return "";
   }

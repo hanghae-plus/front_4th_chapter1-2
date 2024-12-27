@@ -1,4 +1,5 @@
 import { addEvent } from "./eventManager";
+import { NormalizedVNode } from "./types";
 
 function updateAttributes($el, props) {
   if (props == null) {
@@ -21,7 +22,7 @@ function updateAttributes($el, props) {
   }
 }
 
-export function createElement(vNode) {
+export function createElement(vNode: NormalizedVNode | string) {
   if (vNode == null || typeof vNode === "boolean") {
     return document.createTextNode("");
   }
