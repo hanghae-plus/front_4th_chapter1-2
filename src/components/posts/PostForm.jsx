@@ -3,9 +3,9 @@ import { createVNode } from "../../lib";
 import { globalStore } from "../../stores";
 
 export const PostForm = () => {
-  const handleClick = () => {
-    const { posts, currentUser } = globalStore.getState();
+  const { posts, currentUser } = globalStore.getState();
 
+  const handleClick = () => {
     globalStore.setState({
       posts: [
         ...posts,
