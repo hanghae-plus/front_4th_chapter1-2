@@ -5,41 +5,36 @@ function updateAttributes(target, originNewProps, originOldProps) {
   const oldProps = originOldProps || {};
   const newProps = originNewProps || {};
 
-  for (const attr in oldProps) {
-    if (!(attr in newProps)) {
-      if (attr.startsWith("on") && typeof oldProps[attr] === "function") {
+  Object.entries(oldProps).forEach(([attr, value]) => {
+    if (!newProps[attr]) {
+      if (attr.startsWith("on")) {
         const eventType = attr.slice(2).toLowerCase();
-        removeEvent(target, eventType, oldProps[attr]);
+        removeEvent(target, eventType, value);
       } else {
         target.removeAttribute(attr);
       }
     }
-  }
+  });
 
-  for (const attr in newProps) {
-    if (!(attr in newProps)) {
-      if (attr.startsWith("on") && typeof newProps[attr] === "function") {
+  Object.entries(newProps).forEach(([attr, value]) => {
+    if (oldProps[attr] !== value) {
+      if (attr.startsWith("on")) {
         const eventType = attr.slice(2).toLowerCase();
         if (typeof oldProps[attr] === "function") {
           removeEvent(target, eventType, oldProps[attr]);
         }
-        addEvent(target, eventType, newProps[attr]);
+        addEvent(target, eventType, value);
       } else if (attr === "className") {
-        target.className = newProps[attr];
-      } else if (attr === "style" && typeof newProps[attr] === "object") {
-        Object.entries(newProps[attr]).forEach(([key, value]) => {
-          target.style[key] = value || "";
-        });
+        target.setAttribute("class", value);
       } else {
-        target.setAttribute(attr, newProps[attr]);
-        // target.removeAttribute(attr);
+        target.setAttribute(attr, value);
       }
     }
-  }
+  });
 }
 
 export function updateElement(parentElement, newNode, oldNode, index = 0) {
-  const existingNode = parentElement.childNodes[index];
+  const existingNode = parentElement?.childNodes[index];
 
   // oldNode만 있는 경우: oldNode를 parentElement에서 제거한다.
   if (!newNode && oldNode) {
@@ -68,7 +63,7 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
   }
 
   // oldNode와 newNode의 태그 이름(type)이 같을 경우: newNode와 oldNode의 속성을 비교하여 변경된 부분만 반영한다.
-  updateAttributes(existingNode, newNode?.props, oldNode?.props);
+  updateAttributes(existingNode, newNode.props || {}, oldNode.props || {});
 
   // oldNode와 newNode를 순회하며, 앞에 조건식을 반복한다.
   const newChildren = newNode.children || [];
