@@ -1,12 +1,16 @@
 let events = new Map();
 
 export function setupEventListeners(root) {
+  if (events.size > 0) {
+    events.forEach((element) => {
+      element.forEach((eventType, handler) => {
+        root.removeEventListener(handler, eventType);
+      });
+    });
+  }
   events.forEach((element) => {
     element.forEach((eventType, handler) => {
       root.addEventListener(handler, eventType);
-      console.log("====================================");
-      console.log("root eVent : ", root);
-      console.log("====================================");
     });
   });
 }
@@ -33,7 +37,7 @@ export function removeEvent(element, eventType, handler) {
   if (events.has(element) && events.get(element).has(eventType)) {
     events.get(element).delete(eventType);
     console.log("====================================");
-    console.log("events: ", events.get(element).has(handler));
+    console.log("events: ", events.get(handler));
     console.log("====================================");
     if (events.get(element).size === 0) {
       events.delete(element);
