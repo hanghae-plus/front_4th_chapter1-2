@@ -16,7 +16,6 @@ let globalEvents = {};
  */
 export function setupEventListeners(root) {
   for (const eventType in globalEvents) {
-    root.removeEventListener(eventType, handleGlobalEvents);
     root.addEventListener(eventType, handleGlobalEvents);
   }
 }
@@ -43,5 +42,3 @@ export function removeEvent(element, eventType, handler) {
 export function clearEvents() {
   globalEvents = {};
 }
-
-window.__myEventListeners = globalEvents;

@@ -42,13 +42,17 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
     oldNode.props || {},
   );
 
+  const maxChildrenLength = Math.max(
+    newNode.children.length,
+    oldNode.children.length,
+  );
+
   // children이 없는 경우 return
-  if (Math.max(newNode.children.length, oldNode.children.length) === 0) {
+  if (maxChildrenLength === 0) {
     return;
   }
 
-  const maxLength = Math.max(newNode.children.length, oldNode.children.length);
-  for (let i = 0; i < maxLength; i++) {
+  for (let i = 0; i < maxChildrenLength; i++) {
     updateElement(
       parentElement.childNodes[index],
       newNode.children[i],

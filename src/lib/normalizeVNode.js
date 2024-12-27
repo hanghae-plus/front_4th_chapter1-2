@@ -14,19 +14,15 @@ export function normalizeVNode(vNode) {
     return String(vNode);
   }
 
-  if (typeof vNode === "object") {
-    if (typeof vNode.type === "function") {
-      return normalizeVNode(
-        vNode.type({ ...vNode.props, children: vNode.children }),
-      );
-    }
-
-    return {
-      type: vNode.type,
-      props: vNode.props,
-      children: vNode.children
-        .map(normalizeVNode)
-        .filter(checkNullishExceptZero),
-    };
+  if (typeof vNode === "object" && typeof vNode.type === "function") {
+    return normalizeVNode(
+      vNode.type({ ...vNode.props, children: vNode.children }),
+    );
   }
+
+  return {
+    type: vNode.type,
+    props: vNode.props,
+    children: vNode.children.map(normalizeVNode).filter(checkNullishExceptZero),
+  };
 }
