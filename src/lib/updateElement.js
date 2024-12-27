@@ -1,25 +1,26 @@
 import { addEvent, removeEvent } from "./eventManager";
 import { createElement } from "./createElement.js";
 
-function updateAttributes(target, originNewProps, originOldProps) {
-  // 기존 Attribute 중 새로운 Attribute에 없는 것은 제거
-  Object.keys(originOldProps).forEach((key) => {
-    if (!(key in originNewProps)) {
+function updateAttributes(target, newProps = {}, oldProps = {}) {
+  newProps = newProps || {};
+  oldProps = oldProps || {};
+
+  // 이전 속성 제거
+  for (const key in oldProps) {
+    if (!(key in newProps)) {
       if (key.startsWith("on")) {
-        const eventType = key.slice(2).toLowerCase();
-        removeEvent(target, eventType, originOldProps[key]);
-      } else if (key === "className") {
-        target.removeAttribute("class");
+        const eventName = key.toLowerCase().substring(2);
+        removeEvent(target, eventName);
       } else {
-        target.removeAttribute(key);
+        target.removeAttribute(key === "className" ? "class" : key);
       }
     }
-  });
+  }
 
-  // 새로운 속성 추가 또는 업데이트
-  for (const key in originNewProps) {
-    const oldValue = originOldProps[key];
-    const newValue = originNewProps[key];
+  // 새로운 속성 설정 또는 업데이트
+  for (const key in newProps) {
+    const oldValue = oldProps[key];
+    const newValue = newProps[key];
 
     if (oldValue !== newValue) {
       if (key.startsWith("on")) {
@@ -41,7 +42,6 @@ function updateAttributes(target, originNewProps, originOldProps) {
   }
 }
 
-// 자식 노드 업데이트
 export function updateElement(parentElement, newNode, oldNode, index = 0) {
   // 실제 DOM 노드 (업데이트 대상)
   const domNode = parentElement.childNodes[index];

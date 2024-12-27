@@ -17,13 +17,9 @@ export function renderElement(vNode, container) {
   if (isInitialRender) {
     const $el = createElement(normalizedVNode);
     container.append($el);
-    containerRenderState.set(container, normalizedVNode);
   } else {
     const previousVNode = containerRenderState.get(container);
     updateElement(container, normalizedVNode, previousVNode);
-
-    // 업데이트된 VNode를 저장
-    containerRenderState.set(container, normalizedVNode);
   }
 
   containerRenderState.set(container, normalizedVNode);
