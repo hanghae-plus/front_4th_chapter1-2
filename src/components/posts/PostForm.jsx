@@ -1,5 +1,6 @@
 /** @jsx createVNode */
 import { createVNode } from "../../lib";
+import { globalStore } from "../../stores/index.js";
 
 export const PostForm = () => {
   return (
@@ -12,9 +13,16 @@ export const PostForm = () => {
       <button
         id="post-submit"
         className="mt-2 bg-blue-600 text-white px-4 py-2 rounded"
+        onClick={handlePosting}
       >
         게시
       </button>
     </div>
   );
+};
+
+const handlePosting = (e) => {
+  e.preventDefault();
+  const postContent = document.getElementById("post-content").value;
+  globalStore.actions.addPost(postContent);
 };
