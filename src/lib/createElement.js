@@ -3,7 +3,6 @@ import {
   replaceIfPropIsClass,
 } from "../utils/commonUtils";
 import { addEvent } from "./eventManager";
-// import { addEvent } from "./eventManager";
 
 export function createElement(vNode) {
   if (typeof vNode === "function" || typeof vNode?.type === "function") {
