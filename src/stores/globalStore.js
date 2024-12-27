@@ -65,10 +65,8 @@ export const globalStore = createStore(
         post.likeUsers = post.likeUsers.filter(
           (username) => username !== state.currentUser.username,
         );
-        post.activationLike = false;
       } else {
         post.likeUsers.push(state.currentUser.username);
-        post.activationLike = true;
       }
     },
   },

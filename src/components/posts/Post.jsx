@@ -3,14 +3,8 @@ import { addEvent, createVNode } from "../../lib";
 import { globalStore } from "../../stores/globalStore.js";
 import { toTimeFormat } from "../../utils/index.js";
 
-export const Post = ({
-  id,
-  author,
-  time,
-  content,
-  likeUsers,
-  activationLike = false,
-}) => {
+export const Post = ({ id, author, time, content, likeUsers }) => {
+  const { currentUser } = globalStore.getState();
   const { like } = globalStore.actions;
 
   const onClickLike = () => {
@@ -28,7 +22,7 @@ export const Post = ({
       <p>{content}</p>
       <div className="mt-2 flex justify-between text-gray-500">
         <span
-          className={`like-button cursor-pointer${activationLike ? " text-blue-500" : ""}`}
+          className={`like-button cursor-pointer${likeUsers.includes(currentUser?.username) ? " text-blue-500" : ""}`}
           onClick={onClickLike}
         >
           좋아요 {likeUsers.length}
