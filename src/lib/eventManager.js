@@ -1,67 +1,44 @@
-const eventStore = new Map();
+let eventHandlers = {};
 
-// SyntheticEvent는 리액트의 이벤트 객체를 모방
-// SyntheicEvent는 이벤트 객체를 감싸고 있는 객체로, 이벤트 객체와 유사한 API를 제공한다.
-// const createSyntheticEvent = (nativeEvent) => {
-//   let isPropagationStopped = false;
-//   let isDefaultPrevented = false;
-//   return {
-//     type: nativeEvent.type,
-//     target: nativeEvent.target,
-//     currentTarget: nativeEvent.currentTarget,
-//     nativeEvent,
-//     stopPropagation() {
-//       isPropagationStopped = true;
-//       nativeEvent.stopPropagation();
-//     },
-//     isPropagationStopped() {
-//       return isPropagationStopped;
-//     },
-//     preventDefault() {
-//       isDefaultPrevented = true;
-//       nativeEvent.preventDefault();
-//     },
-//     isDefaultPrevented() {
-//       return isDefaultPrevented;
-//     },
-//   };
-// };
+function handleEvents(event) {
+  // 이벤트 전파가 중단된 경우 처리하지 않음
+  // if (event.cancelBubble) return;
+
+  const handlers = eventHandlers[event.type];
+  if (!handlers) return;
+
+  const handler = handlers.get(event.target);
+  if (!handler) return;
+
+  handler(event);
+}
 
 export function setupEventListeners(root) {
-  eventStore.forEach((handlers, eventType) => {
-    // 각 이벤트 타입 별 위임된 하나의 이벤트 리스너를 생성
-    root.addEventListener(eventType, (event) => {
-      let target = event.target;
-      while (target && target !== root) {
-        if (handlers.has(target)) {
-          handlers.get(target)(event);
-          break;
-        }
-        target = target.parentElement;
-      }
-    });
-  });
+  for (const eventType in eventHandlers) {
+    root.removeEventListener(eventType, handleEvents);
+    root.addEventListener(eventType, handleEvents);
+  }
 }
 
 export function addEvent(element, eventType, handler) {
-  if (!element || !eventType || typeof handler !== "function") return;
+  // if (!element || !eventType || typeof handler !== "function") return;
 
-  if (!eventStore.has(eventType)) {
-    eventStore.set(eventType, new WeakMap());
+  if (!eventHandlers[eventType]) {
+    eventHandlers[eventType] = new WeakMap();
   }
 
-  const handlers = eventStore.get(eventType);
+  const handlers = eventHandlers[eventType];
   handlers.set(element, handler);
 }
 
-export function removeEvent(element, eventType, handler) {
-  if (!element || !eventType || typeof handler !== "function") return;
+export function removeEvent(element, eventType) {
+  // if (!element || !eventType || typeof handler !== "function") return;
 
-  const handlers = eventStore.get(eventType);
-  if (handlers) {
-    handlers.delete(element);
-    if (handlers.size === 0) {
-      eventStore.delete(eventType);
-    }
+  if (eventHandlers[eventType] && eventHandlers[eventType].has(element)) {
+    eventHandlers[eventType].delete(element);
   }
 }
+
+// export function clearEvent() {
+//   eventHandlers = {};
+// }

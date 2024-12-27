@@ -1,5 +1,10 @@
 import { addEvent } from "./eventManager";
-import { isArray, isFalsy, isStringOrNumber } from "./shared/index.js";
+import {
+  isArray,
+  isFalsy,
+  isFunction,
+  isStringOrNumber,
+} from "./shared/index.js";
 
 const updateAttributes = ($el, props) => {
   if (props) {
@@ -12,7 +17,8 @@ const updateAttributes = ($el, props) => {
       }
 
       if (key === "className") {
-        $el.setAttribute("class", props[key]);
+        // $el.setAttribute("class", props[key]);
+        $el.classList = props[key];
         return;
       }
 
@@ -48,6 +54,8 @@ export function createElement(vNode) {
   if (isStringOrNumber(vNode)) return document.createTextNode(String(vNode));
 
   if (isArray(vNode)) return createFragmentFromVNodeArray(vNode);
+
+  if (isFunction(vNode)) return; // 추후 에러처리
 
   const $el = document.createElement(vNode.type);
 

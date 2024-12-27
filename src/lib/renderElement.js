@@ -7,6 +7,8 @@ import { updateElement } from "./updateElement";
 const containerRenderState = new WeakMap();
 
 export function renderElement(vNode, container) {
+  if (!vNode) return;
+
   const normalizedVNode = normalizeVNode(vNode);
 
   const isInitialRender = !containerRenderState.has(container);
@@ -16,16 +18,16 @@ export function renderElement(vNode, container) {
     const $el = createElement(normalizedVNode);
     container.append($el);
     containerRenderState.set(container, normalizedVNode);
-
-    // 이후에는 updateElement로 기존 DOM을 업데이트한다.
-    setupEventListeners(container);
   } else {
     const previousVNode = containerRenderState.get(container);
-    updateElement(previousVNode, normalizedVNode, container);
+    updateElement(container, normalizedVNode, previousVNode);
 
     // 업데이트된 VNode를 저장
     containerRenderState.set(container, normalizedVNode);
   }
 
+  containerRenderState.set(container, normalizedVNode);
+
   // 렌더링이 완료되면 container에 이벤트를 등록한다.
+  setupEventListeners(container);
 }
