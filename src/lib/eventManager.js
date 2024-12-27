@@ -21,6 +21,7 @@ export function removeEvent(element, eventType, handler) {
   if (!delEvent) {
     return;
   }
+
   eventArray.splice(eventArray.indexOf(delEvent), 1);
   $el.removeEventListener(eventType, delEvent.handler);
 }

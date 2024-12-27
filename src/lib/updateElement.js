@@ -4,27 +4,34 @@ import { createElement } from "./createElement.js";
 function updateAttributes(target, originNewProps, originOldProps) {
   // props update
   Object.entries(originNewProps).forEach(([key, value]) => {
-    if (key === "className") {
-      target.setAttribute("class", value);
-    } else if (typeof value === "function" && key.startsWith("on")) {
-      const eventType = key.slice(2).toLowerCase();
-      addEvent(target, eventType, value);
-    } else {
-      target.setAttribute(key, value);
+    if (originOldProps[key] !== value) {
+      if (key === "className") {
+        target.setAttribute("class", value);
+      } else {
+        target.setAttribute(key, value);
+      }
+      if (typeof value === "function" && key.startsWith("on")) {
+        const eventType = key.slice(2).toLowerCase();
+        if (originOldProps[key]) {
+          removeEvent(target, eventType, originOldProps[key]);
+        }
+        if (key) {
+          addEvent(target, eventType, value);
+        }
+      }
     }
   });
-
   // props remove
-  if (originOldProps) {
-    Object.entries(originOldProps).forEach(([key, value]) => {
+  Object.entries(originOldProps).forEach(([key, value]) => {
+    if (!originNewProps[key]) {
       if (typeof value === "function" && key.startsWith("on")) {
         const eventType = key.slice(2).toLowerCase();
         removeEvent(target, eventType, value);
       } else {
-        removeEvent(target, key, value);
+        target.removeAttribute(key);
       }
-    });
-  }
+    }
+  });
 }
 
 export function updateElement(parentElement, newNode, oldNode, index = 0) {
