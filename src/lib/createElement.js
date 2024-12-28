@@ -31,6 +31,8 @@ function updateAttributes($el, props) {
       addEvent($el, eventType, value);
     } else if (attr === "className") {
       $el.setAttribute("class", value);
+    } else if (attr === "style" && typeof value === "object") {
+      Object.assign($el.style, value);
     } else {
       $el.setAttribute(attr, value);
     }
