@@ -6,8 +6,11 @@ export const createStore = (initialState, initialActions) => {
   let state = { ...initialState };
 
   const setState = (newState) => {
-    state = { ...state, ...newState };
-    notify();
+    const setter = newState;
+    const result = typeof newState === "function" ? setter(state) : newState;
+
+    state = { ...state, ...result };
+    notify(state);
   };
 
   const getState = () => ({ ...state });

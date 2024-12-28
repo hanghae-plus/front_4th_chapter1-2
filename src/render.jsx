@@ -12,6 +12,8 @@ export function render() {
   try {
     renderElement(<Page />, $root);
   } catch (error) {
+    console.log(error);
+
     if (error instanceof ForbiddenError) {
       router.get().push("/");
       return;

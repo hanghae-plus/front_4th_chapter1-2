@@ -598,7 +598,7 @@ describe("Chapter1-2 > 기본과제 > 가상돔 만들기 > ", () => {
       const clickHandler = vi.fn();
       const initialVNode = (
         <div>
-          <button onClick={clickHandler}>Button</button>
+          <button onClick={clickHandler}>Buttonnnn</button>
         </div>
       );
       renderElement(initialVNode, $container);
