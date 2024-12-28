@@ -1,7 +1,7 @@
 /** @jsx createVNode */
 import { createVNode } from "../../lib";
 
-export const PostForm = () => {
+export const PostForm = ({ onSubmit }) => {
   return (
     <div className="mb-4 bg-white rounded-lg shadow p-4">
       <textarea
@@ -10,6 +10,7 @@ export const PostForm = () => {
         className="w-full p-2 border rounded"
       />
       <button
+        onClick={onSubmit}
         id="post-submit"
         className="mt-2 bg-blue-600 text-white px-4 py-2 rounded"
       >
