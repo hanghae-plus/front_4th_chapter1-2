@@ -1,6 +1,6 @@
 import { addEvent, removeEvent } from "./eventManager";
 import { createElement } from "./createElement.js";
-import { isClassName, isEvent } from "./util.js";
+import { isClassNameProps, isEventProps } from "./vNodeUtils.js";
 
 function isChangedAttributes(originNewProps, originOldProps) {
   if (
@@ -18,13 +18,13 @@ function isChangedAttributes(originNewProps, originOldProps) {
 
 function updateAttributes(target, originNewProps, originOldProps) {
   Object.keys(originOldProps ?? {}).forEach((key) => {
-    if (isEvent(key)) {
+    if (isEventProps(key)) {
       const eventType = key.slice(2).toLowerCase();
       removeEvent(target, eventType);
       return;
     }
 
-    if (isClassName(key)) {
+    if (isClassNameProps(key)) {
       target.removeAttribute("class");
       return;
     }
@@ -33,13 +33,13 @@ function updateAttributes(target, originNewProps, originOldProps) {
   });
 
   Object.keys(originNewProps ?? {}).forEach((key) => {
-    if (isEvent(key)) {
+    if (isEventProps(key)) {
       const eventType = key.slice(2).toLowerCase();
       addEvent(target, eventType, originNewProps[key]);
       return;
     }
 
-    if (isClassName(key)) {
+    if (isClassNameProps(key)) {
       target.setAttribute("class", originNewProps[key]);
       return;
     }

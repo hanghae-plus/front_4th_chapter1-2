@@ -1,9 +1,9 @@
-export const isRenderedVNode = (vNode) =>
+export const isRenderableVNode = (vNode) =>
   vNode !== null && vNode !== undefined && typeof vNode !== "boolean";
 
 export const isTextVNode = (vNode) =>
   typeof vNode === "string" || typeof vNode === "number";
 
-export const isEvent = (key) => key.startsWith("on");
+export const isEventProps = (key) => key.startsWith("on");
 
-export const isClassName = (key) => key === "className";
+export const isClassNameProps = (key) => key === "className";

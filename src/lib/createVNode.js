@@ -1,9 +1,9 @@
-import { isRenderedVNode } from "./util";
+import { isRenderableVNode } from "./vNodeUtils";
 
 export function createVNode(type, props, ...children) {
   return {
     type,
     props,
-    children: children.flat(Infinity).filter(isRenderedVNode),
+    children: children.flat(Infinity).filter(isRenderableVNode),
   };
 }

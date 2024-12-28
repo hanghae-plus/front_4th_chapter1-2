@@ -1,8 +1,13 @@
 import { addEvent } from "./eventManager";
-import { isClassName, isEvent, isRenderedVNode, isTextVNode } from "./util";
+import {
+  isClassNameProps,
+  isEventProps,
+  isRenderableVNode,
+  isTextVNode,
+} from "./vNodeUtils";
 
 export function createElement(vNode) {
-  if (!isRenderedVNode(vNode)) {
+  if (!isRenderableVNode(vNode)) {
     return document.createTextNode("");
   }
 
@@ -27,14 +32,14 @@ export function createElement(vNode) {
 
 function updateAttributes($el, props) {
   Object.keys(props ?? {}).forEach((key) => {
-    if (isEvent(key)) {
+    if (isEventProps(key)) {
       const eventType = key.slice(2).toLowerCase();
       const handler = props[key];
       addEvent($el, eventType, handler);
       return;
     }
 
-    if (isClassName(key)) {
+    if (isClassNameProps(key)) {
       $el.setAttribute("class", props[key]);
       return;
     }

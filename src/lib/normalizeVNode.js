@@ -1,7 +1,7 @@
-import { isRenderedVNode, isTextVNode } from "./util";
+import { isRenderableVNode, isTextVNode } from "./vNodeUtils";
 
 export function normalizeVNode(vNode) {
-  if (!isRenderedVNode(vNode)) {
+  if (!isRenderableVNode(vNode)) {
     return "";
   }
 
