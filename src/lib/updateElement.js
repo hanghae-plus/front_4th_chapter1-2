@@ -11,13 +11,13 @@ function isChangedAttributes(originNewProps, originOldProps) {
   }
 
   const mergedProps = { ...originOldProps, ...originNewProps };
-  return Object.keys(mergedProps ?? {}).some(
+  return Object.keys(mergedProps).some(
     (key) => mergedProps[key] !== originOldProps[key],
   );
 }
 
 function updateAttributes(target, originNewProps, originOldProps) {
-  Object.keys(originOldProps ?? {}).forEach((key) => {
+  Object.keys(originOldProps).forEach((key) => {
     if (isEventProps(key)) {
       const eventType = key.slice(2).toLowerCase();
       removeEvent(target, eventType);
@@ -32,7 +32,7 @@ function updateAttributes(target, originNewProps, originOldProps) {
     target.removeAttribute(key);
   });
 
-  Object.keys(originNewProps ?? {}).forEach((key) => {
+  Object.keys(originNewProps).forEach((key) => {
     if (isEventProps(key)) {
       const eventType = key.slice(2).toLowerCase();
       addEvent(target, eventType, originNewProps[key]);
@@ -61,12 +61,11 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
     return;
   }
 
+  const childElement = parentElement.childNodes[index];
+
   // 노드의 타입이 다른경우
   if (newNode.type !== oldNode.type) {
-    parentElement.replaceChild(
-      createElement(newNode),
-      parentElement.childNodes[index],
-    );
+    parentElement.replaceChild(createElement(newNode), childElement);
     return;
   }
 
@@ -76,31 +75,20 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
     typeof oldNode === "string" &&
     newNode !== oldNode
   ) {
-    parentElement.replaceChild(
-      createElement(newNode),
-      parentElement.childNodes[index],
-    );
+    childElement.textContent = newNode;
     return;
   }
 
   if (isChangedAttributes(newNode.props, oldNode.props)) {
-    updateAttributes(
-      parentElement.childNodes[index],
-      newNode.props,
-      oldNode.props,
-    );
+    updateAttributes(childElement, newNode.props ?? {}, oldNode.props ?? {});
   }
 
-  const newNodeChildren = newNode.children ?? [];
-  const oldNodeChildren = oldNode.children ?? [];
-  const maxChildren = Math.max(newNodeChildren.length, oldNodeChildren.length);
+  const maxChildren = Math.max(
+    newNode.children?.length ?? 0,
+    oldNode.children?.length ?? 0,
+  );
 
   for (let i = 0; i < maxChildren; i++) {
-    updateElement(
-      parentElement.childNodes[index],
-      newNodeChildren[i],
-      oldNodeChildren[i],
-      i,
-    );
+    updateElement(childElement, newNode.children[i], oldNode.children[i], i);
   }
 }
