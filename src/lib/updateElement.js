@@ -26,7 +26,6 @@ export function updateElement(parentElement, newNode, oldNode, index = 0) {
 
   if (newNode.type !== oldNode.type) {
     // 4. `newNode`의 type과 `oldNode`의 타입이 서로 사맛디 아니할 경우
-
     parentElement.replaceChild(
       createElement(newNode),
       parentElement.childNodes[index],
