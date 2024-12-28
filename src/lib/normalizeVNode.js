@@ -17,8 +17,8 @@ export function normalizeVNode(vNode) {
   }
 
   if (Array.isArray(vNode)) {
-    const vNodoes = vNode.map(normalizeVNode);
-    return vNodoes;
+    const newvNodes = vNode.map(normalizeVNode);
+    return newvNodes;
   }
 
   const childNodes = vNode.children.map(normalizeVNode);
