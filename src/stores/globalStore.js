@@ -57,7 +57,8 @@ export const globalStore = createStore(
       const { currentUser } = state;
 
       const newPost = {
-        id: state.posts.length + 1,
+        id:
+          state.posts.reduce((maxId, post) => Math.max(post.id, maxId), 0) + 1,
         author: currentUser.username,
         time: Date.now(),
         content,
