@@ -5,7 +5,7 @@ function createSyntheticEvent(event) {
   return {
     type: event.type,
     target: event.target,
-    currentTarget: event.target,
+    currentTarget: null,
     preventDefault() {
       event.preventDefault();
     },
@@ -29,7 +29,9 @@ function handleGlobalEvent(event) {
   while (currentElement && !event.isPropagationStopped()) {
     if (handlers.has(currentElement)) {
       const handler = handlers.get(currentElement);
+      event.currentTarget = currentElement;
       handler(event);
+      event.currentTarget = null;
     }
     currentElement = currentElement.parentElement;
   }
@@ -37,8 +39,8 @@ function handleGlobalEvent(event) {
 
 export function setupEventListeners(root) {
   eventManager.forEach((_, eventType) => {
-    root?.removeEventListener(eventType, handleGlobalEvent);
-    root?.addEventListener(eventType, handleGlobalEvent);
+    root.removeEventListener(eventType, handleGlobalEvent);
+    root.addEventListener(eventType, handleGlobalEvent);
   });
 }
 
