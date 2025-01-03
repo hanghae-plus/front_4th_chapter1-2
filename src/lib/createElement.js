@@ -1,32 +1,44 @@
 import { handleUpdateAttr } from "../utils";
 
+/**
+ * 가상 노드를 실제 DOM 노드로 변환.
+ *
+ * @param vNode - 변환할 가상 노드
+ * @returns 변환된 실제 DOM 노드
+ * @description
+ * - null, undefined, boolean 타입의 vNode는 빈 텍스트 노드를 반환합니다.
+ * - 문자열이나 숫자는 텍스트 노드로 변환됩니다.
+ * - 배열 형태의 vNode는 DocumentFragment에 각 자식을 재귀적으로 추가합니다.
+ * - 그 외의 경우(객체) vNode는 실제 DOM 요소로 변환하며, 속성 및 자식을 처리합니다.
+ */
 export function createElement(vNode) {
-  // vNode가 null, undefined, boolean 면 빈 텍스트 노드를 반환.
+  //  null, undefined, boolean 타입 처리
   if (vNode === null || vNode === undefined || typeof vNode === "boolean") {
     return document.createTextNode("");
   }
 
-  // vNode가 문자열이나 숫자면 텍스트 노드를 생성하여 반환.
+  // 문자열 및 숫자 처리
   if (typeof vNode === "string" || typeof vNode === "number") {
     return document.createTextNode(vNode);
   }
 
-  // vNode가 배열이면 DocumentFragment를 생성하고 각 자식에 대해 createElement를 재귀 호출하여 추가.
+  // 배열 처리
   if (Array.isArray(vNode)) {
     const docFragment = document.createDocumentFragment();
 
-    vNode.forEach((el) => docFragment.appendChild(createElement(el)));
+    vNode.forEach((childVNode) =>
+      docFragment.appendChild(createElement(childVNode)),
+    );
 
     return docFragment;
   }
 
-  // 위 경우가 아니면 실제 DOM 요소를 생성.
-  // - vNode.type에 해당하는 요소를 생성.
-  const element = document.createElement(vNode.type);
-  // - vNode.props의 속성들을 적용. (이벤트 리스너, className, 일반 속성 등 처리)
-  handleUpdateAttr(element, vNode.props, {}); // props: { id: '' , ... }
-  // - vNode.children의 "각 자식"에 대해 createElement를 재귀 호출하여 추가.
-  element.append(...vNode.children.map(createElement));
+  // 객체 형태의 가상 노드 처리
+  const domElement = document.createElement(vNode.type); // DOM 요소 생성
 
-  return element;
+  handleUpdateAttr(domElement, vNode.props); // 속성 적용
+
+  domElement.append(...vNode.children.map(createElement)); // 자식 요소 추가
+
+  return domElement;
 }

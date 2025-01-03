@@ -14,17 +14,17 @@ export const Post = ({
   const handleLikeToggle = () => {
     const state = globalStore.getState(); // 상태 객체 전체를 복사. (최신 상태 유지 위해)
     const { posts, loggedIn, currentUser } = state;
+    const username = currentUser?.username;
 
     if (!loggedIn) {
       alert("로그인 후 이용해주세요");
       return;
     }
 
-    const username = currentUser?.username;
-
     const updatedPosts = posts.map((post) => {
       if (post.id === id) {
         const isActiveLike = post.likeUsers.includes(username);
+
         return {
           ...post,
           likeUsers: isActiveLike
