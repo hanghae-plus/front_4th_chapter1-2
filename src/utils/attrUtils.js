@@ -51,14 +51,13 @@ export const handleUpdateAttr = (target, originNewProps, originOldProps) => {
 };
 
 /**
- * 주어진 속성이 이벤트 핸들러인지 확인.
+ * 주어진 속성이 DOM 이벤트 핸들러인지 확인.
  *
- * @param {Object} props - 속성이 포함된 객체 (주로 `props`).
- * @param {string} attr - 확인할 속성의 이름.
- * @returns {boolean} - 속성이 이벤트 핸들러(`on*` 형식)이고 함수인지 여부.
+ * @param props - 속성이 포함된 객체 (주로 "props")
+ * @param attr - 확인할 속성의 이름
+ * @returns 속성이 이벤트 핸들러("on.."형식)이고 함수인지 여부
  * @description
- * - 속성 이름이 "on"으로 시작하고 해당 값이 함수일 경우, true를 반환.
- * - 주로 DOM 이벤트 핸들러를 식별하는 데 사용됨.
+ * - 속성 이름이 "on"으로 시작하고 해당 값이 함수일 경우, true를 반환합니다.
  */
 function isEventAttribute(props, attr) {
   return attr.startsWith("on") && typeof props[attr] === "function";
@@ -67,10 +66,10 @@ function isEventAttribute(props, attr) {
 /**
  * 이벤트 속성 이름에서 이벤트 타입 추출.
  *
- * @param {string} attr - 이벤트 속성 이름 (예: "onClick").
- * @returns {string} - 이벤트 타입 이름 (예: "click").
+ * @param attr - 이벤트 속성 이름 (예: "onClick")
+ * @returns 이벤트 타입 이름 (예: "click")
  * @description
- * - 속성 이름에서 "on" 접두사를 제거하고, 소문자로 변환하여 이벤트 타입 반환.
+ * - 속성 이름에서 "on" 접두사를 제거하고, 소문자로 변환하여 이벤트 타입 반환합니다.
  * - 예: "onClick" → "click", "onMouseOver" → "mouseover".
  */
 function getEventType(attr) {
